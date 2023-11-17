@@ -1,6 +1,17 @@
+
+import NavigationScroll from './layout/NavigationScroll'
+import Routes from './routes'
+import ThemeCustomization from './theme'
+
+import './assets/scss/style.scss'
+
 function App () {
   return (
-    <div>Hola</div>
+    <ThemeCustomization>
+      <NavigationScroll>
+        <Routes />
+      </NavigationScroll>
+    </ThemeCustomization>
   )
 }
 
