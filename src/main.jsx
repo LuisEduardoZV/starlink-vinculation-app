@@ -6,6 +6,8 @@ import { ConfigProvider } from './contexts/ConfigContext'
 
 import { BASE_PATH } from './config.js'
 
+import 'animate.css'
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <ConfigProvider>
