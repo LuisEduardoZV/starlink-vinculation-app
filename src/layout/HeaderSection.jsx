@@ -38,11 +38,12 @@ const HeaderSection = () => {
       px: 3,
       py: 1,
       alignItems: 'center',
-      backdropFilter: 'blur(6px)',
-      boxShadow: (theme) => theme.shadows[10]
+      backdropFilter: 'blur(8px)',
+      boxShadow: (theme) => theme.shadows[10],
+      zIndex: 5
     }}
     >
-      <Typography flex={1} variant='h2' color='white' sx={{ textShadow: '4px 4px 3px black' }}>Tan-Graph</Typography>
+      <Typography flex={1} variant='h2' color='white' sx={{ textShadow: (theme) => `1px 2px 1px ${theme.palette.primary[800]}` }}>Tan-Graph</Typography>
       <Box flex={5} display='flex' justifyContent='center'>
         <Tabs
           value={tab} onChange={handleChange}
@@ -51,15 +52,15 @@ const HeaderSection = () => {
             display: 'flex',
             width: 'fit-content',
             '& .MuiTab-root.Mui-selected': { color: 'black', bgcolor: 'white', transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms' },
-            '& .MuiTab-root': { py: 0, minHeight: '40px', bgcolor: (theme) => theme.palette.background.paper, pt: 0.5 },
+            '& .MuiTab-root': { py: 0, minHeight: '40px', pt: 0.5 },
             '& .MuiTabs-flexContainer': { borderColor: (theme) => theme.palette.grey[400] }
           }}
-          TabIndicatorProps={{ style: { background: 'white', maxHeight: '1px' } }}
+          TabIndicatorProps={{ style: { maxHeight: '2px' } }}
         >
-          <LinkTab label='Tablero' href='/drafts' icon={<RoofingTwoToneIcon fontSize='small' />} />
-          <LinkTab label='Clientes' href='/drafts' icon={<SupervisorAccountTwoToneIcon fontSize='small' />} />
-          <LinkTab label='Terminales' href='/trash' icon={<SatelliteAltTwoToneIcon fontSize='small' />} />
-          <LinkTab label='Usuarios' href='/spam' icon={<PermIdentityTwoToneIcon fontSize='small' />} />
+          <LinkTab label='Tablero' href='/home' icon={<RoofingTwoToneIcon fontSize='small' sx={{ color: tab === 0 ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />} />
+          <LinkTab label='Clientes' href='/clients' icon={<SupervisorAccountTwoToneIcon fontSize='small' sx={{ color: tab === 1 ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />} />
+          <LinkTab label='Terminales' href='/terminals' icon={<SatelliteAltTwoToneIcon fontSize='small' sx={{ color: tab === 2 ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />} />
+          <LinkTab label='Usuarios' href='/users' icon={<PermIdentityTwoToneIcon fontSize='small' sx={{ color: tab === 3 ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />} />
         </Tabs>
       </Box>
       <Box flex={1} sx={{ display: 'flex', justifyContent: 'flex-end' }}>

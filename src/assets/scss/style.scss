@@ -200,12 +200,12 @@
         &:hover > .ps__thumb-y,
         &:focus > .ps__thumb-y,
         &.ps--clicking .ps__thumb-y {
-            background-color: $grey500;
+            background-color: $grey200;
             width: 5px;
         }
     }
     .ps__thumb-y {
-        background-color: $grey500;
+        background-color: $grey200;
         border-radius: 6px;
         width: 5px;
         right: 0;
@@ -231,116 +231,27 @@
     }
 }
 
-.div-input-autocomplete-maps .input-autocomplete-maps:not([value='']) ~ .label-autocomplete-maps {
-    color: $grey500;
-    top: -14%;
-    left: 4%;
-    font-size: 0.6rem;
-    font-weight: 400;
-    background-color: $paper;
-    letter-spacing: 0.05em;
-}
+// Custom Scroll Bar
 
-.div-input-autocomplete-maps .input-autocomplete-maps:focus ~ .label-autocomplete-maps {
-    color: $primaryMain;
-    top: -14%;
-    left: 4%;
-    font-size: 0.6rem;
-    font-weight: 400;
-    background-color: $paper;
-    letter-spacing: 0.05em;
-}
-
-.div-input-autocomplete-maps {
-    width: 100%;
-    position: relative;
-    background-color: $paper;
-    border-radius: 8px;
-    & .label-autocomplete-maps {
-        position: absolute;
-        top: 29%;
-        left: 3%;
-        z-index: 0;
-        background-color: transparent;
-        pointer-events: none;
-        transition: font-size 0.3s ease-in-out, top 0.2s linear, left 0.2s linear, color 0.2s linear;
-        font-family: 'Roboto', sans-serif;
-    }
-
-    &:focus-within .label-autocomplete-maps {
-        color: $primaryMain;
-        top: -14%;
-        left: 4%;
-        font-size: 0.6rem;
-        font-weight: 400;
-        background-color: $paper;
-        letter-spacing: 0.05em;
-    }
-
-    & .input-autocomplete-maps {
-        font: inherit;
-        letter-spacing: inherit;
-        width: 100%;
-        padding: 15.5px 14px;
-        border: 1px solid;
-        border-color: $grey400;
-        border-radius: 8px;
-        font-weight: 500;
-        background: transparent;
-        margin: 0;
-        -webkit-tap-highlight-color: transparent;
-        display: block;
-        color: $grey900;
-        transition: border 0.1s ease-in-out, outline 0.1s ease-in-out;
-        outline: 2px solid transparent;
-        &:hover {
-            border: 1.5px solid;
-            border-color: $grey700;
-        }
-        &:focus {
-            border-color: $grey50;
-            outline: 2px solid;
-            outline-color: $primaryMain;
-        }
-        &::placeholder {
-            color: $grey500;
-            font-weight: 400;
-            letter-spacing: 0.025em;
-        }
-    }
-}
-
-.gm-style .gm-style-iw-c {
-    padding-right: 10px !important;
-    padding-bottom: 0px !important;
-    max-width: 300px !important;
-    min-width: 200px !important;
-    max-height: 500px !important;
-    height: auto;
-    position: absolute;
-    box-sizing: border-box;
-    top: 0;
-    left: 0;
-    transform: translate(-50%, -100%);
-    background-color: white;
-    border-radius: 8px;
-    overflow: hidden !important;
-}
-
-.gm-style-iw-tc::after,
-.gm-style-iw-tc::before {
-    background-color: transparent !important;
-}
-
-.gm-ui-hover-effect {
-    position: absolute !important;
-    top: 8px !important;
-    right: 5px !important;
-}
-
-.gm-style-iw-d {
-    overflow: hidden !important;
-}
+::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #9e9e9e; 
+  }
+   
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #616161;
+    transition: background 0.3s ease-in-out; 
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #212121; 
+  }
 
 // ==============================|| ANIMATION KEYFRAMES ||============================== //
 
@@ -457,4 +368,112 @@
 
 html {
     scroll-behavior: smooth;
+}
+
+@keyframes animate {
+    0%{
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+        border-radius: 0;
+    }
+    100%{
+        transform: translateY(-1000px) rotate(720deg);
+        opacity: 0;
+        border-radius: 50%;
+    }
+}
+
+.background {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    margin: 0;
+    padding: 0;
+    background: $paper;
+    overflow: hidden;
+}
+.background li {
+    position: absolute;
+    display: block;
+    list-style: none;
+    width: 20px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    animation: animate 19s linear infinite;
+}
+
+
+
+
+.background li:nth-child(0) {
+    left: 76%;
+    width: 126px;
+    height: 126px;
+    bottom: -126px;
+    animation-delay: 1s;
+}
+.background li:nth-child(1) {
+    left: 75%;
+    width: 158px;
+    height: 158px;
+    bottom: -158px;
+    animation-delay: 5s;
+}
+.background li:nth-child(2) {
+    left: 16%;
+    width: 199px;
+    height: 199px;
+    bottom: -199px;
+    animation-delay: 3s;
+}
+.background li:nth-child(3) {
+    left: 29%;
+    width: 146px;
+    height: 146px;
+    bottom: -146px;
+    animation-delay: 6s;
+}
+.background li:nth-child(4) {
+    left: 76%;
+    width: 171px;
+    height: 171px;
+    bottom: -171px;
+    animation-delay: 2s;
+}
+.background li:nth-child(5) {
+    left: 3%;
+    width: 144px;
+    height: 144px;
+    bottom: -144px;
+    animation-delay: 1s;
+}
+.background li:nth-child(6) {
+    left: 55%;
+    width: 145px;
+    height: 145px;
+    bottom: -145px;
+    animation-delay: 14s;
+}
+.background li:nth-child(7) {
+    left: 15%;
+    width: 164px;
+    height: 164px;
+    bottom: -164px;
+    animation-delay: 24s;
+}
+.background li:nth-child(8) {
+    left: 42%;
+    width: 154px;
+    height: 154px;
+    bottom: -154px;
+    animation-delay: 26s;
+}
+.background li:nth-child(9) {
+    left: 33%;
+    width: 179px;
+    height: 179px;
+    bottom: -179px;
+    animation-delay: 7s;
 }
