@@ -6,6 +6,7 @@ import { Box, Tabs, Typography } from '@mui/material'
 // project imports
 import { samePageLinkNavigation } from '../services/samplePageLinkNavigation'
 import LinkTab from '../ui-components/LinkTab'
+import ProfileSection from './ProfileSection'
 
 import PermIdentityTwoToneIcon from '@mui/icons-material/PermIdentityTwoTone'
 import RoofingTwoToneIcon from '@mui/icons-material/RoofingTwoTone'
@@ -64,7 +65,7 @@ const HeaderSection = () => {
         </Tabs>
       </Box>
       <Box flex={1} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-        Opciones
+        <ProfileSection />
       </Box>
     </Box>
   )

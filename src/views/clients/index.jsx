@@ -420,6 +420,32 @@ const Clients = () => {
     })
   }
 
+  const handleSearch = (e, filters) => {
+    setSelected([])
+    if (filters.length === 0) {
+      setData(mainData)
+    } else {
+      const newRows = []
+      const available = mainData
+
+      for (let j = 0; j < filters.length; j += 1) {
+        for (let i = 0; i < available.length; i += 1) {
+          if (
+            available[i].name.toLowerCase().includes(filters[j]) ||
+            available[i].operator.toLowerCase().includes(filters[j]) ||
+            available[i].position.toLowerCase().includes(filters[j]) ||
+            available[i].user.toLowerCase().includes(filters[j]) ||
+            available[i].email.toLowerCase().includes(filters[j]) ||
+            available[i].phone.toLowerCase().includes(filters[j])
+          ) {
+            if (!newRows.find((value) => value === available[i])) { newRows.push(available[i]) }
+          }
+        }
+      }
+      setData(newRows)
+    }
+  }
+
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc'
     setOrder(isAsc ? 'desc' : 'asc')
@@ -466,10 +492,11 @@ const Clients = () => {
         handleEdit={handleEdit}
         handleOpenDelete={handleClickOpen}
         addIcon={GroupAddTwoToneIcon}
+        handleSearch={handleSearch}
       />
 
       <Box sx={{ display: 'flex', flex: 1, px: '10%' }}>
-        <Fade in={!collapsed} sx={{ flex: 1, bgcolor: (theme) => alpha(theme.palette.grey[600], 0.7), py: 2, px: 3, borderRadius: 2, boxShadow: (theme) => theme.shadows[10], color: 'white', maxWidth: '100%', mb: 3, backdropFilter: 'blur(10px)', border: (theme) => `1px solid ${alpha(theme.palette.grey[600], 0.55)}`, minHeight: 300, transition: 'height 0.3s ease-in-out' }}>
+        <Fade in={!collapsed} mountOnEnter unmountOnExit sx={{ flex: 1, bgcolor: (theme) => alpha(theme.palette.grey[600], 0.7), py: 2, px: 3, borderRadius: 2, boxShadow: (theme) => theme.shadows[10], color: 'white', maxWidth: '100%', mb: 3, backdropFilter: 'blur(10px)', border: (theme) => `1px solid ${alpha(theme.palette.grey[600], 0.55)}`, minHeight: 300, transition: 'height 0.3s ease-in-out' }}>
           <Box>
             <TableContainer sx={{ maxWidth: '100%' }}>
               <Table sx={{ maxWidth: '100%', '& .MuiTableCell-root': { borderColor: (theme) => theme.palette.grey[800] } }} aria-labelledby='tableTitle' size='medium'>

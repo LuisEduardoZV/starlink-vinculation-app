@@ -360,6 +360,31 @@ const Terminals = () => {
     })
   }
 
+  const handleSearch = (e, filters) => {
+    setSelected([])
+    if (filters.length === 0) {
+      setData(mainData)
+    } else {
+      const newRows = []
+      const available = mainData
+
+      for (let j = 0; j < filters.length; j += 1) {
+        for (let i = 0; i < available.length; i += 1) {
+          if (
+            available[i].numKit.toLowerCase().includes(filters[j]) ||
+            available[i].numAnt.toLowerCase().includes(filters[j]) ||
+            available[i].serviceLine.toLowerCase().includes(filters[j]) ||
+            available[i].domain.toLowerCase().includes(filters[j]) ||
+            available[i].friendlyName.toLowerCase().includes(filters[j])
+          ) {
+            if (!newRows.find((value) => value === available[i])) { newRows.push(available[i]) }
+          }
+        }
+      }
+      setData(newRows)
+    }
+  }
+
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc'
     setOrder(isAsc ? 'desc' : 'asc')
@@ -406,6 +431,7 @@ const Terminals = () => {
         handleEdit={handleEdit}
         handleOpenDelete={handleClickOpen}
         addIcon={LeakAddTwoToneIcon}
+        handleSearch={handleSearch}
       />
 
       <Box sx={{ display: 'flex', flex: 1, px: '10%' }}>
