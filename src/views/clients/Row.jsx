@@ -29,11 +29,13 @@ const Row = ({ element, handleClick, isItemSelected, labelId, hasExtendedRow, Ro
           />
         </TableCell>
         <TableCell component='th' id={labelId} align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>
-          {element.name}
+          {element.ClientNumber}
         </TableCell>
-        <TableCell align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>{element.operator}</TableCell>
-        <TableCell align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>{element.position}</TableCell>
-        <TableCell align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>{element.user}</TableCell>
+        <TableCell align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>{element.ClientName}</TableCell>
+        <TableCell align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>{element.ClientName}</TableCell>
+        <TableCell align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>{element.ClientEmail}</TableCell>
+        <TableCell align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>{element.ClientPhone}</TableCell>
+        <TableCell align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>{element.isEnabled}</TableCell>
         {hasExtendedRow && (
           <TableCell>
             <IconButton aria-label='expand row' size='small' onClick={() => setRowExpanded(!rowExpanded)}>

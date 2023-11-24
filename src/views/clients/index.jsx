@@ -31,333 +31,193 @@ import { getComparator, stableSort } from '../../services/tableServices'
 
 const mainData = [
   {
-    name: 'ABC Company',
-    operator: 'John Doe',
-    position: 'CEO',
-    user: 'johndoe',
-    password: 'password123',
-    email: 'johndoe@example.com',
-    phone: '123-456-7890',
-    clientId: '1'
+    ClientId: '1',
+    ClientNumber: 'ABC123',
+    ClientAddress: '123 Main St',
+    ClientPhone: '555-1234',
+    ClientZip: '12345',
+    ClientEmail: 'example@example.com',
+    ClientTaxId: 'A1B2C3D4E5F6G7',
+    isEnabled: '1',
+    PublicNote: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    ClientName: 'John Doe'
   },
   {
-    name: 'XYZ Corporation',
-    operator: 'Jane Smith',
-    position: 'CFO',
-    user: 'janesmith',
-    password: 'pass456',
-    email: 'janesmith@example.com',
-    phone: '987-654-3210',
-    clientId: '2'
+    ClientId: '2',
+    ClientNumber: 'DEF456',
+    ClientAddress: '456 Elm St',
+    ClientPhone: '555-5678',
+    ClientZip: '67890',
+    ClientEmail: 'example2@example.com',
+    ClientTaxId: 'H8I9J0K1L2M3N4',
+    isEnabled: '0',
+    PublicNote: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut gravida metus.',
+    ClientName: 'Jane Smith'
   },
   {
-    name: '123 Industries',
-    operator: 'Mike Johnson',
-    position: 'CTO',
-    user: 'mikejohnson',
-    password: 'wordpass789',
-    email: 'mikejohnson@example.com',
-    phone: '555-123-4567',
-    clientId: '3'
+    ClientId: '3',
+    ClientNumber: 'GHI789',
+    ClientAddress: '789 Oak St',
+    ClientPhone: '555-9012',
+    ClientZip: '90123',
+    ClientEmail: 'example3@example.com',
+    ClientTaxId: 'O5P6Q7R8S9T0U1',
+    isEnabled: '1',
+    PublicNote: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut gravida metus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;',
+    ClientName: 'Robert Johnson'
   },
   {
-    name: 'Acme Co.',
-    operator: 'Sarah Williams',
-    position: 'COO',
-    user: 'sarahwilliams',
-    password: 'acmepass',
-    email: 'sarahwilliams@example.com',
-    phone: '888-999-0000',
-    clientId: '4'
+    ClientId: '4',
+    ClientNumber: 'JKL012',
+    ClientAddress: '012 Pine St',
+    ClientPhone: '555-3456',
+    ClientZip: '23456',
+    ClientEmail: 'example4@example.com',
+    ClientTaxId: 'V2W3X4Y5Z6A7B8',
+    isEnabled: '1',
+    PublicNote: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut gravida metus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Donec vulputate, neque at congue efficitur, ligula sem gravida arcu, at tincidunt quam nisl ac nibh.',
+    ClientName: 'Sarah Davis'
   },
   {
-    name: 'Global Corp.',
-    operator: 'Robert Brown',
-    position: 'CIO',
-    user: 'robertbrown',
-    password: 'global123',
-    email: 'robertbrown@example.com',
-    phone: '111-222-3333',
-    clientId: '5'
+    ClientId: '5',
+    ClientNumber: 'MNO345',
+    ClientAddress: '345 Maple St',
+    ClientPhone: '555-7890',
+    ClientZip: '56789',
+    ClientEmail: 'example5@example.com',
+    ClientTaxId: 'C9D8E7F6G5H4I3',
+    isEnabled: '0',
+    PublicNote: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut gravida metus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Donec vulputate, neque at congue efficitur, ligula sem gravida arcu, at tincidunt quam nisl ac nibh. Sed eget tellus vitae.',
+    ClientName: 'Michael Johnson'
   },
   {
-    name: 'Tech Solutions',
-    operator: 'Lisa Davis',
-    position: 'Manager',
-    user: 'lisadavis',
-    password: 'techpass',
-    email: 'lisadavis@example.com',
-    phone: '444-555-6666',
-    clientId: '6'
+    ClientId: '6',
+    ClientNumber: 'PQR678',
+    ClientAddress: '678 Cedar St',
+    ClientPhone: '555-0123',
+    ClientZip: '89012',
+    ClientEmail: 'example6@example.com',
+    ClientTaxId: 'J2K3L4M5N6O7P8',
+    isEnabled: '1',
+    PublicNote: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut gravida metus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Donec vulputate, neque at congue efficitur, ligula sem gravida arcu, at tincidunt quam nisl ac nibh. Sed eget tellus vitae. Nunc.',
+    ClientName: 'Emily Wilson'
   },
   {
-    name: 'Innovative Inc.',
-    operator: 'Mark Wilson',
-    position: 'Director',
-    user: 'markwilson',
-    password: 'innovate789',
-    email: 'markwilson@example.com',
-    phone: '777-888-9999',
-    clientId: '7'
+    ClientId: '7',
+    ClientNumber: 'STU901',
+    ClientAddress: '901 Walnut St',
+    ClientPhone: '555-2345',
+    ClientZip: '34567',
+    ClientEmail: 'example7@example.com',
+    ClientTaxId: 'Q8R9S0T1U2V3W4',
+    isEnabled: '1',
+    PublicNote: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut gravida metus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Donec vulputate, neque at congue efficitur, ligula sem gravida arcu, at tincidunt quam nisl ac nibh. Sed eget tellus vitae. Nunc. Ut.',
+    ClientName: 'David Anderson'
   },
   {
-    name: 'Alpha Enterprises',
-    operator: 'Emily Taylor',
-    position: 'Supervisor',
-    user: 'emilytaylor',
-    password: 'alpha456',
-    email: 'emilytaylor@example.com',
-    phone: '222-333-4444',
-    clientId: '8'
+    ClientId: '8',
+    ClientNumber: 'VWX234',
+    ClientAddress: '234 Oak St',
+    ClientPhone: '555-5678',
+    ClientZip: '45678',
+    ClientEmail: 'example8@example.com',
+    ClientTaxId: 'X5Y6Z7A8B9C0D1',
+    isEnabled: '0',
+    PublicNote: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut gravida metus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Donec vulputate, neque at congue efficitur, ligula sem gravida arcu, at tincidunt quam nisl ac nibh. Sed eget tellus vitae. Nunc. Ut. Suspendisse.',
+    ClientName: 'Catherine Thompson'
   },
   {
-    name: 'Beta Corp.',
-    operator: 'David Anderson',
-    position: 'Analyst',
-    user: 'davidanderson',
-    password: 'betapass',
-    email: 'davidanderson@example.com',
-    phone: '555-666-7777',
-    clientId: '9'
+    ClientId: '9',
+    ClientNumber: 'YZA567',
+    ClientAddress: '567 Pine St',
+    ClientPhone: '555-8901',
+    ClientZip: '56789',
+    ClientEmail: 'example9@example.com',
+    ClientTaxId: 'E2F3G4H5I6J7K8',
+    isEnabled: '1',
+    PublicNote: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut gravida metus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Donec vulputate, neque at congue efficitur, ligula sem gravida arcu, at tincidunt quam nisl ac nibh. Sed eget tellus vitae. Nunc. Ut. Suspendisse. Fusce.',
+    ClientName: 'Christopher Wilson'
   },
   {
-    name: 'Gamma Ltd.',
-    operator: 'Olivia Martinez',
-    position: 'Engineer',
-    user: 'oliviamartinez',
-    password: 'gamma123',
-    email: 'oliviamartinez@example.com',
-    phone: '888-999-0000',
-    clientId: '10'
+    ClientId: '10',
+    ClientNumber: 'BCD890',
+    ClientAddress: '890 Elm St',
+    ClientPhone: '555-2345',
+    ClientZip: '34567',
+    ClientEmail: 'example10@example.com',
+    ClientTaxId: 'K6L7M8N9O0P1Q2',
+    isEnabled: '1',
+    PublicNote: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut gravida metus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Donec vulputate, neque at congue efficitur, ligula sem gravida arcu, at tincidunt quam nisl ac nibh. Sed eget tellus vitae. Nunc. Ut. Suspendisse. Fusce. Maecenas.',
+    ClientName: 'Michelle Davis'
   },
   {
-    name: 'Delta Systems',
-    operator: 'Daniel Brown',
-    position: 'Developer',
-    user: 'danielbrown',
-    password: 'deltapass',
-    email: 'danielbrown@example.com',
-    phone: '111-222-3333',
-    clientId: '11'
+    ClientId: '11',
+    ClientNumber: 'CDE901',
+    ClientAddress: '901 Cedar St',
+    ClientPhone: '555-6789',
+    ClientZip: '90123',
+    ClientEmail: 'example11@example.com',
+    ClientTaxId: 'R2S3T4U5V6W7X8',
+    isEnabled: '0',
+    PublicNote: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut gravida metus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Donec vulputate, neque at congue efficitur, ligula sem gravida arcu, at tincidunt quam nisl ac nibh. Sed eget tellus vitae. Nunc. Ut. Suspendisse. Fusce. Maecenas. Integer.',
+    ClientName: 'Daniel Johnson'
   },
   {
-    name: 'Sigma Solutions',
-    operator: 'Sophia Clark',
-    position: 'Manager',
-    user: 'sophiaclark',
-    password: 'sigma789',
-    email: 'sophiaclark@example.com',
-    phone: '444-555-6666',
-    clientId: '12'
+    ClientId: '12',
+    ClientNumber: 'EFG234',
+    ClientAddress: '234 Walnut St',
+    ClientPhone: '555-9012',
+    ClientZip: '23456',
+    ClientEmail: 'example12@example.com',
+    ClientTaxId: 'Y5Z6A7B8C9D0E1',
+    isEnabled: '1',
+    PublicNote: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut gravida metus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Donec vulputate, neque at congue efficitur, ligula sem gravida arcu, at tincidunt quam nisl ac nibh. Sed eget tellus vitae. Nunc. Ut. Suspendisse. Fusce. Maecenas. Integer. Proin.',
+    ClientName: 'Sophia Wilson'
   },
   {
-    name: 'Omega Tech',
-    operator: 'Matthew Davis',
-    position: 'Director',
-    user: 'matthewdavis',
-    password: 'omega456',
-    email: 'matthewdavis@example.com',
-    phone: '777-888-9999',
-    clientId: '13'
-  },
-  {
-    name: 'Nu Enterprises',
-    operator: 'Ava Johnson',
-    position: 'Supervisor',
-    user: 'avajohnson',
-    password: 'nu123',
-    email: 'avajohnson@example.com',
-    phone: '222-333-4444',
-    clientId: '14'
-  },
-  {
-    name: 'Zeta Corp.',
-    operator: 'James Wilson',
-    position: 'Analyst',
-    user: 'jameswilson',
-    password: 'zeta456',
-    email: 'jameswilson@example.com',
-    phone: '555-666-7777',
-    clientId: '15'
-  },
-  {
-    name: 'Epsilon Ltd.',
-    operator: 'Chloe Taylor',
-    position: 'Engineer',
-    user: 'chloetaylor',
-    password: 'epsilon789',
-    email: 'chloetaylor@example.com',
-    phone: '888-999-0000',
-    clientId: '16'
-  },
-  {
-    name: 'Iota Systems',
-    operator: 'Liam Smith',
-    position: 'Developer',
-    user: 'liamsmith',
-    password: 'iota123',
-    email: 'liamsmith@example.com',
-    phone: '111-222-3333',
-    clientId: '17'
-  },
-  {
-    name: 'Kappa Solutions',
-    operator: 'Emma Brown',
-    position: 'Manager',
-    user: 'emmabrown',
-    password: 'kappa456',
-    email: 'emmabrown@example.com',
-    phone: '444-555-6666',
-    clientId: '18'
-  },
-  {
-    name: 'Theta Tech',
-    operator: 'Noah Clark',
-    position: 'Director',
-    user: 'noahclark',
-    password: 'theta789',
-    email: 'noahclark@example.com',
-    phone: '777-888-9999',
-    clientId: '19'
-  },
-  {
-    name: 'Lambda Enterprises',
-    operator: 'Mia Johnson',
-    position: 'Supervisor',
-    user: 'miajohnson',
-    password: 'lambda123',
-    email: 'miajohnson@example.com',
-    phone: '222-333-4444',
-    clientId: '20'
-  },
-  {
-    name: 'Rho Corp.',
-    operator: 'Logan Wilson',
-    position: 'Analyst',
-    user: 'loganwilson',
-    password: 'rho456',
-    email: 'loganwilson@example.com',
-    phone: '555-666-7777',
-    clientId: '21'
-  },
-  {
-    name: 'Tau Ltd.',
-    operator: 'Amelia Taylor',
-    position: 'Engineer',
-    user: 'ameliataylor',
-    password: 'tau789',
-    email: 'ameliataylor@example.com',
-    phone: '888-999-0000',
-    clientId: '22'
-  },
-  {
-    name: 'Upsilon Systems',
-    operator: 'Ethan Brown',
-    position: 'Developer',
-    user: 'ethanbrown',
-    password: 'upsilon123',
-    email: 'ethanbrown@example.com',
-    phone: '111-222-3333',
-    clientId: '23'
-  },
-  {
-    name: 'Phi Solutions',
-    operator: 'Oliver Clark',
-    position: 'Manager',
-    user: 'oliverclark',
-    password: 'phi456',
-    email: 'oliverclark@example.com',
-    phone: '444-555-6666',
-    clientId: '24'
-  },
-  {
-    name: 'Chi Tech',
-    operator: 'Aria Johnson',
-    position: 'Director',
-    user: 'ariajohnson',
-    password: 'chi789',
-    email: 'ariajohnson@example.com',
-    phone: '777-888-9999',
-    clientId: '25'
-  },
-  {
-    name: 'Psi Enterprises',
-    operator: 'Elijah Wilson',
-    position: 'Supervisor',
-    user: 'elijahwilson',
-    password: 'psi123',
-    email: 'elijahwilson@example.com',
-    phone: '222-333-4444',
-    clientId: '26'
-  },
-  {
-    name: 'Omega Corp.',
-    operator: 'Avery Taylor',
-    position: 'Analyst',
-    user: 'averytaylor',
-    password: 'omega456',
-    email: 'averytaylor@example.com',
-    phone: '555-666-7777',
-    clientId: '27'
-  },
-  {
-    name: 'Zeta Ltd.',
-    operator: 'Scarlett Martinez',
-    position: 'Engineer',
-    user: 'scarlettmartinez',
-    password: 'zeta789',
-    email: 'scarlettmartinez@example.com',
-    phone: '888-999-0000',
-    clientId: '28'
-  },
-  {
-    name: 'Epsilon Systems',
-    operator: 'Benjamin Brown',
-    position: 'Developer',
-    user: 'benjaminbrown',
-    password: 'epsilon123',
-    email: 'benjaminbrown@example.com',
-    phone: '111-222-3333',
-    clientId: '29'
-  },
-  {
-    name: 'Iota Solutions',
-    operator: 'Grace Clark',
-    position: 'Manager',
-    user: 'graceclark',
-    password: 'iota456',
-    email: 'graceclark@example.com',
-    phone: '444-555-6666',
-    clientId: '30'
+    ClientId: '13',
+    ClientNumber: 'FGH567',
+    ClientAddress: '567 Oak St',
+    ClientPhone: '555-2345',
+    ClientZip: '67890',
+    ClientEmail: 'example13@example.com',
+    ClientTaxId: 'F2G3H4I5J6K7L8',
+    isEnabled: '1',
+    PublicNote: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut gravida metus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Donec vulputate, neque at congue efficitur, ligula sem gravida arcu, at tincidunt quam nisl ac nibh. Sed eget tellus vitae. Nunc. Ut. Suspendisse. Fusce. Maecenas. Integer. Proin. Aliquam.',
+    ClientName: 'Olivia Davis'
   }
 ]
 
 const headCells = [
   {
-    id: 'name',
-    label: 'Nombre de la empresa',
-    width: '40%'
+    id: 'ClientNumber',
+    label: '# Cliente'
   },
   {
-    id: 'operator',
-    label: 'Operador',
-    width: '30%'
+    id: 'ClientTaxId',
+    label: 'Nombre de la empresa'
   },
   {
-    id: 'position',
-    label: 'Cargo',
-    width: '10%'
+    id: 'ClientName',
+    label: 'Nombre del cliente'
   },
   {
-    id: 'user',
-    label: 'Usuario',
-    width: '20%'
+    id: 'ClientEmail',
+    label: 'E-mail'
+  },
+  {
+    id: 'ClientPhone',
+    label: 'Teléfono'
+  },
+  {
+    id: 'isEnabled',
+    label: 'Estatus'
   }
 ]
 
 const Clients = () => {
   const [order, setOrder] = useState('asc')
-  const [orderBy, setOrderBy] = useState('name')
+  const [orderBy, setOrderBy] = useState('ClientNumber')
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
 
@@ -400,7 +260,7 @@ const Clients = () => {
   const handleDelete = (id) => {
     const promise = () => new Promise((resolve) => {
       setTimeout(() => {
-        const index = data.indexOf(data.find(({ clientId }) => (clientId === id)))
+        const index = data.indexOf(data.find(({ ClientId }) => (ClientId === id)))
         // console.log(index)
         if (index === -1) return resolve({ status: 500 })
         const newData = [...data]
@@ -431,12 +291,12 @@ const Clients = () => {
       for (let j = 0; j < filters.length; j += 1) {
         for (let i = 0; i < available.length; i += 1) {
           if (
-            available[i].name.toLowerCase().includes(filters[j]) ||
-            available[i].operator.toLowerCase().includes(filters[j]) ||
-            available[i].position.toLowerCase().includes(filters[j]) ||
-            available[i].user.toLowerCase().includes(filters[j]) ||
-            available[i].email.toLowerCase().includes(filters[j]) ||
-            available[i].phone.toLowerCase().includes(filters[j])
+            available[i].ClientName.toLowerCase().includes(filters[j]) ||
+            available[i].ClientNumber.toLowerCase().includes(filters[j]) ||
+            available[i].ClientAddress.toLowerCase().includes(filters[j]) ||
+            available[i].ClientPhone.toLowerCase().includes(filters[j]) ||
+            available[i].ClientEmail.toLowerCase().includes(filters[j]) ||
+            available[i].ClientTaxId.toLowerCase().includes(filters[j])
           ) {
             if (!newRows.find((value) => value === available[i])) { newRows.push(available[i]) }
           }
@@ -459,7 +319,7 @@ const Clients = () => {
       setView(null)
     } else {
       setSelected([id])
-      const index = data.map((row) => row.clientId).indexOf(id)
+      const index = data.map((row) => row.ClientId).indexOf(id)
       setDataSelected(data[index])
       setView(0)
     }
@@ -509,14 +369,14 @@ const Clients = () => {
                 />
                 <TableBody>
                   {visibleRows.map((row) => {
-                    const isItemSelected = isSelected(row.clientId)
-                    const labelId = `enhanced-table-checkbox-${row.clientId}`
+                    const isItemSelected = isSelected(row.ClientId)
+                    const labelId = `enhanced-table-checkbox-${row.ClientId}`
 
                     return (
                       <Row
                         key={labelId}
                         element={row}
-                        handleClick={(event) => handleClick(event, row.clientId)}
+                        handleClick={(event) => handleClick(event, row.ClientId)}
                         isItemSelected={isItemSelected}
                         labelId={labelId}
                         page={page}
@@ -582,7 +442,7 @@ const Clients = () => {
             </DialogContent>
             <DialogActions sx={{ display: 'flex', flex: 1, justifyContent: 'space-between' }}>
               <Button onClick={handleClose} variant='outlined' color='error' autoFocus>Cancelar</Button>
-              <Button onClick={() => handleDelete(dataSelected?.clientId)} variant='outlined' color='info'>
+              <Button onClick={() => handleDelete(dataSelected?.ClientId)} variant='outlined' color='info'>
                 Aceptar y Eliminar
               </Button>
             </DialogActions>

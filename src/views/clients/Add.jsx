@@ -1,10 +1,7 @@
 import PropTypes from 'prop-types'
-import { useEffect, useState } from 'react'
 
 // mui imports
-import VisibilityOffTwoToneIcon from '@mui/icons-material/VisibilityOffTwoTone'
-import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone'
-import { Box, Button, Grid, IconButton, InputAdornment, TextField, Tooltip, Typography } from '@mui/material'
+import { Box, Button, Grid, TextField, Tooltip, Typography } from '@mui/material'
 
 // third
 import { Formik } from 'formik'
@@ -14,44 +11,43 @@ import * as Yup from 'yup'
 import { emailerrorText, phoneformatText, phonelenghtText, requiredText } from '../../utils/labelsErrorsFormik'
 
 const Add = ({ handleCancel, data, setData }) => {
-  const [showPass, setShowPass] = useState(false)
-
-  useEffect(() => {
-    return () => setShowPass(false)
-  }, [])
-
   return (
     <Box sx={{ display: 'flex', flex: 1, width: '100%', height: '100%', alignItems: 'flex-start', bgcolor: 'transparent', flexDirection: 'column', gap: 5 }}>
       <Typography variant='h2' sx={{ color: (theme) => theme.palette.grey[200] }}>Agregar nuevo cliente</Typography>
       <Formik
         initialValues={{
-          name: '',
-          operator: '',
-          position: '',
-          user: '',
-          password: '',
-          email: '',
-          phone: '',
+          ClientId: 0,
+          ClientName: '',
+          ClientNumber: '',
+          ClientAddress: '',
+          ClientPhone: '',
+          ClientZip: '',
+          ClientEmail: '',
+          ClientTaxId: '',
+          isEnabled: 1,
+          PublicNote: '',
           submit: null
         }}
         validationSchema={Yup.object().shape({
-          name: Yup.string().required(requiredText),
-          operator: Yup.string().required(requiredText),
-          position: Yup.string().required(requiredText),
-          user: Yup.string().required(requiredText),
-          password: Yup.string().max(255).required(requiredText),
-          email: Yup.string().email(emailerrorText).max(255).required(requiredText),
-          phone: Yup.string()
+          ClientName: Yup.string().max(200, 'La longitud debe ser menor a 200 caracteres'),
+          ClientNumber: Yup.string().max(50, 'La longitud debe ser menor a 50 caracteres'),
+          ClientAddress: Yup.string().max(2000, 'La longitud debe ser menor a 2000 caracteres').required(requiredText),
+          ClientPhone: Yup.string()
             .matches(/^[0-9]+$/, phoneformatText)
             .min(10, phonelenghtText)
             .max(10, phonelenghtText)
             .required(requiredText)
-            .typeError(requiredText)
+            .typeError(requiredText),
+          ClientZip: Yup.string().required(requiredText),
+          ClientEmail: Yup.string().email(emailerrorText).max(255).required(requiredText).required(requiredText),
+          ClientTaxId: Yup.string().max(20, 'La longitud debe ser menor a 20 caracteres'),
+          isEnabled: Yup.number(),
+          PublicNote: Yup.string().max(4000, 'La longitud debe ser menor a 4000 caracteres')
         })}
         onSubmit={async (values, { setStatus, setSubmitting }) => {
           setSubmitting(true)
           delete values.submit
-          values.clientId = data.length + 1
+          values.ClientId = data.length + 1
           // console.log(values)
           const promise = () => new Promise((resolve) => {
             setTimeout(() => {
@@ -64,7 +60,7 @@ const Add = ({ handleCancel, data, setData }) => {
           toast.promise(promise, {
             loading: 'Cargando...',
             success: () => {
-              return `El cliente ${values.name} se agregó correctamente`
+              return `El cliente ${values.ClientTaxId} se agregó correctamente`
             },
             error: 'Error al agregar el cliente'
           })
@@ -78,19 +74,19 @@ const Add = ({ handleCancel, data, setData }) => {
         {({ values, touched, errors, isSubmitting, handleSubmit, handleBlur, handleChange }) => (
           <form noValidate onSubmit={handleSubmit} style={{ width: '100%' }}>
             <Grid container spacing={5} width='100%'>
-              <Grid item xs={12} md={6}>
-                <Tooltip arrow followCursor disableInteractive {...errors.name && { title: errors.name }}>
+              <Grid item xs={12} md={4}>
+                <Tooltip arrow followCursor disableInteractive {...errors.ClientTaxId && { title: errors.ClientTaxId }}>
                   <TextField
-                    value={values.name}
-                    name='name'
-                    label='Nombre de la empresa'
+                    value={values.ClientTaxId}
+                    name='ClientTaxId'
+                    label='CURP / ID'
                     onBlur={handleBlur}
                     onChange={handleChange}
                     variant='filled'
                     size='small'
                     fullWidth
                     color='primary'
-                    error={Boolean(touched.name && errors.name)}
+                    error={Boolean(touched.ClientTaxId && errors.ClientTaxId)}
                     required
                     sx={{
                       boxShadow: (theme) => theme.shadows[5],
@@ -98,34 +94,7 @@ const Add = ({ handleCancel, data, setData }) => {
                         color: 'white'
                       },
                       '& .MuiInputLabel-root': {
-                        color: !(touched.name && errors.name) && ((theme) => theme.palette.primary.main)
-                      }
-                    }}
-                    InputProps={{ autoComplete: 'off' }}
-                  />
-                </Tooltip>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <Tooltip arrow followCursor disableInteractive {...errors.operator && { title: errors.operator }}>
-                  <TextField
-                    value={values.operator}
-                    name='operator'
-                    label='Nombre del operador'
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    variant='filled'
-                    size='small'
-                    fullWidth
-                    color='primary'
-                    error={Boolean(touched.operator && errors.operator)}
-                    required
-                    sx={{
-                      boxShadow: (theme) => theme.shadows[5],
-                      '& .MuiInputBase-input': {
-                        color: 'white'
-                      },
-                      '& .MuiInputLabel-root': {
-                        color: !(touched.operator && errors.operator) && ((theme) => theme.palette.primary.main)
+                        color: !(touched.ClientTaxId && errors.ClientTaxId) && ((theme) => theme.palette.primary.main)
                       }
                     }}
                     InputProps={{ autoComplete: 'off' }}
@@ -133,46 +102,19 @@ const Add = ({ handleCancel, data, setData }) => {
                 </Tooltip>
               </Grid>
               <Grid item xs={12} md={4}>
-                <Tooltip arrow followCursor disableInteractive {...errors.position && { title: errors.position }}>
+                <Tooltip arrow followCursor disableInteractive {...errors.ClientEmail && { title: errors.ClientEmail }}>
                   <TextField
-                    value={values.position}
-                    name='position'
-                    label='Posicion dentro de la empresa'
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    variant='filled'
-                    size='small'
-                    fullWidth
-                    color='primary'
-                    error={Boolean(touched.position && errors.position)}
-                    required
-                    sx={{
-                      boxShadow: (theme) => theme.shadows[5],
-                      '& .MuiInputBase-input': {
-                        color: 'white'
-                      },
-                      '& .MuiInputLabel-root': {
-                        color: !(touched.position && errors.position) && ((theme) => theme.palette.primary.main)
-                      }
-                    }}
-                    InputProps={{ autoComplete: 'off' }}
-                  />
-                </Tooltip>
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <Tooltip arrow followCursor disableInteractive {...errors.email && { title: errors.email }}>
-                  <TextField
+                    value={values.ClientEmail}
+                    name='ClientEmail'
                     type='email'
-                    value={values.email}
-                    name='email'
-                    label='Correo electrónico'
+                    label='Correl eletrónico'
                     onBlur={handleBlur}
                     onChange={handleChange}
                     variant='filled'
                     size='small'
                     fullWidth
                     color='primary'
-                    error={Boolean(touched.email && errors.email)}
+                    error={Boolean(touched.ClientEmail && errors.ClientEmail)}
                     required
                     sx={{
                       boxShadow: (theme) => theme.shadows[5],
@@ -180,7 +122,7 @@ const Add = ({ handleCancel, data, setData }) => {
                         color: 'white'
                       },
                       '& .MuiInputLabel-root': {
-                        color: !(touched.email && errors.email) && ((theme) => theme.palette.primary.main)
+                        color: !(touched.ClientEmail && errors.ClientEmail) && ((theme) => theme.palette.primary.main)
                       }
                     }}
                     InputProps={{ autoComplete: 'off' }}
@@ -188,10 +130,10 @@ const Add = ({ handleCancel, data, setData }) => {
                 </Tooltip>
               </Grid>
               <Grid item xs={12} md={4}>
-                <Tooltip arrow followCursor disableInteractive {...errors.phone && { title: errors.phone }}>
+                <Tooltip arrow followCursor disableInteractive {...errors.ClientPhone && { title: errors.ClientPhone }}>
                   <TextField
-                    value={values.phone}
-                    name='phone'
+                    value={values.ClientPhone}
+                    name='ClientPhone'
                     label='Teléfono movil'
                     onBlur={handleBlur}
                     onChange={handleChange}
@@ -199,7 +141,7 @@ const Add = ({ handleCancel, data, setData }) => {
                     size='small'
                     fullWidth
                     color='primary'
-                    error={Boolean(touched.phone && errors.phone)}
+                    error={Boolean(touched.ClientPhone && errors.ClientPhone)}
                     required
                     sx={{
                       boxShadow: (theme) => theme.shadows[5],
@@ -207,7 +149,61 @@ const Add = ({ handleCancel, data, setData }) => {
                         color: 'white'
                       },
                       '& .MuiInputLabel-root': {
-                        color: !(touched.phone && errors.phone) && ((theme) => theme.palette.primary.main)
+                        color: !(touched.ClientPhone && errors.ClientPhone) && ((theme) => theme.palette.primary.main)
+                      }
+                    }}
+                    InputProps={{ autoComplete: 'off' }}
+                  />
+                </Tooltip>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Tooltip arrow followCursor disableInteractive {...errors.ClientAddress && { title: errors.ClientAddress }}>
+                  <TextField
+                    value={values.ClientAddress}
+                    name='ClientAddress'
+                    label='Dirección'
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    variant='filled'
+                    size='small'
+                    fullWidth
+                    color='primary'
+                    error={Boolean(touched.ClientAddress && errors.ClientAddress)}
+                    required
+                    sx={{
+                      boxShadow: (theme) => theme.shadows[5],
+                      '& .MuiInputBase-input': {
+                        color: 'white'
+                      },
+                      '& .MuiInputLabel-root': {
+                        color: !(touched.ClientAddress && errors.ClientAddress) && ((theme) => theme.palette.primary.main)
+                      }
+                    }}
+                    InputProps={{ autoComplete: 'off' }}
+                  />
+                </Tooltip>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <Tooltip arrow followCursor disableInteractive {...errors.ClientZip && { title: errors.ClientZip }}>
+                  <TextField
+                    value={values.ClientZip}
+                    name='ClientZip'
+                    label='Código postal'
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    variant='filled'
+                    size='small'
+                    fullWidth
+                    color='primary'
+                    error={Boolean(touched.ClientZip && errors.ClientZip)}
+                    required
+                    sx={{
+                      boxShadow: (theme) => theme.shadows[5],
+                      '& .MuiInputBase-input': {
+                        color: 'white'
+                      },
+                      '& .MuiInputLabel-root': {
+                        color: !(touched.ClientZip && errors.ClientZip) && ((theme) => theme.palette.primary.main)
                       }
                     }}
                     InputProps={{ autoComplete: 'off' }}
@@ -217,80 +213,101 @@ const Add = ({ handleCancel, data, setData }) => {
             </Grid>
             <Box sx={{ width: '100%' }}>
               <Typography variant='h4' my={5} sx={{ color: (theme) => theme.palette.grey[400] }}>
-                Usuario para el cliente
+                Información adicional
               </Typography>
               <Grid container spacing={5}>
-                <Grid item xs={12} md={4}>
-                  <Tooltip arrow followCursor disableInteractive {...errors.user && { title: errors.user }}>
-                    <TextField
-                      value={values.user}
-                      name='user'
-                      label='Usuario'
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      variant='filled'
-                      size='small'
-                      fullWidth
-                      color='primary'
-                      error={Boolean(touched.user && errors.user)}
-                      required
-                      sx={{
-                        boxShadow: (theme) => theme.shadows[5],
-                        '& .MuiInputBase-input': {
-                          color: 'white'
-                        },
-                        '& .MuiInputLabel-root': {
-                          color: !(touched.user && errors.user) && ((theme) => theme.palette.primary.main)
-                        }
-                      }}
-                      InputProps={{ autoComplete: 'off' }}
-                    />
-                  </Tooltip>
+                <Grid item xs={12} md={8}>
+                  <Grid container spacing={5}>
+                    <Grid item xs={12} md={8}>
+                      <Tooltip arrow followCursor disableInteractive {...errors.ClientName && { title: errors.ClientName }}>
+                        <TextField
+                          value={values.ClientName}
+                          name='ClientName'
+                          label='Nombre del cliente'
+                          onBlur={handleBlur}
+                          onChange={handleChange}
+                          variant='filled'
+                          size='small'
+                          fullWidth
+                          color='primary'
+                          error={Boolean(touched.ClientName && errors.ClientName)}
+                          sx={{
+                            boxShadow: (theme) => theme.shadows[5],
+                            '& .MuiInputBase-input': {
+                              color: 'white'
+                            },
+                            '& .MuiInputLabel-root': {
+                              color: !(touched.ClientName && errors.ClientName) && ((theme) => theme.palette.primary.main)
+                            }
+                          }}
+                          InputProps={{ autoComplete: 'off' }}
+                        />
+                      </Tooltip>
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                      <Tooltip arrow followCursor disableInteractive {...errors.ClientNumber && { title: errors.ClientNumber }}>
+                        <TextField
+                          value={values.ClientNumber}
+                          name='ClientNumber'
+                          label='Número de cliente'
+                          onBlur={handleBlur}
+                          onChange={handleChange}
+                          variant='filled'
+                          size='small'
+                          fullWidth
+                          color='primary'
+                          error={Boolean(touched.ClientNumber && errors.ClientNumber)}
+                          sx={{
+                            boxShadow: (theme) => theme.shadows[5],
+                            '& .MuiInputBase-input': {
+                              color: 'white'
+                            },
+                            '& .MuiInputLabel-root': {
+                              color: !(touched.ClientNumber && errors.ClientNumber) && ((theme) => theme.palette.primary.main)
+                            }
+                          }}
+                          InputProps={{
+                            autoComplete: 'off'
+                          }}
+                        />
+                      </Tooltip>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Tooltip arrow followCursor disableInteractive {...errors.PublicNote && { title: errors.PublicNote }}>
+                        <TextField
+                          value={values.PublicNote}
+                          name='PublicNote'
+                          label='Notas'
+                          onBlur={handleBlur}
+                          onChange={handleChange}
+                          variant='filled'
+                          size='small'
+                          fullWidth
+                          multiline
+                          rows={3}
+                          color='primary'
+                          error={Boolean(touched.PublicNote && errors.PublicNote)}
+                          sx={{
+                            boxShadow: (theme) => theme.shadows[5],
+                            '& .MuiInputBase-input': {
+                              color: 'white'
+                            },
+                            '& .MuiInputLabel-root': {
+                              color: !(touched.PublicNote && errors.PublicNote) && ((theme) => theme.palette.primary.main)
+                            }
+                          }}
+                          InputProps={{
+                            autoComplete: 'off'
+                          }}
+                        />
+                      </Tooltip>
+                    </Grid>
+                  </Grid>
                 </Grid>
-                <Grid item xs={12} md={4}>
-                  <Tooltip arrow followCursor disableInteractive {...errors.password && { title: errors.password }}>
-                    <TextField
-                      value={values.password}
-                      name='password'
-                      label='Contraseña'
-                      type={showPass ? 'text' : 'password'}
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      variant='filled'
-                      size='small'
-                      fullWidth
-                      color='primary'
-                      error={Boolean(touched.password && errors.password)}
-                      required
-                      sx={{
-                        boxShadow: (theme) => theme.shadows[5],
-                        '& .MuiInputBase-input': {
-                          color: 'white'
-                        },
-                        '& .MuiInputLabel-root': {
-                          color: !(touched.password && errors.password) && ((theme) => theme.palette.primary.main)
-                        }
-                      }}
-                      InputProps={{
-                        autoComplete: 'off',
-                        endAdornment: (
-                          <InputAdornment position='end'>
-                            <IconButton
-                              edge='end'
-                              onClick={() => setShowPass((show) => !show)}
-                              onMouseDown={(e) => e.preventDefault()}
-                              sx={{ color: (theme) => theme.palette.grey[400] }}
-                            >{showPass ? <VisibilityOffTwoToneIcon /> : <VisibilityTwoToneIcon />}
-                            </IconButton>
-                          </InputAdornment>)
-                      }}
-                    />
-                  </Tooltip>
-                </Grid>
-                <Grid item xs={12} md={4}>
-                  <Box width='100%' display='flex' justifyContent='space-evenly'>
-                    <Button color='info' variant='outlined' type='submit' disabled={isSubmitting}>Agregar</Button>
-                    <Button color='error' variant='outlined' onClick={handleCancel}>Cancelar</Button>
+                <Grid item xs={12} md={4} alignItems='flex-end' justifyContent='flex-end'>
+                  <Box width='100%' display='flex' justifyContent='space-evenly' height='100%'>
+                    <Button color='info' variant='outlined' type='submit' disabled={isSubmitting} sx={{ alignSelf: 'flex-end' }}>Agregar</Button>
+                    <Button color='error' variant='outlined' onClick={handleCancel} sx={{ alignSelf: 'flex-end' }}>Cancelar</Button>
                   </Box>
                 </Grid>
               </Grid>
