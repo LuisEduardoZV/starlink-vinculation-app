@@ -195,7 +195,7 @@ const headCells = [
   },
   {
     id: 'ClientTaxId',
-    label: 'Nombre de la empresa'
+    label: 'CURP / ID'
   },
   {
     id: 'ClientName',
@@ -291,12 +291,12 @@ const Clients = () => {
       for (let j = 0; j < filters.length; j += 1) {
         for (let i = 0; i < available.length; i += 1) {
           if (
-            available[i].ClientName.toLowerCase().includes(filters[j]) ||
-            available[i].ClientNumber.toLowerCase().includes(filters[j]) ||
-            available[i].ClientAddress.toLowerCase().includes(filters[j]) ||
-            available[i].ClientPhone.toLowerCase().includes(filters[j]) ||
-            available[i].ClientEmail.toLowerCase().includes(filters[j]) ||
-            available[i].ClientTaxId.toLowerCase().includes(filters[j])
+            available[i].ClientName.toLowerCase().includes(filters[j].trim().toLowerCase()) ||
+            available[i].ClientNumber.toLowerCase().includes(filters[j].trim().toLowerCase()) ||
+            available[i].ClientAddress.toLowerCase().includes(filters[j].trim().toLowerCase()) ||
+            available[i].ClientPhone.toLowerCase().includes(filters[j].trim().toLowerCase()) ||
+            available[i].ClientEmail.toLowerCase().includes(filters[j].trim().toLowerCase()) ||
+            available[i].ClientTaxId.toLowerCase().includes(filters[j].trim().toLowerCase())
           ) {
             if (!newRows.find((value) => value === available[i])) { newRows.push(available[i]) }
           }

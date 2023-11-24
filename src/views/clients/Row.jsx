@@ -31,7 +31,7 @@ const Row = ({ element, handleClick, isItemSelected, labelId, hasExtendedRow, Ro
         <TableCell component='th' id={labelId} align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>
           {element.ClientNumber}
         </TableCell>
-        <TableCell align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>{element.ClientName}</TableCell>
+        <TableCell align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>{element.ClientTaxId}</TableCell>
         <TableCell align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>{element.ClientName}</TableCell>
         <TableCell align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>{element.ClientEmail}</TableCell>
         <TableCell align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>{element.ClientPhone}</TableCell>
