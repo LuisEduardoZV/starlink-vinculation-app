@@ -6,6 +6,7 @@ import Clients from '../views/clients'
 import Home from '../views/home'
 import Linking from '../views/linking'
 import Terminals from '../views/terminals'
+import Users from '../views/users'
 
 // ==============================|| AUTH ROUTING ||============================== //
 
@@ -34,6 +35,10 @@ const MainRoutes = {
     {
       path: '/terminals',
       element: <Terminals />
+    },
+    {
+      path: '/users',
+      element: <Users />
     }
   ]
 }
