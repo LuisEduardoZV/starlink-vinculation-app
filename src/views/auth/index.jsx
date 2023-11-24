@@ -53,7 +53,7 @@ const Auth = () => {
               },
               error: 'Error'
             })
-            setTimeout(() => { navigate('home', { replace: true }) }, 500)
+            setTimeout(() => { navigate('home', { replace: true, state: { view: 0 } }) }, 500)
           }}
         >
           {({ handleSubmit, handleBlur, handleChange, touched, errors, values, isValid, isSubmitting }) => (

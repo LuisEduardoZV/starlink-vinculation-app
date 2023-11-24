@@ -4,8 +4,8 @@
 import MainLayout from '../layout/MainLayout'
 import Clients from '../views/clients'
 import Home from '../views/home'
+import Linking from '../views/linking'
 import Terminals from '../views/terminals'
-import Users from '../views/users'
 
 // ==============================|| AUTH ROUTING ||============================== //
 
@@ -24,8 +24,8 @@ const MainRoutes = {
       element: <Home />
     },
     {
-      path: '/users',
-      element: <Users />
+      path: '/linking',
+      element: <Linking />
     },
     {
       path: '/clients',

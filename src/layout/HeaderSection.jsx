@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 
 // mui imports
 import { Box, Tabs, Typography } from '@mui/material'
@@ -8,12 +9,13 @@ import { samePageLinkNavigation } from '../services/samplePageLinkNavigation'
 import LinkTab from '../ui-components/LinkTab'
 import ProfileSection from './ProfileSection'
 
-import PermIdentityTwoToneIcon from '@mui/icons-material/PermIdentityTwoTone'
+import InsertLinkIcon from '@mui/icons-material/InsertLink'
 import RoofingTwoToneIcon from '@mui/icons-material/RoofingTwoTone'
 import SatelliteAltTwoToneIcon from '@mui/icons-material/SatelliteAltTwoTone'
 import SupervisorAccountTwoToneIcon from '@mui/icons-material/SupervisorAccountTwoTone'
 
 const HeaderSection = () => {
+  const { state, pathname } = useLocation()
   const [tab, setTab] = useState(0)
 
   const handleChange = (event, newValue) => {
@@ -25,6 +27,11 @@ const HeaderSection = () => {
       setTab(newValue)
     }
   }
+
+  useEffect(() => {
+    if (state && state.view) setTab(Number(state.view))
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname])
 
   return (
     <Box sx={{
@@ -47,7 +54,8 @@ const HeaderSection = () => {
       <Typography flex={1} variant='h2' color='white' sx={{ textShadow: (theme) => `1px 2px 1px ${theme.palette.primary[800]}` }}>Tan-Graph</Typography>
       <Box flex={5} display='flex' justifyContent='center'>
         <Tabs
-          value={tab} onChange={handleChange}
+          value={tab}
+          onChange={handleChange}
           sx={{
             minHeight: '40px',
             display: 'flex',
@@ -61,7 +69,7 @@ const HeaderSection = () => {
           <LinkTab label='Tablero' href='/home' icon={<RoofingTwoToneIcon fontSize='small' sx={{ color: tab === 0 ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />} />
           <LinkTab label='Clientes' href='/clients' icon={<SupervisorAccountTwoToneIcon fontSize='small' sx={{ color: tab === 1 ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />} />
           <LinkTab label='Terminales' href='/terminals' icon={<SatelliteAltTwoToneIcon fontSize='small' sx={{ color: tab === 2 ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />} />
-          <LinkTab label='Usuarios' href='/users' icon={<PermIdentityTwoToneIcon fontSize='small' sx={{ color: tab === 3 ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />} />
+          <LinkTab label='Vincular' href='/linking' icon={<InsertLinkIcon fontSize='small' sx={{ color: tab === 3 ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />} />
         </Tabs>
       </Box>
       <Box flex={1} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
