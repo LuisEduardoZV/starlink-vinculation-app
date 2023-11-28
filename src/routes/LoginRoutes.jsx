@@ -2,6 +2,7 @@
 
 // login routing
 import MinimalLayout from '../layout/MinimalLayout'
+import GuestGuard from '../utils/GuestGuard'
 import Auth from '../views/auth'
 
 // ==============================|| AUTH ROUTING ||============================== //
@@ -9,10 +10,16 @@ import Auth from '../views/auth'
 const LoginRoutes = {
   path: '/',
   element: (
-    <MinimalLayout />
+    <GuestGuard>
+      <MinimalLayout />
+    </GuestGuard>
   ),
   children: [{
     path: '/',
+    element: <Auth />
+  },
+  {
+    path: '/login',
     element: <Auth />
   }]
 }

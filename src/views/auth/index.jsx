@@ -1,7 +1,9 @@
-import { useNavigate } from 'react-router-dom'
+import { useState } from 'react'
 
 // mui imports
-import { Box, Button, Typography } from '@mui/material'
+import VisibilityOffTwoToneIcon from '@mui/icons-material/VisibilityOffTwoTone'
+import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone'
+import { Box, Button, IconButton, InputAdornment, Tooltip, Typography } from '@mui/material'
 
 // third
 import { Formik } from 'formik'
@@ -9,13 +11,23 @@ import { toast } from 'sonner'
 import * as Yup from 'yup'
 
 // project imports
+import useAuth from '../../hooks/useAuth'
 import InputCustom from '../../ui-components/InputCustom'
+import MainMirrorCard from '../../ui-components/MainMirrorCard'
 
 // assets
 import bg from '../../assets/image/opcion.jpg'
 
+import { requiredText } from '../../utils/labelsErrorsFormik'
+
 const Auth = () => {
-  const navigate = useNavigate()
+  const { loginProvider } = useAuth()
+
+  const [showPass, setShowPass] = useState(false)
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault()
+  }
 
   return (
     <Box sx={{
@@ -29,56 +41,102 @@ const Auth = () => {
       flex: 1,
       backgroundImage: `url(${bg})`,
       backgroundRepeat: 'no-repeat',
-      backgroundSize: 'cover'
+      backgroundSize: 'cover',
+      backgroundOrigin: 'border-box',
+      backgroundPosition: 'bottom'
     }}
     >
-      <Box sx={{ bgcolor: 'rgb(255 255 255 / 0.1)', position: 'absolute', p: 2, top: '30%', bottom: '30%', left: '15%', right: '65%', borderRadius: 2, backdropFilter: 'blur(8px)', boxShadow: (theme) => theme.shadows[10], animation: 'floating 3s ease-in-out infinite' }}>
-        <Typography variant='h1' color='white' textAlign='right' mt={1} mb={3} sx={{ textShadow: '4px 4px 3px black' }}>Iniciar Sesión</Typography>
-        <Formik
-          initialValues={{
-            user: '',
-            password: ''
-          }}
-          validationSchema={Yup.object().shape({
-            user: Yup.string().required(),
-            password: Yup.string().required()
-          })}
-          onSubmit={async (values) => {
-            const promise = () => new Promise((resolve) => setTimeout(() => { return resolve({ status: 200 }) }, 1000))
+      <Box sx={{ position: 'absolute', p: 2, top: '30%', bottom: '30%', left: '15%', right: '60%', borderRadius: 2, zIndex: 5, animation: 'floating 3s ease-in-out infinite' }}>
+        <MainMirrorCard>
+          <Typography variant='h1' color='white' textAlign='right' mt={1} mb={3} sx={{ textShadow: (theme) => `1px 2px 1px ${theme.palette.primary[800]}` }}>Iniciar Sesión</Typography>
+          <Formik
+            initialValues={{
+              user: '',
+              password: ''
+            }}
+            validationSchema={Yup.object().shape({
+              user: Yup.string().required(requiredText),
+              password: Yup.string().required(requiredText)
+            })}
+            onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
+              const notify = toast.loading('Cargando...')
+              try {
+                setSubmitting(true)
+                const account = await loginProvider(values.user, values.password)
 
-            toast.promise(promise, {
-              loading: 'Loading...',
-              success: () => {
-                return `Sesión iniciada como: ${values.user}`
-              },
-              error: 'Error'
-            })
-            setTimeout(() => { navigate('home', { replace: true, state: { view: 0 } }) }, 500)
-          }}
-        >
-          {({ handleSubmit, handleBlur, handleChange, touched, errors, values, isValid, isSubmitting }) => (
-            <form noValidate onSubmit={handleSubmit}>
-              <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column', gap: 4 }}>
-                <InputCustom
-                  label='Usuario o correo'
-                  fullWidth size='small'
-                  error={Boolean(touched.user && errors.user)}
-                  value={values.user}
-                  name='user'
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                />
-                <InputCustom
-                  label='Contraseña' fullWidth size='small' type='password' error={Boolean(touched.password && errors.password)}
-                  value={values.password}
-                  name='password'
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                />
-                <Button variant='contained' type='submit' sx={{ width: '50%', bgcolor: 'black', color: 'white', '&:hover': { bgcolor: 'white', color: 'black' } }} size='small' disableElevation disabled={!isValid || isSubmitting}>Login</Button>
-              </Box>
-            </form>)}
-        </Formik>
+                if (account) {
+                  toast.success(`Sesión iniciada como: ${values.user}`, { id: notify })
+                } else {
+                  toast.error('El usuario y/o contraseña no son correctos', { id: notify })
+                }
+              } catch (error) {
+                toast.error('El usuario y/o contraseña no son correctos', { id: notify })
+              }
+            }}
+          >
+            {({ handleSubmit, handleBlur, handleChange, touched, errors, values, isSubmitting }) => (
+              <form noValidate onSubmit={handleSubmit}>
+                <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column', gap: 4 }}>
+                  <Tooltip arrow followCursor disableInteractive {...errors.user && { title: errors.user }}>
+                    <InputCustom
+                      label='Usuario'
+                      fullWidth size='small'
+                      error={Boolean(touched.user && errors.user)}
+                      value={values.user}
+                      name='user'
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      required
+                      InputProps={{ autoComplete: 'off' }}
+                    />
+                  </Tooltip>
+                  <Tooltip arrow followCursor disableInteractive {...errors.password && { title: errors.password }}>
+                    <InputCustom
+                      label='Contraseña' fullWidth size='small'
+                      type={showPass ? 'text' : 'password'}
+                      error={Boolean(touched.password && errors.password)}
+                      value={values.password}
+                      name='password'
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      required
+                      InputProps={{
+                        autoComplete: 'off',
+                        endAdornment: (
+                          <InputAdornment position='end' sx={{ position: 'absolute', right: '2%', bgcolor: 'black' }}>
+                            <IconButton size='small' sx={{ color: (theme) => theme.palette.primary[800] }} onClick={() => setShowPass(current => !current)} onMouseDown={handleMouseDownPassword}>
+                              {showPass ? <VisibilityOffTwoToneIcon /> : <VisibilityTwoToneIcon />}
+                            </IconButton>
+                          </InputAdornment>)
+                      }}
+                    />
+                  </Tooltip>
+                  <Button
+                    variant='contained'
+                    type='submit'
+                    sx={{
+                      width: '100%',
+                      bgcolor: 'black',
+                      color: 'white',
+                      boxShadow: (theme) => theme.shadows[5],
+                      transition: 'background-color 0.3s ease-in-out, color 0.3s ease-in-out',
+                      '&:hover': {
+                        bgcolor: (theme) => theme.palette.primary.main,
+                        color: 'black'
+                      }
+                    }}
+                    size='small'
+                    disableElevation
+                    disabled={isSubmitting}
+                    onClick={() => {
+                      if (errors.user && errors.password) toast.error('Es necesario que llene todos los campos para continuar')
+                    }}
+                  >Acceder
+                  </Button>
+                </Box>
+              </form>)}
+          </Formik>
+        </MainMirrorCard>
       </Box>
     </Box>
   )

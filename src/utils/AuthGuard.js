@@ -3,31 +3,29 @@ import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 // project imports
-import { DASHBOARD_PATH } from '../config'
 import useAuth from '../hooks/useAuth'
 
-// ==============================|| GUEST GUARD ||============================== //
+// ==============================|| AUTH GUARD ||============================== //
 
 /**
- * Guest guard for routes having no auth required
+ * Authentication guard for routes
  * @param {PropTypes.node} children children element/node
  */
-
-const GuestGuard = ({ children }) => {
+const AuthGuard = ({ children }) => {
   const { isLoggedIn } = useAuth()
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (isLoggedIn) {
-      navigate(DASHBOARD_PATH, { replace: true })
+    if (!isLoggedIn) {
+      navigate('login', { replace: true })
     }
   }, [isLoggedIn, navigate])
 
   return children
 }
 
-GuestGuard.propTypes = {
+AuthGuard.propTypes = {
   children: PropTypes.node
 }
 
-export default GuestGuard
+export default AuthGuard

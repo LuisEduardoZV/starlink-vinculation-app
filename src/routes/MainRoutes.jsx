@@ -3,17 +3,22 @@
 // login routing
 import MainLayout from '../layout/MainLayout'
 import Clients from '../views/clients'
+import Contacts from '../views/contacts'
 import Home from '../views/home'
 import Linking from '../views/linking'
 import Terminals from '../views/terminals'
 import Users from '../views/users'
+
+import AuthGuard from '../utils/AuthGuard'
 
 // ==============================|| AUTH ROUTING ||============================== //
 
 const MainRoutes = {
   path: '/',
   element: (
-    <MainLayout />
+    <AuthGuard>
+      <MainLayout />
+    </AuthGuard>
   ),
   children: [
     {
@@ -39,6 +44,10 @@ const MainRoutes = {
     {
       path: '/users',
       element: <Users />
+    },
+    {
+      path: '/contacts',
+      element: <Contacts />
     }
   ]
 }

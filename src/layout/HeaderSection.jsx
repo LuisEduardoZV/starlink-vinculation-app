@@ -22,7 +22,6 @@ const HeaderSection = () => {
   const [tab, setTab] = useState(0)
 
   const handleChange = (event, newValue) => {
-    console.log(newValue)
     // event.type can be equal to focus with selectionFollowsFocus.
     if (
       event.type !== 'click' ||

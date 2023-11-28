@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 
 // material-ui
 import {
@@ -27,6 +26,7 @@ import Transitions from '../ui-components/Transitions'
 // assets
 import LoginTwoToneIcon from '@mui/icons-material/LoginTwoTone'
 import SettingsTwoToneIcon from '@mui/icons-material/SettingsTwoTone'
+import useAuth from '../hooks/useAuth'
 import useConfig from '../hooks/useConfig'
 
 // ==============================|| PROFILE MENU ||============================== //
@@ -40,8 +40,8 @@ const getWelcomeText = () => {
 }
 
 const ProfileSection = () => {
+  const { logoutProvider } = useAuth()
   const theme = useTheme()
-  const navigate = useNavigate()
   const { borderRadius } = useConfig()
 
   const [selectedIndex, setSelectedIndex] = useState(-1)
@@ -62,11 +62,9 @@ const ProfileSection = () => {
     setOpen((prevOpen) => !prevOpen)
   }
 
-  const handleLogOut = () => {
+  const handleLogOut = async () => {
     toast.loading('Saliendo...')
-    setTimeout(() => {
-      navigate('/', { replace: true })
-    }, 1000)
+    await logoutProvider()
   }
 
   const prevOpen = useRef(open)
