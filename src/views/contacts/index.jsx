@@ -8,20 +8,22 @@ import { toast } from 'sonner'
 // mui imports
 import PersonAddAltTwoToneIcon from '@mui/icons-material/PersonAddAltTwoTone'
 import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Grid,
-  Typography
+    Box,
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    Grid,
+    Typography
 } from '@mui/material'
 
 // project imports
+import AsideBackButton from '../../ui-components/AsideBackButton'
 import InputSearch from '../../ui-components/InputSearch'
 import MainMirrorCard from '../../ui-components/MainMirrorCard'
+import NoInfoOverlay from '../../ui-components/NoInfoOverlay'
 import ContactDetails from './ContactDetails'
 import ContactEdit from './ContactEdit'
 import ContactList from './ContactList'
@@ -85,7 +87,7 @@ const Contacts = () => {
     (async () => {
       try {
         const res = await apiCall({ url: `${BASE_URL_API}/getClientContactos?id=${clientId}` })
-        // console.log(res)
+        console.log(res)
         setContacts(res)
         setData(convertData(res))
       } catch (error) {
@@ -129,6 +131,7 @@ const Contacts = () => {
 
   return (
     <>
+      <AsideBackButton inFade />
       <Box sx={{ display: 'flex', flex: 1, px: '10%' }}>
 
         <Grid container spacing={3} pl={0}>
@@ -137,20 +140,24 @@ const Contacts = () => {
 
               <Grid item xs={12} sx={{ '&.MuiGrid-item': { pl: 0 } }}>
                 <Grid container pl={0}>
-                  <MainMirrorCard sx={{ minHeight: 'auto', display: 'flex', gap: 3 }}>
-                    <Grid item xs zeroMinWidth>
+                  <MainMirrorCard sx={{ minHeight: 'auto', display: 'flex', gap: 3, justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Box>
+                      <Typography color='white' variant='h2'>Lista de contactos</Typography>
+                    </Box>
+                    <Box minWidth='40%'>
                       <InputSearch handleSearch={() => {}} />
-                    </Grid>
-                    <Grid item>
+                    </Box>
+                    <Box>
                       <Button
                         variant='contained'
                         color='info'
+                        size='small'
                         startIcon={<PersonAddAltTwoToneIcon fontSize='small' />}
                         onClick={handleOnAdd}
                       >
                         Agregar
                       </Button>
-                    </Grid>
+                    </Box>
                   </MainMirrorCard>
                 </Grid>
               </Grid>
@@ -200,6 +207,7 @@ const Contacts = () => {
                         </Grid>
                       </Fragment>
                     ))}
+                    {contacts.length === 0 && <NoInfoOverlay />}
                   </MainMirrorCard>
                 </Grid>
               </Grid>
