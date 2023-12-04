@@ -1,10 +1,12 @@
 import PropTypes from 'prop-types'
+import React from 'react'
 
 import { Box } from '@mui/material'
 import { alpha } from '@mui/material/styles'
 
-const MainMirrorCard = ({ children, sx }) => (
+const MainMirrorCard = React.forwardRef(({ children, sx }, ref) => (
   <Box
+    ref={ref}
     sx={{
       flex: 1,
       bgcolor: (theme) => alpha(theme.palette.grey[600], 0.7),
@@ -23,7 +25,9 @@ const MainMirrorCard = ({ children, sx }) => (
     }}
   >{children}
   </Box>
-)
+))
+
+MainMirrorCard.displayName = 'MainMirrorCard'
 
 MainMirrorCard.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.arrayOf([PropTypes.node])]),

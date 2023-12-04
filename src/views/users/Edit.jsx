@@ -15,19 +15,16 @@ import InputBase from '../../ui-components/InputBase'
 
 import { emailerrorText, requiredText } from '../../utils/labelsErrorsFormik'
 
-const Add = ({ handleReset, client }) => {
+const Edit = ({ handleReset, data }) => {
+  if (!data) return
   return (
     <Box sx={{ display: 'flex', flex: 1, width: '100%', height: '100%', alignItems: 'flex-start', bgcolor: 'transparent', flexDirection: 'column', gap: 5, maxHeight: '70vh' }}>
-      <Typography variant='h2' sx={{ color: (theme) => theme.palette.grey[200] }}>Agregar nuevo usuario</Typography>
+      <Typography variant='h2' sx={{ color: (theme) => theme.palette.grey[200] }}>Editar usuario</Typography>
       <Formik
         initialValues={{
-          userId: 0,
-          clientId: client,
-          fullName: '',
-          email: '',
-          password: '',
-          isAdmin: false,
-          isEnabled: true
+          ...data,
+          isAdmin: data === 1,
+          isEnabled: data === 1
         }}
         validationSchema={Yup.object().shape({
           fullName: Yup.string().max(200, 'La longitud debe ser menor a 200 caracteres').required(requiredText),
@@ -46,7 +43,7 @@ const Add = ({ handleReset, client }) => {
           const promise = () => new Promise((resolve) => {
             let data = null
             try {
-              data = apiCallWithBody({ url: `${BASE_URL_API}/Users`, method: 'POST', body: JSON.stringify(dataForm) })
+              data = apiCallWithBody({ url: `${BASE_URL_API}/Users/${values.userId}`, method: 'PUT', body: JSON.stringify(dataForm) })
             } catch (error) {
               return resolve({ status: 500, data: null })
             }
@@ -62,9 +59,9 @@ const Add = ({ handleReset, client }) => {
             success: () => {
               handleReset('', true)
               resetForm()
-              return `El usuario ${values.fullName} se agregó correctamente`
+              return `El usuario ${values.fullName} se editó correctamente`
             },
-            error: 'Error al agregar el usuario'
+            error: 'Error al editar el usuario'
           })
         }}
       >
@@ -75,12 +72,63 @@ const Add = ({ handleReset, client }) => {
                 <Tooltip arrow followCursor disableInteractive {...errors.fullName && { title: errors.fullName }}>
                   <InputBase
                     name='fullName'
+                    value={values.fullName}
                     label='Nombre'
                     variant='filled'
                     size='small'
                     fullWidth
                     color='primary'
                     error={Boolean(touched.fullName && errors.fullName)}
+                    required
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                  />
+                </Tooltip>
+              </Grid>
+              <Grid item xs={4} position='relative'>
+                <Typography variant='caption' color='primary' sx={{ position: 'absolute', top: '30%', left: '19%', fontSize: '10px' }}>Estatus</Typography>
+                <Box display='flex' alignItems='center' width='100%' justifyContent='center' mt={2} gap={2}>
+                  <Typography
+                    variant='caption'
+                    sx={{
+                      color: (theme) => values.isEnabled ? theme.palette.grey[500] : theme.palette.grey[300],
+                      fontWeight: !values.isEnabled && '800',
+                      fontSize: !values.isEnabled && '13px',
+                      transition: 'color 0.3s ease-in-out, font-weight 0.3s ease-in-out, font-size 0.3s ease-in-out'
+                    }}
+                  >Inactivo
+                  </Typography>
+                  <Switch
+                    color='primary'
+                    size='small'
+                    checked={values.isEnabled}
+                    name='isEnabled'
+                    onChange={handleChange}
+                  />
+                  <Typography
+                    variant='caption'
+                    sx={{
+                      color: (theme) => !values.isEnabled ? theme.palette.grey[500] : theme.palette.grey[300],
+                      fontWeight: values.isEnabled && '800',
+                      fontSize: values.isEnabled && '13px',
+                      transition: 'color 0.3s ease-in-out, font-weight 0.3s ease-in-out, font-size 0.3s ease-in-out'
+                    }}
+                  >Activo
+                  </Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={8}>
+                <Tooltip arrow followCursor disableInteractive {...errors.email && { title: errors.email }}>
+                  <InputBase
+                    name='email'
+                    value={values.email}
+                    label='Correo electrónico'
+                    type='email'
+                    variant='filled'
+                    size='small'
+                    fullWidth
+                    color='primary'
+                    error={Boolean(touched.email && errors.email)}
                     required
                     onBlur={handleBlur}
                     onChange={handleChange}
@@ -119,27 +167,11 @@ const Add = ({ handleReset, client }) => {
                   </Typography>
                 </Box>
               </Grid>
-              <Grid item xs={6}>
-                <Tooltip arrow followCursor disableInteractive {...errors.email && { title: errors.email }}>
-                  <InputBase
-                    name='email'
-                    label='Correo electrónico'
-                    type='email'
-                    variant='filled'
-                    size='small'
-                    fullWidth
-                    color='primary'
-                    error={Boolean(touched.email && errors.email)}
-                    required
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                  />
-                </Tooltip>
-              </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12}>
                 <Tooltip arrow followCursor disableInteractive {...errors.password && { title: errors.password }}>
                   <InputBase
                     name='password'
+                    value={values.password}
                     label='Contraseña'
                     type='password'
                     variant='filled'
@@ -162,7 +194,7 @@ const Add = ({ handleReset, client }) => {
             </Grid>
             <Box width='100%' mt={5} display='flex' justifyContent='flex-end'>
               <Button type='submit' variant='outlined' color='info' disabled={isSubmitting}>
-                Agregar
+                Guardar
               </Button>
             </Box>
           </form>
@@ -172,9 +204,9 @@ const Add = ({ handleReset, client }) => {
   )
 }
 
-Add.propTypes = {
+Edit.propTypes = {
   handleReset: PropTypes.func,
-  client: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+  data: PropTypes.object
 }
 
-export default Add
+export default Edit

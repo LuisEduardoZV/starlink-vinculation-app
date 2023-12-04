@@ -26,7 +26,7 @@ const InputBase = React.forwardRef(({ error, ...others }, ref) => (
         color: (theme) => theme.palette.grey[500]
       }
     }}
-    InputProps={{ autoComplete: 'off', autoCorrect: 'off' }}
+    inputProps={{ autoComplete: 'off', autoCorrect: 'off' }}
   />
 ))
 

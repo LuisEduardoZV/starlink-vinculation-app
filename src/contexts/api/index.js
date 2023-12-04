@@ -13,13 +13,16 @@ export async function apiCall ({
       method,
       headers
     })
-      .then((response) => {
+      .then(async (response) => {
         if (response.ok) {
-          return response.json()
+          return await response?.json() ?? response.ok
         }
         return false
       })
       .then((data) => data)
+      .catch((error) => {
+        console.log(error.message)
+      })
     return datos
   } catch (error) {
     Promise.reject(error)

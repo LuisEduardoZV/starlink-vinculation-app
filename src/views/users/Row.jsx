@@ -3,14 +3,14 @@ import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
 
 // mui imports
+import EditNoteTwoToneIcon from '@mui/icons-material/EditNoteTwoTone'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
-import { Checkbox, Chip, IconButton, TableCell, TableRow } from '@mui/material'
+import PersonRemoveTwoToneIcon from '@mui/icons-material/PersonRemoveTwoTone'
+import { Box, Chip, IconButton, TableCell, TableRow } from '@mui/material'
 
-const Row = ({ element, handleClick, isItemSelected, labelId, hasExtendedRow, RowTemplate, page }) => {
+const Row = ({ element, hasExtendedRow, RowTemplate, page, onEdit, onDelete }) => {
   const [rowExpanded, setRowExpanded] = useState(false)
-
-  const active = Number(element.IsEnabled) === 1
 
   useEffect(() => {
     setRowExpanded(false)
@@ -18,25 +18,21 @@ const Row = ({ element, handleClick, isItemSelected, labelId, hasExtendedRow, Ro
 
   return (
     <>
-      <TableRow hover aria-checked={isItemSelected} tabIndex={-1} selected={isItemSelected} sx={{ cursor: 'pointer' }}>
-        <TableCell padding='checkbox'>
-          <Checkbox
-            color='primary'
-            checked={isItemSelected}
-            onClick={(event) => handleClick(event, element.user_Id)}
-            inputProps={{
-              'aria-labelledby': 'selection-row'
-            }}
-            name='selection-row'
-          />
-        </TableCell>
-        <TableCell component='th' id={labelId} align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>
-          {element.ClientId}
-        </TableCell>
-        <TableCell align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>{element.Email}</TableCell>
-        <TableCell align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>{element.FullName}</TableCell>
+      <TableRow hover tabIndex={-1}>
+        <TableCell padding='checkbox' />
+        <TableCell align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>{element.fullName}</TableCell>
+        <TableCell align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>{element.email}</TableCell>
         <TableCell align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>
-          <Chip label={active ? 'Activo' : 'Inactivo'} size='small' variant='outlined' color={active ? 'info' : 'error'} clickable />
+          <Chip label={element.isAdmin ? 'Administrador' : 'Normal'} size='small' variant='outlined' color={element.isAdmin ? 'info' : 'secondary'} clickable />
+        </TableCell>
+        <TableCell align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>
+          <Chip label={element.isEnabled ? 'Activo' : 'Inactivo'} size='small' variant='outlined' color={element.isEnabled ? 'primary' : 'error'} clickable />
+        </TableCell>
+        <TableCell align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>
+          <Box display='flex' gap={1}>
+            <IconButton size='small' color='primary' onClick={() => { onEdit(element) }}><EditNoteTwoToneIcon /></IconButton>
+            <IconButton size='small' color='error' onClick={() => { onDelete(element) }}><PersonRemoveTwoToneIcon /></IconButton>
+          </Box>
         </TableCell>
         {hasExtendedRow && (
           <TableCell>
@@ -53,12 +49,11 @@ const Row = ({ element, handleClick, isItemSelected, labelId, hasExtendedRow, Ro
 
 Row.propTypes = {
   element: PropTypes.object.isRequired,
-  handleClick: PropTypes.func.isRequired,
-  isItemSelected: PropTypes.bool.isRequired,
-  labelId: PropTypes.string.isRequired,
   page: PropTypes.number.isRequired,
   hasExtendedRow: PropTypes.bool,
-  RowTemplate: PropTypes.any
+  RowTemplate: PropTypes.any,
+  onEdit: PropTypes.func,
+  onDelete: PropTypes.func
 }
 
 export default Row
