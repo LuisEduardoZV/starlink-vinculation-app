@@ -5,10 +5,12 @@ import { useEffect, useState } from 'react'
 // mui imports
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
-import { Checkbox, IconButton, TableCell, TableRow } from '@mui/material'
+import { Checkbox, Chip, IconButton, TableCell, TableRow } from '@mui/material'
 
 const Row = ({ element, handleClick, isItemSelected, labelId, hasExtendedRow, RowTemplate, page }) => {
   const [rowExpanded, setRowExpanded] = useState(false)
+
+  const active = Number(element.isEnabled) === 1
 
   useEffect(() => {
     setRowExpanded(false)
@@ -29,13 +31,15 @@ const Row = ({ element, handleClick, isItemSelected, labelId, hasExtendedRow, Ro
           />
         </TableCell>
         <TableCell component='th' id={labelId} align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>
-          {element.ClientNumber}
+          {element.clientNumber.trim() !== '' ? element.clientNumber.trim() : '####'}
         </TableCell>
-        <TableCell align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>{element.ClientTaxId}</TableCell>
-        <TableCell align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>{element.ClientName}</TableCell>
-        <TableCell align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>{element.ClientEmail}</TableCell>
-        <TableCell align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>{element.ClientPhone}</TableCell>
-        <TableCell align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>{element.isEnabled}</TableCell>
+        <TableCell align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>{element.clientTaxId}</TableCell>
+        <TableCell align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>{element.clientName}</TableCell>
+        <TableCell align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>{element.clientEmail}</TableCell>
+        <TableCell align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>{element.clientPhone}</TableCell>
+        <TableCell align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>
+          <Chip label={active ? 'Activo' : 'Inactivo'} size='small' variant='outlined' color={active ? 'info' : 'error'} clickable />
+        </TableCell>
         {hasExtendedRow && (
           <TableCell>
             <IconButton aria-label='expand row' size='small' onClick={() => setRowExpanded(!rowExpanded)}>

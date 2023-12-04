@@ -10,10 +10,7 @@ import { samePageLinkNavigation } from '../services/samplePageLinkNavigation'
 import LinkTab from '../ui-components/LinkTab'
 import ProfileSection from './ProfileSection'
 
-import ContactPhoneTwoToneIcon from '@mui/icons-material/ContactPhoneTwoTone'
 import InsertLinkIcon from '@mui/icons-material/InsertLink'
-import PeopleTwoToneIcon from '@mui/icons-material/PeopleTwoTone'
-import RoofingTwoToneIcon from '@mui/icons-material/RoofingTwoTone'
 import SatelliteAltTwoToneIcon from '@mui/icons-material/SatelliteAltTwoTone'
 import SupervisedUserCircleTwoToneIcon from '@mui/icons-material/SupervisedUserCircleTwoTone'
 
@@ -70,22 +67,15 @@ const HeaderSection = () => {
           TabIndicatorProps={{ style: { maxHeight: '2px' } }}
         >
           <LinkTab
-            label='Tablero' href='/home' icon={<RoofingTwoToneIcon fontSize='small' sx={{ color: tab === 0 ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />}
-            sx={{ borderRight: '1px solid', borderColor: (theme) => theme.palette.grey[800] }}
-          />
-          <LinkTab
             label='Clientes' href='/clients' icon={<SupervisedUserCircleTwoToneIcon
               fontSize='small'
-              sx={{ color: tab === 1 ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }}
+              sx={{ color: tab === 0 ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }}
                                                    />}
           />
-          <LinkTab label='Terminales' href='/terminals' icon={<SatelliteAltTwoToneIcon fontSize='small' sx={{ color: tab === 2 ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />} />
+          <LinkTab label='Terminales' href='/terminals' icon={<SatelliteAltTwoToneIcon fontSize='small' sx={{ color: tab === 1 ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />} />
           <LinkTab
-            label='Vincular' href='/linking' icon={<InsertLinkIcon fontSize='small' sx={{ color: tab === 3 ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />}
-            sx={{ borderRight: '1px solid', borderColor: (theme) => theme.palette.grey[800] }}
+            label='Vincular' href='/linking' icon={<InsertLinkIcon fontSize='small' sx={{ color: tab === 2 ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />}
           />
-          <LinkTab label='Usuarios' href='/users' icon={<PeopleTwoToneIcon fontSize='small' sx={{ color: tab === 4 ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />} />
-          <LinkTab label='Contactos' href='/contacts' icon={<ContactPhoneTwoToneIcon fontSize='small' sx={{ color: tab === 5 ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />} />
         </Tabs>
       </Box>
       <Box flex={1} sx={{ display: 'flex', justifyContent: 'flex-end' }}>

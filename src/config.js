@@ -6,7 +6,7 @@ export const BASE_URL_API = 'http://ws-tangraph.ever-track.com/api'
 
 export const BASE_URL_API_LINKED = 'http://admin:admin123@10.10.10.18:3000/api/org'
 
-export const DASHBOARD_PATH = '/home'
+export const DASHBOARD_PATH = '/clients'
 
 const config = {
   fontFamily: '\'Roboto\', sans-serif',

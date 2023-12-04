@@ -4,7 +4,6 @@
 import MainLayout from '../layout/MainLayout'
 import Clients from '../views/clients'
 import Contacts from '../views/contacts'
-import Home from '../views/home'
 import Linking from '../views/linking'
 import Terminals from '../views/terminals'
 import Users from '../views/users'
@@ -22,14 +21,6 @@ const MainRoutes = {
   ),
   children: [
     {
-      path: '/',
-      element: <Home />
-    },
-    {
-      path: '/home',
-      element: <Home />
-    },
-    {
       path: '/linking',
       element: <Linking />
     },
@@ -38,16 +29,16 @@ const MainRoutes = {
       element: <Clients />
     },
     {
-      path: '/terminals',
-      element: <Terminals />
+      path: '/clients/:clientId/contacts',
+      element: <Contacts />
     },
     {
-      path: '/users',
+      path: '/clients/:clientId/users',
       element: <Users />
     },
     {
-      path: '/contacts',
-      element: <Contacts />
+      path: '/terminals',
+      element: <Terminals />
     }
   ]
 }

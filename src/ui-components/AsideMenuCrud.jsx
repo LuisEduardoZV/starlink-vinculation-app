@@ -7,14 +7,13 @@ import DeleteSweepTwoToneIcon from '@mui/icons-material/DeleteSweepTwoTone'
 import HighlightOffTwoToneIcon from '@mui/icons-material/HighlightOffTwoTone'
 import ModeEditOutlineTwoToneIcon from '@mui/icons-material/ModeEditOutlineTwoTone'
 import SearchTwoToneIcon from '@mui/icons-material/SearchTwoTone'
-import { Autocomplete, Box, Collapse, Divider, Fade, IconButton, Stack, TextField, Tooltip, createFilterOptions, tooltipClasses } from '@mui/material'
+import { Box, Collapse, Divider, Fade, IconButton, Stack, Tooltip, tooltipClasses } from '@mui/material'
 import { alpha, styled } from '@mui/material/styles'
 
-const filter = createFilterOptions()
+import InputSearch from './InputSearch'
 
-const AsideMenuCrud = ({ inFade, view, dataSelected, handleAdd, handleEdit, handleOpenDelete, addIcon, handleSearch }) => {
+const AsideMenuCrud = ({ inFade, view, dataSelected, handleAdd, handleEdit, handleOpenDelete, addIcon, handleSearch, extraBtns }) => {
   const [activeSearch, setActiveSearch] = useState(false)
-  const [search, setSearch] = useState([])
 
   const AddIcon = addIcon ?? AddCircleTwoToneIcon
 
@@ -74,89 +73,7 @@ const AsideMenuCrud = ({ inFade, view, dataSelected, handleAdd, handleEdit, hand
                   <HighlightOffTwoToneIcon fontSize='small' />
                 </IconButton>
                 <Box color='white' sx={{ bgcolor: (theme) => alpha(theme.palette.grey[600], 1), borderRadius: 2, boxShadow: (theme) => theme.shadows[10], py: 1, pr: 2, pl: 1, height: '100%', minHeight: 50, minWidth: 350 }}>
-                  <Autocomplete
-                    value={search}
-                    size='small'
-                    multiple
-                    fullWidth
-                    limitTags={4}
-                    onChange={(event, newValue) => {
-                      const values = []
-                      for (let i = 0; i < newValue.length; i += 1) {
-                        if (typeof newValue[i] === 'string') {
-                          if (newValue[i].trim() !== '') {
-                            if (newValue[i].trim().includes(' ')) {
-                              const split = newValue[i].trim().split(' ')
-                              split.forEach((op) => {
-                                values.push(op.trim())
-                              })
-                            } else values.push(newValue[i].trim())
-                          }
-                        } else if (newValue[i].inputValue && newValue[i].inputValue.trim() !== '') {
-                          values.push(newValue[i].inputValue.trim())
-                        } else if (newValue[i].itemKey) {
-                          values.push(newValue[i].itemValue)
-                        }
-                      }
-                      setSearch(values)
-                      handleSearch(event, values)
-                    }}
-                    filterOptions={(options, params) => {
-                      const filtered = filter(options, params)
-                      const { inputValue } = params
-                      const isExisting = options.some((option) => inputValue === option.itemValue)
-                      if (inputValue !== '' && !isExisting) {
-                        filtered.push({
-                          inputValue,
-                          itemValue: `Buscar por: "${inputValue}"`
-                        })
-                      }
-                      return filtered
-                    }}
-                    id='free-solo-with-text-demo'
-                    options={[]}
-                    getOptionLabel={(option) => {
-                      if (typeof option === 'string') {
-                        return option
-                      }
-                      if (option.inputValue) {
-                        return option.inputValue
-                      }
-                      if (option.itemKey) {
-                        return option.itemValue
-                      }
-                      return option.itemValue
-                    }}
-                    renderOption={(props, option) => <li {...props}>{option.itemValue}</li>}
-                    freeSolo
-                    selectOnFocus
-                    clearOnBlur
-                    handleHomeEndKeys
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        fullWidth
-                        label='Buscar...'
-                        sx={{
-                          '& .MuiButtonBase-root': {
-                            color: (theme) => theme.palette.primary.main
-                          },
-                          '& .MuiChip-root': {
-                            color: 'black',
-                            bgcolor: (theme) => theme.palette.primary.main
-                          }
-                        }}
-                      />
-                    )}
-                    sx={{
-                      bgcolor: (theme) => alpha(theme.palette.grey[600], 1),
-                      color: 'white',
-                      '& .MuiInputBase-input, & .MuiInputBase-root': {
-                        bgcolor: (theme) => alpha(theme.palette.grey[600], 1),
-                        color: 'white'
-                      }
-                    }}
-                  />
+                  <InputSearch handleSearch={handleSearch} />
                 </Box>
               </Box>
             </Collapse>
@@ -173,6 +90,12 @@ const AsideMenuCrud = ({ inFade, view, dataSelected, handleAdd, handleEdit, hand
                     <ModeEditOutlineTwoToneIcon color='info' />
                   </IconButton>
                 </CustomTooltipEdit>
+                {extraBtns && (
+                  <>
+                    {extraBtns}
+                    <Divider sx={{ borderColor: (theme) => theme.palette.grey[800], my: 0.5 }} />
+                  </>
+                )}
                 <CustomTooltipDelete>
                   <IconButton onClick={handleOpenDelete}>
                     <DeleteSweepTwoToneIcon color='error' />
@@ -196,7 +119,8 @@ AsideMenuCrud.propTypes = {
   handleOpenDelete: PropTypes.func,
   handleSearch: PropTypes.func,
   addIcon: PropTypes.any,
-  dataSelected: PropTypes.object
+  dataSelected: PropTypes.object,
+  extraBtns: PropTypes.arrayOf(PropTypes.node)
 }
 
 export default AsideMenuCrud
