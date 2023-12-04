@@ -28,6 +28,7 @@ import EnhancedTableHead from '../../ui-components/EnhancedTableHead'
 import InputSearch from '../../ui-components/InputSearch'
 import LoadingInfoTable from '../../ui-components/LoadingInfoTable'
 import MainMirrorCard from '../../ui-components/MainMirrorCard'
+import NoInfoOverlay from '../../ui-components/NoInfoOverlay'
 import Add from './Add'
 import Edit from './Edit'
 import Row from './Row'
@@ -37,8 +38,6 @@ import { apiCall } from '../../contexts/api'
 import { getComparator, stableSort } from '../../services/tableServices'
 
 import { BASE_URL_API } from '../../config'
-
-import nodata from '../../assets/image/no-data.png'
 
 const headCells = [
   {
@@ -253,10 +252,7 @@ const UserList = () => {
                         }}
                       >
                         <TableCell colSpan={6}>
-                          <Box width='100%' display='flex' flexDirection='column' justifyContent='center' alignItems='center' gap={1}>
-                            <img alt='No data icon' src={nodata} />
-                            <Typography variant='h3' color='grey.400'>Sin información</Typography>
-                          </Box>
+                          <NoInfoOverlay />
                         </TableCell>
                       </TableRow>
                     )}
