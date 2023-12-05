@@ -1,299 +1,264 @@
 import PropTypes from 'prop-types'
-import { useEffect, useState } from 'react'
 
 // mui imports
-import VisibilityOffTwoToneIcon from '@mui/icons-material/VisibilityOffTwoTone'
-import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone'
-import { Box, Button, Grid, IconButton, InputAdornment, TextField, Tooltip, Typography } from '@mui/material'
+import { Box, Button, Grid, Switch, Tooltip, Typography } from '@mui/material'
 
 // third
 import { Formik } from 'formik'
+import { NumericFormat } from 'react-number-format'
 import { toast } from 'sonner'
 import * as Yup from 'yup'
 
-import { emailerrorText, phoneformatText, phonelenghtText, requiredText } from '../../utils/labelsErrorsFormik'
+// project imports
+import { BASE_URL_API } from '../../config'
+import { apiCallWithBody } from '../../contexts/api'
+import InputBase from '../../ui-components/InputBase'
 
-const Add = ({ handleCancel, data, setData }) => {
-  const [showPass, setShowPass] = useState(false)
+import { requiredText } from '../../utils/labelsErrorsFormik'
 
-  useEffect(() => {
-    return () => setShowPass(false)
-  }, [])
-
+const Add = ({ handleCancel }) => {
   return (
     <Box sx={{ display: 'flex', flex: 1, width: '100%', height: '100%', alignItems: 'flex-start', bgcolor: 'transparent', flexDirection: 'column', gap: 5 }}>
-      <Typography variant='h2' sx={{ color: (theme) => theme.palette.grey[200] }}>Agregar nuevo cliente</Typography>
+      <Typography variant='h2' sx={{ color: (theme) => theme.palette.grey[200] }}>Agregar nueva terminal</Typography>
       <Formik
         initialValues={{
-          name: '',
-          operator: '',
-          position: '',
-          user: '',
-          password: '',
-          email: '',
-          phone: '',
+          terminalId: 0,
+          terminalKitNumber: '',
+          terminalSerialNumber: '',
+          terminalLineOfService: '',
+          terminalSiteName: '',
+          terminalLatitude: 0,
+          terminalLongitude: 0,
+          terminalFriendlyName: '',
+          serviceLineNumber: '',
+          isEnabled: 1,
+          dataHistoric: true,
           submit: null
         }}
         validationSchema={Yup.object().shape({
-          name: Yup.string().required(requiredText),
-          operator: Yup.string().required(requiredText),
-          position: Yup.string().required(requiredText),
-          user: Yup.string().required(requiredText),
-          password: Yup.string().max(255).required(requiredText),
-          email: Yup.string().email(emailerrorText).max(255).required(requiredText),
-          phone: Yup.string()
-            .matches(/^[0-9]+$/, phoneformatText)
-            .min(10, phonelenghtText)
-            .max(10, phonelenghtText)
-            .required(requiredText)
-            .typeError(requiredText)
+          terminalKitNumber: Yup.string().required(requiredText),
+          terminalSerialNumber: Yup.string().required(requiredText),
+          terminalLineOfService: Yup.string().required(requiredText),
+          terminalSiteName: Yup.string().required(requiredText),
+          terminalFriendlyName: Yup.string().required(requiredText),
+          serviceLineNumber: Yup.string().required(requiredText),
+          terminalLatitude: Yup.number().required(requiredText),
+          terminalLongitude: Yup.number().required(requiredText),
+          dataHistoric: Yup.boolean()
         })}
         onSubmit={async (values, { setStatus, setSubmitting }) => {
           setSubmitting(true)
           delete values.submit
-          values.terId = data.length + 1
-          // console.log(values)
+          values.terminalLatitude = parseFloat(values.terminalLatitude)
+          values.terminalLongitude = parseFloat(values.terminalLongitude)
+          console.log(values)
           const promise = () => new Promise((resolve) => {
-            setTimeout(() => {
-              const newData = [...data, values]
-              setData(newData)
-              return resolve({ status: 200 })
-            }, 1000)
+            let data = null
+            try {
+              data = apiCallWithBody({ url: `${BASE_URL_API}/Terminals`, method: 'POST', body: JSON.stringify(values) })
+            } catch (error) {
+              return resolve({ status: 500, data: null })
+            }
+            if (data) {
+              setStatus({ success: true })
+              setSubmitting(false)
+            }
+            return resolve({ status: data ? 200 : 404, data })
           })
 
           toast.promise(promise, {
             loading: 'Cargando...',
             success: () => {
-              return `El cliente ${values.name} se agregó correctamente`
+              handleCancel('', true)
+              return `La terminal ${values.terminalSiteName} se agregó correctamente`
             },
-            error: 'Error al agregar el cliente'
+            error: 'Error al agregar la terminal'
           })
-          setTimeout(() => {
-            setStatus({ success: true })
-            setSubmitting(false)
-            handleCancel()
-          }, 1200)
         }}
       >
         {({ values, touched, errors, isSubmitting, handleSubmit, handleBlur, handleChange }) => (
           <form noValidate onSubmit={handleSubmit} style={{ width: '100%' }}>
             <Grid container spacing={5} width='100%'>
               <Grid item xs={12} md={6}>
-                <Tooltip arrow followCursor disableInteractive {...errors.name && { title: errors.name }}>
-                  <TextField
-                    value={values.name}
-                    name='name'
-                    label='Nombre de la empresa'
+                <Tooltip arrow followCursor disableInteractive {...errors.terminalFriendlyName && { title: errors.terminalFriendlyName }}>
+                  <InputBase
+                    value={values.terminalFriendlyName}
+                    name='terminalFriendlyName'
+                    label='Nombre de la terminal'
                     onBlur={handleBlur}
                     onChange={handleChange}
                     variant='filled'
                     size='small'
                     fullWidth
                     color='primary'
-                    error={Boolean(touched.name && errors.name)}
+                    error={Boolean(touched.terminalFriendlyName && errors.terminalFriendlyName)}
                     required
-                    sx={{
-                      boxShadow: (theme) => theme.shadows[5],
-                      '& .MuiInputBase-input': {
-                        color: 'white'
-                      },
-                      '& .MuiInputLabel-root': {
-                        color: !(touched.name && errors.name) && ((theme) => theme.palette.primary.main)
-                      }
-                    }}
-                    InputProps={{ autoComplete: 'off' }}
                   />
                 </Tooltip>
               </Grid>
               <Grid item xs={12} md={6}>
-                <Tooltip arrow followCursor disableInteractive {...errors.operator && { title: errors.operator }}>
-                  <TextField
-                    value={values.operator}
-                    name='operator'
-                    label='Nombre del operador'
+                <Tooltip arrow followCursor disableInteractive {...errors.terminalSiteName && { title: errors.terminalSiteName }}>
+                  <InputBase
+                    value={values.terminalSiteName}
+                    name='terminalSiteName'
+                    label='Nombre del sitio'
                     onBlur={handleBlur}
                     onChange={handleChange}
                     variant='filled'
                     size='small'
                     fullWidth
                     color='primary'
-                    error={Boolean(touched.operator && errors.operator)}
+                    error={Boolean(touched.terminalSiteName && errors.terminalSiteName)}
                     required
-                    sx={{
-                      boxShadow: (theme) => theme.shadows[5],
-                      '& .MuiInputBase-input': {
-                        color: 'white'
-                      },
-                      '& .MuiInputLabel-root': {
-                        color: !(touched.operator && errors.operator) && ((theme) => theme.palette.primary.main)
-                      }
-                    }}
-                    InputProps={{ autoComplete: 'off' }}
                   />
                 </Tooltip>
               </Grid>
               <Grid item xs={12} md={4}>
-                <Tooltip arrow followCursor disableInteractive {...errors.position && { title: errors.position }}>
-                  <TextField
-                    value={values.position}
-                    name='position'
-                    label='Posicion dentro de la empresa'
+                <Tooltip arrow followCursor disableInteractive {...errors.terminalLineOfService && { title: errors.terminalLineOfService }}>
+                  <InputBase
+                    value={values.terminalLineOfService}
+                    name='terminalLineOfService'
+                    label='Línea de servicio de la terminal'
                     onBlur={handleBlur}
                     onChange={handleChange}
                     variant='filled'
                     size='small'
                     fullWidth
                     color='primary'
-                    error={Boolean(touched.position && errors.position)}
+                    error={Boolean(touched.terminalLineOfService && errors.terminalLineOfService)}
                     required
-                    sx={{
-                      boxShadow: (theme) => theme.shadows[5],
-                      '& .MuiInputBase-input': {
-                        color: 'white'
-                      },
-                      '& .MuiInputLabel-root': {
-                        color: !(touched.position && errors.position) && ((theme) => theme.palette.primary.main)
-                      }
-                    }}
-                    InputProps={{ autoComplete: 'off' }}
                   />
                 </Tooltip>
               </Grid>
               <Grid item xs={12} md={4}>
-                <Tooltip arrow followCursor disableInteractive {...errors.email && { title: errors.email }}>
-                  <TextField
-                    type='email'
-                    value={values.email}
-                    name='email'
-                    label='Correo electrónico'
+                <Tooltip arrow followCursor disableInteractive {...errors.terminalSerialNumber && { title: errors.terminalSerialNumber }}>
+                  <InputBase
+                    value={values.terminalSerialNumber}
+                    name='terminalSerialNumber'
+                    label='Número de seria'
                     onBlur={handleBlur}
                     onChange={handleChange}
                     variant='filled'
                     size='small'
                     fullWidth
                     color='primary'
-                    error={Boolean(touched.email && errors.email)}
+                    error={Boolean(touched.terminalSerialNumber && errors.terminalSerialNumber)}
                     required
-                    sx={{
-                      boxShadow: (theme) => theme.shadows[5],
-                      '& .MuiInputBase-input': {
-                        color: 'white'
-                      },
-                      '& .MuiInputLabel-root': {
-                        color: !(touched.email && errors.email) && ((theme) => theme.palette.primary.main)
-                      }
-                    }}
-                    InputProps={{ autoComplete: 'off' }}
                   />
                 </Tooltip>
               </Grid>
               <Grid item xs={12} md={4}>
-                <Tooltip arrow followCursor disableInteractive {...errors.phone && { title: errors.phone }}>
-                  <TextField
-                    value={values.phone}
-                    name='phone'
-                    label='Teléfono movil'
+                <Tooltip arrow followCursor disableInteractive {...errors.terminalKitNumber && { title: errors.terminalKitNumber }}>
+                  <InputBase
+                    value={values.terminalKitNumber}
+                    name='terminalKitNumber'
+                    label='Número de Kit'
                     onBlur={handleBlur}
                     onChange={handleChange}
                     variant='filled'
                     size='small'
                     fullWidth
                     color='primary'
-                    error={Boolean(touched.phone && errors.phone)}
+                    error={Boolean(touched.terminalKitNumber && errors.terminalKitNumber)}
                     required
-                    sx={{
-                      boxShadow: (theme) => theme.shadows[5],
-                      '& .MuiInputBase-input': {
-                        color: 'white'
-                      },
-                      '& .MuiInputLabel-root': {
-                        color: !(touched.phone && errors.phone) && ((theme) => theme.palette.primary.main)
-                      }
-                    }}
-                    InputProps={{ autoComplete: 'off' }}
                   />
                 </Tooltip>
+              </Grid>
+              <Grid item xs={12} md={3}>
+                <Tooltip arrow followCursor disableInteractive {...errors.serviceLineNumber && { title: errors.serviceLineNumber }}>
+                  <InputBase
+                    value={values.serviceLineNumber}
+                    name='serviceLineNumber'
+                    label='Número de la línea de servicio'
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    variant='filled'
+                    size='small'
+                    fullWidth
+                    color='primary'
+                    error={Boolean(touched.serviceLineNumber && errors.serviceLineNumber)}
+                    required
+                  />
+                </Tooltip>
+              </Grid>
+              <Grid item xs={12} md={3}>
+                <Tooltip arrow followCursor disableInteractive {...errors.terminalLatitude && { title: errors.terminalLatitude }}>
+                  <Box>
+                    <NumericFormat
+                      allowLeadingZeros
+                      customInput={InputBase}
+                      value={values.terminalLatitude}
+                      name='terminalLatitude'
+                      label='Latitud'
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      variant='filled'
+                      size='small'
+                      fullWidth
+                      color='primary'
+                      required
+                      error={Boolean(touched.terminalLatitude && errors.terminalLatitude)}
+                    />
+                  </Box>
+                </Tooltip>
+              </Grid>
+              <Grid item xs={12} md={3}>
+                <Tooltip arrow followCursor disableInteractive {...errors.terminalLongitude && { title: errors.terminalLongitude }}>
+                  <Box>
+                    <NumericFormat
+                      allowLeadingZeros
+                      customInput={InputBase}
+                      value={values.terminalLongitude}
+                      name='terminalLongitude'
+                      label='Longitud'
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      variant='filled'
+                      size='small'
+                      fullWidth
+                      color='primary'
+                      required
+                      error={Boolean(touched.terminalLongitude && errors.terminalLongitude)}
+                    />
+                  </Box>
+                </Tooltip>
+              </Grid>
+              <Grid item xs={12} md={3} position='relative'>
+                <Typography variant='caption' color='primary' sx={{ position: 'absolute', top: '30%', left: '19%', fontSize: '10px' }}>Histórico de los datos</Typography>
+                <Box display='flex' alignItems='center' width='100%' justifyContent='center' mt={2} gap={2}>
+                  <Typography
+                    variant='caption'
+                    sx={{
+                      color: (theme) => values.dataHistoric ? theme.palette.grey[500] : theme.palette.grey[300],
+                      fontWeight: !values.dataHistoric && '800',
+                      fontSize: !values.dataHistoric && '13px',
+                      transition: 'color 0.3s ease-in-out, font-weight 0.3s ease-in-out, font-size 0.3s ease-in-out'
+                    }}
+                  >Desactivado
+                  </Typography>
+                  <Switch
+                    color='primary'
+                    size='small'
+                    checked={values.dataHistoric}
+                    name='dataHistoric'
+                    onChange={handleChange}
+                  />
+                  <Typography
+                    variant='caption'
+                    sx={{
+                      color: (theme) => !values.dataHistoric ? theme.palette.grey[500] : theme.palette.grey[300],
+                      fontWeight: values.dataHistoric && '800',
+                      fontSize: values.dataHistoric && '13px',
+                      transition: 'color 0.3s ease-in-out, font-weight 0.3s ease-in-out, font-size 0.3s ease-in-out'
+                    }}
+                  >Activado
+                  </Typography>
+                </Box>
               </Grid>
             </Grid>
-            <Box sx={{ width: '100%' }}>
-              <Typography variant='h4' my={5} sx={{ color: (theme) => theme.palette.grey[400] }}>
-                Usuario para el cliente
-              </Typography>
-              <Grid container spacing={5}>
-                <Grid item xs={12} md={4}>
-                  <Tooltip arrow followCursor disableInteractive {...errors.user && { title: errors.user }}>
-                    <TextField
-                      value={values.user}
-                      name='user'
-                      label='Usuario'
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      variant='filled'
-                      size='small'
-                      fullWidth
-                      color='primary'
-                      error={Boolean(touched.user && errors.user)}
-                      required
-                      sx={{
-                        boxShadow: (theme) => theme.shadows[5],
-                        '& .MuiInputBase-input': {
-                          color: 'white'
-                        },
-                        '& .MuiInputLabel-root': {
-                          color: !(touched.user && errors.user) && ((theme) => theme.palette.primary.main)
-                        }
-                      }}
-                      InputProps={{ autoComplete: 'off' }}
-                    />
-                  </Tooltip>
-                </Grid>
-                <Grid item xs={12} md={4}>
-                  <Tooltip arrow followCursor disableInteractive {...errors.password && { title: errors.password }}>
-                    <TextField
-                      value={values.password}
-                      name='password'
-                      label='Contraseña'
-                      type={showPass ? 'text' : 'password'}
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      variant='filled'
-                      size='small'
-                      fullWidth
-                      color='primary'
-                      error={Boolean(touched.password && errors.password)}
-                      required
-                      sx={{
-                        boxShadow: (theme) => theme.shadows[5],
-                        '& .MuiInputBase-input': {
-                          color: 'white'
-                        },
-                        '& .MuiInputLabel-root': {
-                          color: !(touched.password && errors.password) && ((theme) => theme.palette.primary.main)
-                        }
-                      }}
-                      InputProps={{
-                        autoComplete: 'off',
-                        endAdornment: (
-                          <InputAdornment position='end'>
-                            <IconButton
-                              edge='end'
-                              onClick={() => setShowPass((show) => !show)}
-                              onMouseDown={(e) => e.preventDefault()}
-                              sx={{ color: (theme) => theme.palette.grey[400] }}
-                            >{showPass ? <VisibilityOffTwoToneIcon /> : <VisibilityTwoToneIcon />}
-                            </IconButton>
-                          </InputAdornment>)
-                      }}
-                    />
-                  </Tooltip>
-                </Grid>
-                <Grid item xs={12} md={4}>
-                  <Box width='100%' display='flex' justifyContent='space-evenly'>
-                    <Button color='info' variant='outlined' type='submit' disabled={isSubmitting}>Agregar</Button>
-                    <Button color='error' variant='outlined' onClick={handleCancel}>Cancelar</Button>
-                  </Box>
-                </Grid>
-              </Grid>
+            <Box display='flex' width='100%' justifyContent='space-around' mt={5} mb={1}>
+              <Button variant='outlined' color='error' onClick={handleCancel}>Cancelar</Button>
+              <Button variant='outlined' color='info' type='submit' disabled={isSubmitting}>Agregar</Button>
             </Box>
           </form>
         )}
@@ -303,9 +268,7 @@ const Add = ({ handleCancel, data, setData }) => {
 }
 
 Add.propTypes = {
-  handleCancel: PropTypes.func,
-  setData: PropTypes.func,
-  data: PropTypes.array
+  handleCancel: PropTypes.func
 }
 
 export default Add

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 // third
 import { toast } from 'sonner'
@@ -13,7 +13,8 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Fade, Table,
+  Fade,
+  Table,
   TableBody, TableCell, TableContainer,
   TablePagination, TableRow, Typography
 } from '@mui/material'
@@ -22,286 +23,47 @@ import { alpha } from '@mui/material/styles'
 // project imports
 import AsideMenuCrud from '../../ui-components/AsideMenuCrud'
 import EnhancedTableHead from '../../ui-components/EnhancedTableHead'
+import LoadingInfoTable from '../../ui-components/LoadingInfoTable'
+import NoInfoOverlay from '../../ui-components/NoInfoOverlay'
 import Add from './Add'
 import Edit from './Edit'
 import Row from './Row'
+import RowExpanded from './RowExpanded'
 
 // services
+import { BASE_URL_API } from '../../config'
+import { apiCall } from '../../contexts/api'
 import { getComparator, stableSort } from '../../services/tableServices'
-
-const mainData = [
-  {
-    numKit: 'ABCD12345678',
-    numAnt: 'EFGH12345678901234',
-    serviceLine: 'IJKL12345-MNOPQ67890',
-    domain: 'example.com',
-    terId: 1,
-    friendlyName: 'Antenna 1'
-  },
-  {
-    numKit: 'WXYZ98765432',
-    numAnt: 'UVWXYZ123456789012',
-    serviceLine: 'RSTUV56789-WXYZA12345',
-    domain: 'example.net',
-    terId: 2,
-    friendlyName: 'Antenna 2'
-  },
-  {
-    numKit: '1234ABCD5678',
-    numAnt: 'EFGH56789012345678',
-    serviceLine: 'IJKL90123-MNOPQ45678',
-    domain: 'example.org',
-    terId: 3,
-    friendlyName: 'Antenna 3'
-  },
-  {
-    numKit: 'CDEF56781234',
-    numAnt: 'GHIJ90123456789012',
-    serviceLine: 'KLMN34567-OPQ12R56789',
-    domain: 'example.co',
-    terId: 4,
-    friendlyName: 'Antenna 4'
-  },
-  {
-    numKit: '5678CDEF1234',
-    numAnt: 'IJKL34567890123456',
-    serviceLine: 'MNOP67890-Q123R45678',
-    domain: 'example.io',
-    terId: 5,
-    friendlyName: 'Antenna 5'
-  },
-  {
-    numKit: 'EFGH90123456',
-    numAnt: 'QRST56789012345678',
-    serviceLine: 'UVWX90123-ABCDE67890',
-    domain: 'example.info',
-    terId: 6,
-    friendlyName: 'Antenna 6'
-  },
-  {
-    numKit: '1234IJKL5678',
-    numAnt: 'MNOP90123456789012',
-    serviceLine: 'QRST23456-UVWXY78901',
-    domain: 'example.biz',
-    terId: 7,
-    friendlyName: 'Antenna 7'
-  },
-  {
-    numKit: 'KLMN56781234',
-    numAnt: 'UVWX34567890123456',
-    serviceLine: 'YZAB78901-CD12345678',
-    domain: 'example.us',
-    terId: 8,
-    friendlyName: 'Antenna 8'
-  },
-  {
-    numKit: '5678OPQR1234',
-    numAnt: 'YZAB56789012345678',
-    serviceLine: 'CDEF90123-UVWXY45678',
-    domain: 'example.co.uk',
-    terId: 9,
-    friendlyName: 'Antenna 9'
-  },
-  {
-    numKit: 'STUV90123456',
-    numAnt: 'CDEF90123456789012',
-    serviceLine: 'GHIJ23456-KLMNO78901',
-    domain: 'example.ca',
-    terId: 10,
-    friendlyName: 'Antenna 10'
-  },
-  {
-    numKit: '1234WXYZ5678',
-    numAnt: 'GHIJ56789012345678',
-    serviceLine: 'KLMN90123-UVWXY23456',
-    domain: 'example.de',
-    terId: 11,
-    friendlyName: 'Antenna 11'
-  },
-  {
-    numKit: 'YZAB56781234',
-    numAnt: 'KLMN56789012345678',
-    serviceLine: 'OPQR23456-UVWXY78901',
-    domain: 'example.fr',
-    terId: 12,
-    friendlyName: 'Antenna 12'
-  },
-  {
-    numKit: '5678CDEF1234',
-    numAnt: 'IJKL90123456789012',
-    serviceLine: 'MNOP34567-Q123R56789',
-    domain: 'example.it',
-    terId: 13,
-    friendlyName: 'Antenna 13'
-  },
-  {
-    numKit: 'EFGH90123456',
-    numAnt: 'QRST56789012345678',
-    serviceLine: 'UVWX90123-ABCDE67890',
-    domain: 'example.es',
-    terId: 14,
-    friendlyName: 'Antenna 14'
-  },
-  {
-    numKit: '1234IJKL5678',
-    numAnt: 'MNOP90123456789012',
-    serviceLine: 'QRST23456-UVWXY78901',
-    domain: 'example.pt',
-    terId: 15,
-    friendlyName: 'Antenna 15'
-  },
-  {
-    numKit: 'KLMN56781234',
-    numAnt: 'UVWX34567890123456',
-    serviceLine: 'YZAB78901-CD12345678',
-    domain: 'example.au',
-    terId: 16,
-    friendlyName: 'Antenna 16'
-  },
-  {
-    numKit: '5678OPQR1234',
-    numAnt: 'YZAB56789012345678',
-    serviceLine: 'CDEF90123-UVWXY45678',
-    domain: 'example.jp',
-    terId: 17,
-    friendlyName: 'Antenna 17'
-  },
-  {
-    numKit: 'STUV90123456',
-    numAnt: 'CDEF90123456789012',
-    serviceLine: 'GHIJ23456-KLMNO78901',
-    domain: 'example.kr',
-    terId: 18,
-    friendlyName: 'Antenna 18'
-  },
-  {
-    numKit: '1234WXYZ5678',
-    numAnt: 'GHIJ56789012345678',
-    serviceLine: 'KLMN90123-UVWXY23456',
-    domain: 'example.ru',
-    terId: 19,
-    friendlyName: 'Antenna 19'
-  },
-  {
-    numKit: 'YZAB56781234',
-    numAnt: 'KLMN56789012345678',
-    serviceLine: 'OPQR23456-UVWXY78901',
-    domain: 'example.cn',
-    terId: 20,
-    friendlyName: 'Antenna 20'
-  },
-  {
-    numKit: '5678CDEF1234',
-    numAnt: 'IJKL90123456789012',
-    serviceLine: 'MNOP34567-Q123R56789',
-    domain: 'example.br',
-    terId: 21,
-    friendlyName: 'Antenna 21'
-  },
-  {
-    numKit: 'EFGH90123456',
-    numAnt: 'QRST56789012345678',
-    serviceLine: 'UVWX90123-ABCDE67890',
-    domain: 'example.mx',
-    terId: 22,
-    friendlyName: 'Antenna 22'
-  },
-  {
-    numKit: '1234IJKL5678',
-    numAnt: 'MNOP90123456789012',
-    serviceLine: 'QRST23456-UVWXY78901',
-    domain: 'example.ar',
-    terId: 23,
-    friendlyName: 'Antenna 23'
-  },
-  {
-    numKit: 'KLMN56781234',
-    numAnt: 'UVWX34567890123456',
-    serviceLine: 'YZAB78901-CD12345678',
-    domain: 'example.in',
-    terId: 24,
-    friendlyName: 'Antenna 24'
-  },
-  {
-    numKit: '5678OPQR1234',
-    numAnt: 'YZAB56789012345678',
-    serviceLine: 'CDEF90123-UVWXY45678',
-    domain: 'example.za',
-    terId: 25,
-    friendlyName: 'Antenna 25'
-  },
-  {
-    numKit: 'STUV90123456',
-    numAnt: 'CDEF90123456789012',
-    serviceLine: 'GHIJ23456-KLMNO78901',
-    domain: 'example.sa',
-    terId: 26,
-    friendlyName: 'Antenna 26'
-  },
-  {
-    numKit: '1234WXYZ5678',
-    numAnt: 'GHIJ56789012345678',
-    serviceLine: 'KLMN90123-UVWXY23456',
-    domain: 'example.id',
-    terId: 27,
-    friendlyName: 'Antenna 27'
-  },
-  {
-    numKit: 'YZAB56781234',
-    numAnt: 'KLMN56789012345678',
-    serviceLine: 'OPQR23456-UVWXY78901',
-    domain: 'example.ng',
-    terId: 28,
-    friendlyName: 'Antenna 28'
-  },
-  {
-    numKit: '5678CDEF1234',
-    numAnt: 'IJKL90123456789012',
-    serviceLine: 'MNOP34567-Q123R56789',
-    domain: 'example.pl',
-    terId: 29,
-    friendlyName: 'Antenna 29'
-  },
-  {
-    numKit: 'EFGH90123456',
-    numAnt: 'QRST56789012345678',
-    serviceLine: 'UVWX90123-ABCDE67890',
-    domain: 'example.tr',
-    terId: 30,
-    friendlyName: 'Antenna 30'
-  }
-]
 
 const headCells = [
   {
-    id: 'friendlyName',
-    label: 'Nombre'
-  },
-  {
-    id: 'domain',
+    id: 'terminalSiteName',
     label: 'Nombre del sitio'
   },
   {
-    id: 'serviceLine',
+    id: 'terminalLineOfService',
     label: 'Línea de servicio'
   },
   {
-    id: 'numKit',
+    id: 'terminalKitNumber',
     label: 'Número de kit'
   },
   {
-    id: 'numAnt',
-    label: 'Número de la terminal'
+    id: 'terminalSerialNumber',
+    label: 'Número de serie'
   }
 ]
 
 const Terminals = () => {
   const [order, setOrder] = useState('asc')
-  const [orderBy, setOrderBy] = useState('friendlyName')
+  const [orderBy, setOrderBy] = useState('terminalSiteName')
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
 
+  const [mainData, setMainData] = useState([])
   const [data, setData] = useState(mainData)
+
+  const [loading, setLoading] = useState(true)
 
   const [selected, setSelected] = useState([])
   const [dataSelected, setDataSelected] = useState(null)
@@ -311,12 +73,17 @@ const Terminals = () => {
 
   const [open, setOpen] = useState(false)
 
-  const handleCancel = () => {
+  const [forceRender, setForceRender] = useState(null)
+
+  const handleCancel = async (e, needRender) => {
     setView(null)
     setCollapsed(false)
     setDataSelected(null)
     setSelected([])
     setOpen(false)
+    if (needRender) {
+      await setForceRender(Math.random() * 9999)
+    }
   }
 
   const handleAdd = () => {
@@ -339,24 +106,22 @@ const Terminals = () => {
 
   const handleDelete = (id) => {
     const promise = () => new Promise((resolve) => {
-      setTimeout(() => {
-        const index = data.indexOf(data.find(({ terId }) => (terId === id)))
-        // console.log(index)
-        if (index === -1) return resolve({ status: 500 })
-        const newData = [...data]
-        newData.splice(index, 1)
-        setData(newData)
-        return resolve({ status: 200 })
-      }, 500)
+      let data = null
+      try {
+        data = apiCall({ url: `${BASE_URL_API}/Terminals/${id}`, method: 'DELETE' })
+      } catch (error) {
+        return resolve({ status: 500, data: null })
+      }
+      return resolve({ status: data ? 200 : 404, data })
     })
 
     toast.promise(promise, {
-      loading: 'Cargando...',
+      loading: 'Procesando...',
       success: () => {
-        handleCancel()
-        return 'El cliente ha sido eliminado correctamente'
+        handleCancel('', true)
+        return 'La terminal ha sido eliminada correctamente'
       },
-      error: 'Error al agregar el cliente'
+      error: 'Error al eliminar la terminal'
     })
   }
 
@@ -371,11 +136,12 @@ const Terminals = () => {
       for (let j = 0; j < filters.length; j += 1) {
         for (let i = 0; i < available.length; i += 1) {
           if (
-            available[i].numKit.toLowerCase().includes(filters[j]) ||
-            available[i].numAnt.toLowerCase().includes(filters[j]) ||
-            available[i].serviceLine.toLowerCase().includes(filters[j]) ||
-            available[i].domain.toLowerCase().includes(filters[j]) ||
-            available[i].friendlyName.toLowerCase().includes(filters[j])
+            available[i].serviceLineNumber.toLowerCase().includes(filters[j]) ||
+            available[i].terminalFriendlyName.toLowerCase().includes(filters[j]) ||
+            available[i].terminalKitNumber.toLowerCase().includes(filters[j]) ||
+            available[i].terminalLineOfService.toLowerCase().includes(filters[j]) ||
+            available[i].terminalSerialNumber.toLowerCase().includes(filters[j]) ||
+            available[i].terminalSiteName.toLowerCase().includes(filters[j])
           ) {
             if (!newRows.find((value) => value === available[i])) { newRows.push(available[i]) }
           }
@@ -398,7 +164,7 @@ const Terminals = () => {
       setView(null)
     } else {
       setSelected([id])
-      const index = data.map((row) => row.terId).indexOf(id)
+      const index = data.map((row) => row.terminalId).indexOf(id)
       setDataSelected(data[index])
       setView(0)
     }
@@ -422,6 +188,27 @@ const Terminals = () => {
     [order, orderBy, page, rowsPerPage, data]
   )
 
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await apiCall({ url: `${BASE_URL_API}/Terminals` })
+        console.log(res)
+        setMainData(res)
+        setData(res)
+
+        setTimeout(() => {
+          setLoading(false)
+        }, 1000)
+      } catch (error) {
+        console.log(error)
+      }
+    })()
+
+    return () => {
+      setLoading(true)
+    }
+  }, [forceRender])
+
   return (
     <>
       <AsideMenuCrud
@@ -442,29 +229,34 @@ const Terminals = () => {
           <Box>
             <TableContainer sx={{ maxWidth: '100%' }}>
               <Table sx={{ maxWidth: '100%', '& .MuiTableCell-root': { borderColor: (theme) => theme.palette.grey[800] } }} aria-labelledby='tableTitle' size='medium'>
-                {data.length === 0 && <caption>No se han encotrado datos</caption>}
+                {!loading && data.length === 0 && <caption><NoInfoOverlay /></caption>}
                 <EnhancedTableHead
                   order={order}
                   orderBy={orderBy}
                   onRequestSort={handleRequestSort}
                   headCells={headCells}
+                  hasExtendedRowOption
                 />
                 <TableBody>
-                  {visibleRows.map((row) => {
-                    const isItemSelected = isSelected(row.terId)
-                    const labelId = `enhanced-table-checkbox-${row.terId}`
+                  {loading
+                    ? <LoadingInfoTable headCells={headCells} />
+                    : visibleRows.map((row) => {
+                      const isItemSelected = isSelected(row.terminalId)
+                      const labelId = `enhanced-table-checkbox-${row.terminalId}`
 
-                    return (
-                      <Row
-                        key={labelId}
-                        element={row}
-                        handleClick={(event) => handleClick(event, row.terId)}
-                        isItemSelected={isItemSelected}
-                        labelId={labelId}
-                        page={page}
-                      />
-                    )
-                  })}
+                      return (
+                        <Row
+                          key={labelId}
+                          element={row}
+                          handleClick={(event) => handleClick(event, row.terminalId)}
+                          isItemSelected={isItemSelected}
+                          labelId={labelId}
+                          page={page}
+                          hasExtendedRow
+                          RowTemplate={RowExpanded}
+                        />
+                      )
+                    })}
                   {emptyRows > 0 && (
                     <TableRow
                       style={{
@@ -497,7 +289,7 @@ const Terminals = () => {
         </Fade>
         <Fade in={collapsed} sx={{ flex: 1, bgcolor: (theme) => alpha(theme.palette.grey[600], 0.7), py: 2, px: 3, borderRadius: 2, boxShadow: (theme) => theme.shadows[10], color: 'white', maxWidth: '100%', mb: 3, backdropFilter: 'blur(10px)', border: (theme) => `1px solid ${alpha(theme.palette.grey[600], 0.55)}`, minHeight: 300, transition: 'height 0.3s ease-in-out', position: 'absolute', width: '80%' }}>
           <Box>
-            {view ? <Add handleCancel={handleCancel} data={data} setData={setData} /> : <Edit handleCancel={handleCancel} selected={dataSelected} data={data} setData={setData} />}
+            {view ? <Add handleCancel={handleCancel} /> : <Edit handleCancel={handleCancel} selected={dataSelected} />}
           </Box>
         </Fade>
       </Box>
@@ -517,14 +309,12 @@ const Terminals = () => {
             </DialogTitle>
             <DialogContent>
               <DialogContentText id='alert-dialog-description' sx={{ bgcolor: (theme) => theme.palette.background.paper, color: (theme) => theme.palette.grey[500] }}>
-                <Typography component='div' color='inherit'>
-                  <b>¿Estás seguro de eliminar la terminal {dataSelected?.friendlyName} ({dataSelected?.numAnt})?</b> Al dar click en aceptar, esta de acuerdo que no podrá recuperar la información.
-                </Typography>
+                <b>¿Estás seguro de eliminar la terminal {dataSelected.terminalFriendlyName ?? dataSelected.terminalSiteName} ({dataSelected.terminalSerialNumber})?</b> Al dar click en aceptar, esta de acuerdo que no podrá recuperar la información.
               </DialogContentText>
             </DialogContent>
             <DialogActions sx={{ display: 'flex', flex: 1, justifyContent: 'space-between' }}>
               <Button onClick={handleClose} variant='outlined' color='error' autoFocus>Cancelar</Button>
-              <Button onClick={() => handleDelete(dataSelected?.terId)} variant='outlined' color='info'>
+              <Button onClick={() => handleDelete(dataSelected?.terminalId)} variant='outlined' color='info'>
                 Aceptar y Eliminar
               </Button>
             </DialogActions>

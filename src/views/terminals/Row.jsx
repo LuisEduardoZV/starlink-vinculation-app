@@ -28,17 +28,14 @@ const Row = ({ element, handleClick, isItemSelected, labelId, hasExtendedRow, Ro
             name='selection-row'
           />
         </TableCell>
-        <TableCell component='th' id={labelId} align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>
-          {element.friendlyName}
-        </TableCell>
-        <TableCell align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>{element.domain}</TableCell>
-        <TableCell align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>{element.serviceLine}</TableCell>
-        <TableCell align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>{element.numKit}</TableCell>
-        <TableCell align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>{element.numAnt}</TableCell>
+        <TableCell component='th' id={labelId} align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>{element.terminalSiteName}</TableCell>
+        <TableCell align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>{element.terminalLineOfService}</TableCell>
+        <TableCell align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>{element.terminalKitNumber}</TableCell>
+        <TableCell align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>{element.terminalSerialNumber}</TableCell>
         {hasExtendedRow && (
           <TableCell>
             <IconButton aria-label='expand row' size='small' onClick={() => setRowExpanded(!rowExpanded)}>
-              {rowExpanded ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+              {rowExpanded ? <KeyboardArrowUpIcon sx={{ color: 'grey.300' }} /> : <KeyboardArrowDownIcon sx={{ color: 'grey.300' }} />}
             </IconButton>
           </TableCell>
         )}
