@@ -21,6 +21,7 @@ import {
 import { alpha } from '@mui/material/styles'
 
 // project imports
+import useAuth from '../../hooks/useAuth'
 import AsideMenuCrud from '../../ui-components/AsideMenuCrud'
 import EnhancedTableHead from '../../ui-components/EnhancedTableHead'
 import LoadingInfoTable from '../../ui-components/LoadingInfoTable'
@@ -55,6 +56,8 @@ const headCells = [
 ]
 
 const Terminals = () => {
+  const { user } = useAuth()
+
   const [order, setOrder] = useState('asc')
   const [orderBy, setOrderBy] = useState('terminalSiteName')
   const [page, setPage] = useState(0)
@@ -191,8 +194,12 @@ const Terminals = () => {
   useEffect(() => {
     (async () => {
       try {
-        const res = await apiCall({ url: `${BASE_URL_API}/Terminals` })
-        console.log(res)
+        let res = []
+        if (user?.user?.isPowerUser) {
+          res = await apiCall({ url: `${BASE_URL_API}/Terminals` })
+        } else {
+          res = await apiCall({ url: `${BASE_URL_API}/getClientTerminales?id=${user?.user?.clientId}` })
+        }
         setMainData(res)
         setData(res)
 
@@ -207,7 +214,7 @@ const Terminals = () => {
     return () => {
       setLoading(true)
     }
-  }, [forceRender])
+  }, [forceRender, user])
 
   return (
     <>

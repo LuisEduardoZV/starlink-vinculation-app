@@ -15,7 +15,7 @@ import InputBase from '../../ui-components/InputBase'
 
 import { emailerrorText, requiredText } from '../../utils/labelsErrorsFormik'
 
-const Add = ({ handleReset, client }) => {
+const Add = ({ handleReset, client, backBtn }) => {
   return (
     <Box sx={{ display: 'flex', flex: 1, width: '100%', height: '100%', alignItems: 'flex-start', bgcolor: 'transparent', flexDirection: 'column', gap: 5, maxHeight: '70vh' }}>
       <Typography variant='h2' sx={{ color: (theme) => theme.palette.grey[200] }}>Agregar nuevo usuario</Typography>
@@ -160,7 +160,8 @@ const Add = ({ handleReset, client }) => {
                 </Tooltip>
               </Grid>
             </Grid>
-            <Box width='100%' mt={5} display='flex' justifyContent='flex-end'>
+            <Box width='100%' mt={5} display='flex' justifyContent={backBtn ? 'space-between' : 'flex-end'}>
+              {backBtn && (<Button type='submit' variant='outlined' color='error' onClick={handleReset}>Cancelar</Button>)}
               <Button type='submit' variant='outlined' color='info' disabled={isSubmitting}>
                 Agregar
               </Button>
@@ -174,7 +175,8 @@ const Add = ({ handleReset, client }) => {
 
 Add.propTypes = {
   handleReset: PropTypes.func,
-  client: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+  client: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  backBtn: PropTypes.bool
 }
 
 export default Add

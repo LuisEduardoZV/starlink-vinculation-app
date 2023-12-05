@@ -15,7 +15,7 @@ import InputBase from '../../ui-components/InputBase'
 
 import { emailerrorText, requiredText } from '../../utils/labelsErrorsFormik'
 
-const Edit = ({ handleReset, data }) => {
+const Edit = ({ handleReset, data, backBtn }) => {
   if (!data) return
   return (
     <Box sx={{ display: 'flex', flex: 1, width: '100%', height: '100%', alignItems: 'flex-start', bgcolor: 'transparent', flexDirection: 'column', gap: 5, maxHeight: '70vh' }}>
@@ -192,7 +192,8 @@ const Edit = ({ handleReset, data }) => {
                 </Tooltip>
               </Grid>
             </Grid>
-            <Box width='100%' mt={5} display='flex' justifyContent='flex-end'>
+            <Box width='100%' mt={5} display='flex' justifyContent={backBtn ? 'space-between' : 'flex-end'}>
+              {backBtn && (<Button type='submit' variant='outlined' color='error' onClick={handleReset}>Cancelar</Button>)}
               <Button type='submit' variant='outlined' color='info' disabled={isSubmitting}>
                 Guardar
               </Button>
@@ -206,7 +207,8 @@ const Edit = ({ handleReset, data }) => {
 
 Edit.propTypes = {
   handleReset: PropTypes.func,
-  data: PropTypes.object
+  data: PropTypes.object,
+  backBtn: PropTypes.bool
 }
 
 export default Edit

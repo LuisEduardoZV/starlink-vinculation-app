@@ -8,18 +8,19 @@ import { toast } from 'sonner'
 // mui imports
 import PersonAddAltTwoToneIcon from '@mui/icons-material/PersonAddAltTwoTone'
 import {
-    Box,
-    Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle,
-    Grid,
-    Typography
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Grid,
+  Typography
 } from '@mui/material'
 
 // project imports
+import useAuth from '../../hooks/useAuth'
 import AsideBackButton from '../../ui-components/AsideBackButton'
 import InputSearch from '../../ui-components/InputSearch'
 import MainMirrorCard from '../../ui-components/MainMirrorCard'
@@ -41,6 +42,8 @@ const getContactAvatar = (name) => {
 }
 
 const Contacts = () => {
+  const { user: userProfile } = useAuth()
+
   const { clientId } = useParams()
   const navigate = useNavigate()
 
@@ -49,6 +52,8 @@ const Contacts = () => {
   const [contacts, setContacts] = useState([])
   const [user, setUser] = useState({})
   const [data, setData] = useState({})
+
+  const [loading, setLoading] = useState(true)
 
   const convertData = (userData) =>
     userData.reduce((a, curr) => {
@@ -86,14 +91,18 @@ const Contacts = () => {
     if (!clientId) { navigate(-1) }
     (async () => {
       try {
+        setLoading(true)
         const res = await apiCall({ url: `${BASE_URL_API}/getClientContactos?id=${clientId}` })
-        console.log(res)
+
         setContacts(res)
         setData(convertData(res))
+        setLoading(false)
       } catch (error) {
         console.log(error)
       }
     })()
+
+    return () => setLoading(true)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [render, clientId])
 
@@ -131,7 +140,7 @@ const Contacts = () => {
 
   return (
     <>
-      <AsideBackButton inFade />
+      {userProfile?.user?.isPowerUser && <AsideBackButton inFade />}
       <Box sx={{ display: 'flex', flex: 1, px: '10%' }}>
 
         <Grid container spacing={3} pl={0}>
@@ -207,7 +216,7 @@ const Contacts = () => {
                         </Grid>
                       </Fragment>
                     ))}
-                    {contacts.length === 0 && <NoInfoOverlay />}
+                    {(!loading && contacts.length === 0) && <NoInfoOverlay />}
                   </MainMirrorCard>
                 </Grid>
               </Grid>

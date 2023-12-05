@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 
 // material-ui
+import BadgeIcon from '@mui/icons-material/Badge'
+import PersonIcon from '@mui/icons-material/Person'
+import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount'
 import {
   Box, Chip,
   ClickAwayListener,
@@ -31,23 +34,33 @@ import useConfig from '../hooks/useConfig'
 
 // ==============================|| PROFILE MENU ||============================== //
 
-const getWelcomeText = () => {
-  const today = new Date()
-  const hours = today.getHours()
-  if (hours >= 5 && hours < 12) return 'Buenos días, '
-  if (hours >= 12 && hours < 19) return 'Buenas tardes, '
-  return 'Buenas noches, '
+const getUserType = (isPower, isAdmin) => {
+  let text = ''
+  let IconUser = PersonIcon
+  if (isPower) {
+    text = 'SuperAdministrador'
+    IconUser = SupervisorAccountIcon
+  }
+  if (!isPower && isAdmin) {
+    text = 'Administrador'
+    IconUser = BadgeIcon
+  }
+  if (!isPower && !isAdmin) text = 'Usuario base'
+  return (
+    <Typography component='div' variant='h6' sx={{ fontWeight: 400, color: (theme) => theme.palette.grey[500], display: 'flex', alignItems: 'center', gap: 1, justifyContent: 'flex-end', width: '100%' }}>
+      <IconUser fontSize='small' sx={{ color: 'primary.light' }} />
+      {text}
+    </Typography>
+  )
 }
 
 const ProfileSection = () => {
-  const { logoutProvider } = useAuth()
+  const { logoutProvider, user } = useAuth()
+
   const theme = useTheme()
   const { borderRadius } = useConfig()
 
-  const [selectedIndex, setSelectedIndex] = useState(-1)
   const [open, setOpen] = useState(false)
-
-  const welcome = getWelcomeText()
 
   const anchorRef = useRef(null)
 
@@ -135,11 +148,14 @@ const ProfileSection = () => {
                     border={false} elevation={16} content={false} boxShadow shadow={theme.shadows[16]}
                   >
                     <Box sx={{ p: 2, pb: 0, gap: 1, display: 'flex', flexDirection: 'column' }}>
-                      <Stack direction='row' spacing={0.5} alignItems='center'>
-                        <Typography variant='h4' sx={{ color: 'white' }}>{welcome}</Typography>
+                      <Stack direction='column' spacing={0.5} alignItems='start'>
+                        <Typography variant='h1' sx={{ color: 'white' }}>Hola,</Typography>
                         <Typography component='span' variant='h4' sx={{ fontWeight: 400, color: (theme) => theme.palette.grey[500] }}>
-                          User Name
+                          {user?.user.fullName ?? 'Usuario'}
                         </Typography>
+                      </Stack>
+                      <Stack direction='row' spacing={0.5} alignItems='center'>
+                        {getUserType(user?.user.isPowerUser, user?.user.isAdmin)}
                       </Stack>
                       <Divider sx={{ borderColor: (theme) => theme.palette.primary.main }} />
                     </Box>
@@ -178,7 +194,6 @@ const ProfileSection = () => {
                               color: 'white'
                             }
                           }}
-                          selected={selectedIndex === 0}
                         >
                           <ListItemIcon>
                             <SettingsTwoToneIcon fontSize='small' sx={{ color: theme.palette.primary.main }} />
@@ -208,7 +223,6 @@ const ProfileSection = () => {
                               color: 'white'
                             }
                           }}
-                          selected={selectedIndex === 4}
                           onClick={handleLogOut}
                         >
                           <ListItemIcon>

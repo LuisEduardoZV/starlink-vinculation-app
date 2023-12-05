@@ -27,6 +27,7 @@ import {
 import { alpha, styled } from '@mui/material/styles'
 
 // project imports
+import useAuth from '../../hooks/useAuth'
 import AsideMenuCrud from '../../ui-components/AsideMenuCrud'
 import EnhancedTableHead from '../../ui-components/EnhancedTableHead'
 import LoadingInfoTable from '../../ui-components/LoadingInfoTable'
@@ -91,6 +92,8 @@ const CustomTooltipContacts = styled(({ className, ...props }) => (
 }))
 
 const Clients = () => {
+  const { user } = useAuth()
+
   const navigate = useNavigate()
 
   const [order, setOrder] = useState('asc')
@@ -227,6 +230,9 @@ const Clients = () => {
   )
 
   useEffect(() => {
+    if (user && user.user && !user.user.isPowerUser) {
+      navigate(`/clients/${user.user.clientId}/users`, { replace: true })
+    }
     (async () => {
       try {
         setLoading(true)
@@ -239,10 +245,12 @@ const Clients = () => {
       }
     })()
 
+
     return () => {
       setLoading(true)
     }
-  }, [forceRender])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [forceRender, user])
 
   return (
     <>

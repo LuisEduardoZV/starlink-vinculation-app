@@ -6,15 +6,20 @@ import { Box, Tabs, Typography } from '@mui/material'
 import { alpha } from '@mui/material/styles'
 
 // project imports
+import useAuth from '../hooks/useAuth'
 import { samePageLinkNavigation } from '../services/samplePageLinkNavigation'
 import LinkTab from '../ui-components/LinkTab'
 import ProfileSection from './ProfileSection'
 
+import AccountCircleTwoToneIcon from '@mui/icons-material/AccountCircleTwoTone'
+import ContactPhoneTwoToneIcon from '@mui/icons-material/ContactPhoneTwoTone'
 import InsertLinkIcon from '@mui/icons-material/InsertLink'
 import SatelliteAltTwoToneIcon from '@mui/icons-material/SatelliteAltTwoTone'
 import SupervisedUserCircleTwoToneIcon from '@mui/icons-material/SupervisedUserCircleTwoTone'
 
 const HeaderSection = () => {
+  const { user } = useAuth()
+
   const { state, pathname } = useLocation()
   const [tab, setTab] = useState(0)
 
@@ -66,16 +71,33 @@ const HeaderSection = () => {
           }}
           TabIndicatorProps={{ style: { maxHeight: '2px' } }}
         >
-          <LinkTab
-            label='Clientes' href='/clients' icon={<SupervisedUserCircleTwoToneIcon
-              fontSize='small'
-              sx={{ color: tab === 0 ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }}
-                                                   />}
-          />
-          <LinkTab label='Terminales' href='/terminals' icon={<SatelliteAltTwoToneIcon fontSize='small' sx={{ color: tab === 1 ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />} />
-          <LinkTab
-            label='Vincular' href='/linking' icon={<InsertLinkIcon fontSize='small' sx={{ color: tab === 2 ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />}
-          />
+          {user?.user?.isPowerUser
+            ? (
+              <LinkTab
+                label='Clientes' href='/clients'
+                icon={<SupervisedUserCircleTwoToneIcon
+                  fontSize='small' sx={{ color: tab === 0 ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }}
+                      />}
+              />)
+            : (
+              <LinkTab
+                label='Usuarios' href={`/clients/${user?.user?.clientId}/users`} icon={<AccountCircleTwoToneIcon fontSize='small' sx={{ color: tab === 0 ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />}
+              />
+              )}
+          {user?.user?.isPowerUser
+            ? (
+              <LinkTab
+                label='Super usuarios' href={`/clients/${user?.user?.clientId}/users`} icon={<AccountCircleTwoToneIcon fontSize='small' sx={{ color: tab === 1 ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />}
+              />)
+            : (
+              <LinkTab
+                label='Contactos' href={`/clients/${user?.user?.clientId}/contacts`} icon={<ContactPhoneTwoToneIcon fontSize='small' sx={{ color: tab === 1 ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />}
+              />
+              )}
+          <LinkTab label='Terminales' href='/terminals' icon={<SatelliteAltTwoToneIcon fontSize='small' sx={{ color: tab === 2 ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />} />
+          {user?.user?.isPowerUser && <LinkTab
+            label='Vincular' href='/linking' icon={<InsertLinkIcon fontSize='small' sx={{ color: tab === 3 ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />}
+                                      />}
         </Tabs>
       </Box>
       <Box flex={1} sx={{ display: 'flex', justifyContent: 'flex-end' }}>

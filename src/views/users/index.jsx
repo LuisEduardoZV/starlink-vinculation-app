@@ -23,6 +23,7 @@ import {
 import { alpha } from '@mui/material/styles'
 
 // project imports
+import useAuth from '../../hooks/useAuth'
 import AsideBackButton from '../../ui-components/AsideBackButton'
 import EnhancedTableHead from '../../ui-components/EnhancedTableHead'
 import InputSearch from '../../ui-components/InputSearch'
@@ -63,6 +64,8 @@ const headCells = [
 ]
 
 const UserList = () => {
+  const { user } = useAuth()
+
   const navigate = useNavigate()
   const { clientId } = useParams()
 
@@ -202,7 +205,7 @@ const UserList = () => {
 
   return (
     <>
-      <AsideBackButton inFade={collapsed} handleBack={collapsed ? handleCancel : null} />
+      {user?.user?.isPowerUser && <AsideBackButton inFade={collapsed} handleBack={collapsed ? handleCancel : null} />}
 
       <Box sx={{ display: 'flex', flex: 1, px: '10%', position: 'relative', flexDirection: 'column' }}>
         <Fade in={!collapsed} unmountOnExit mountOnEnter>
@@ -223,6 +226,7 @@ const UserList = () => {
             <MainMirrorCard>
               <TableContainer sx={{ maxWidth: '100%' }}>
                 <Table sx={{ maxWidth: '100%', '& .MuiTableCell-root': { borderColor: (theme) => theme.palette.grey[800] } }} aria-labelledby='tableTitle' size='medium'>
+                  {!loading && data.length === 0 && <caption><NoInfoOverlay /></caption>}
                   <EnhancedTableHead
                     order={order}
                     orderBy={orderBy}
@@ -245,15 +249,13 @@ const UserList = () => {
                           />
                         )
                       })}
-                    {(emptyRows > 0 || data.length === 0) && (
+                    {emptyRows > 0 && (
                       <TableRow
                         style={{
                           height: 53 * 5
                         }}
                       >
-                        <TableCell colSpan={6}>
-                          <NoInfoOverlay />
-                        </TableCell>
+                        <TableCell colSpan={6} />
                       </TableRow>
                     )}
                   </TableBody>
@@ -280,7 +282,7 @@ const UserList = () => {
         </Fade>
         <Fade in={collapsed} sx={{ flex: 1, bgcolor: (theme) => alpha(theme.palette.grey[600], 0.7), py: 2, px: 3, borderRadius: 2, boxShadow: (theme) => theme.shadows[10], color: 'white', maxWidth: '100%', mb: 3, backdropFilter: 'blur(10px)', border: (theme) => `1px solid ${alpha(theme.palette.grey[600], 0.55)}`, minHeight: 300, transition: 'height 0.3s ease-in-out', position: 'absolute', width: '80%' }}>
           <Box position='relative'>
-            {view ? <Add handleReset={handleCancel} client={clientId} /> : <Edit handleReset={handleCancel} data={dataSelected} />}
+            {view ? <Add handleReset={handleCancel} client={clientId} backBtn={user?.user?.isPowerUser === 0} /> : <Edit handleReset={handleCancel} data={dataSelected} backBtn={user?.user?.isPowerUser === 0} />}
           </Box>
         </Fade>
       </Box>
