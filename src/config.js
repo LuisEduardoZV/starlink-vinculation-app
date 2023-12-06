@@ -8,6 +8,8 @@ export const BASE_URL_API_LINKED = 'http://admin:admin123@10.10.10.18:3000/api/o
 
 export const DASHBOARD_PATH = '/clients'
 
+export const GOOGLE_MAP_KEY = 'AIzaSyB5l0_lWaNKyqqfRlpXWlBvuzW_qPavGDU'
+
 const config = {
   fontFamily: '\'Roboto\', sans-serif',
   borderRadius: 8,
