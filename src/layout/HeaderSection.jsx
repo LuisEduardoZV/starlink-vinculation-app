@@ -12,6 +12,7 @@ import LinkTab from '../ui-components/LinkTab'
 import ProfileSection from './ProfileSection'
 
 import AccountCircleTwoToneIcon from '@mui/icons-material/AccountCircleTwoTone'
+import AdminPanelSettingsTwoToneIcon from '@mui/icons-material/AdminPanelSettingsTwoTone'
 import ContactPhoneTwoToneIcon from '@mui/icons-material/ContactPhoneTwoTone'
 import InsertLinkIcon from '@mui/icons-material/InsertLink'
 import SatelliteAltTwoToneIcon from '@mui/icons-material/SatelliteAltTwoTone'
@@ -87,7 +88,7 @@ const HeaderSection = () => {
           {user?.user?.isPowerUser
             ? (
               <LinkTab
-                label='Super usuarios' href={`/clients/${user?.user?.clientId}/users`} icon={<AccountCircleTwoToneIcon fontSize='small' sx={{ color: tab === 1 ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />}
+                label='Super usuarios' href='/admins' icon={<AdminPanelSettingsTwoToneIcon fontSize='small' sx={{ color: tab === 1 ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />}
               />)
             : (
               <LinkTab

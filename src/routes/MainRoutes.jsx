@@ -5,6 +5,7 @@ import MainLayout from '../layout/MainLayout'
 import Clients from '../views/clients'
 import Contacts from '../views/contacts'
 import Linking from '../views/linking'
+import SuperUsers from '../views/superusers'
 import Terminals from '../views/terminals'
 import Users from '../views/users'
 
@@ -39,6 +40,10 @@ const MainRoutes = {
     {
       path: '/terminals',
       element: <Terminals />
+    },
+    {
+      path: '/admins',
+      element: <SuperUsers />
     }
   ]
 }
