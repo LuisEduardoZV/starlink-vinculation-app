@@ -1,7 +1,5 @@
-import { useEffect } from 'react'
 import { Outlet } from 'react-router-dom'
 import { Toaster } from 'sonner'
-import WOW from 'wowjs'
 
 import { alpha, useTheme } from '@mui/material/styles'
 
@@ -9,12 +7,6 @@ import { alpha, useTheme } from '@mui/material/styles'
 
 const MinimalLayout = () => {
   const theme = useTheme()
-
-  useEffect(() => {
-    new WOW.WOW({
-      live: true
-    }).init()
-  }, [])
 
   return (
     <>
