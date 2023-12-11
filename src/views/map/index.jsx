@@ -165,7 +165,7 @@ const MapVisualization = () => {
           <GoogleMap
             mapContainerStyle={{ minWidth: '100vw', maxWidth: '100vw', minHeight: '100vh', maxHeight: '100vh', height: '100%', width: '100%' }}
             center={{ lat: center.lat, lng: center.lng }}
-            zoom={10}
+            zoom={5}
             options={{
               streetViewControl: false,
               gestureHandling: 'greedy',

@@ -53,7 +53,7 @@ const AsideMenuCrud = ({ inFade, view, dataSelected, handleAdd, handleEdit, hand
   return (
     <Fade in={!inFade} mountOnEnter unmountOnExit style={{ zIndex: 5 }}>
       <Box position='relative' width='auto'>
-        <Box sx={{ position: 'fixed', color: 'white', left: '4%', bgcolor: (theme) => alpha(theme.palette.grey[600], 0.7), boxShadow: (theme) => theme.shadows[10], borderRadius: 2, p: 1 }}>
+        <Box sx={{ position: 'fixed', color: 'white', left: '4%', bgcolor: (theme) => alpha(theme.palette.grey[600], 0.7), boxShadow: '7px 7px 10px 0px rgba(10, 10, 10, 1)', borderRadius: 2, p: 1 }}>
           <Stack direction='column'>
             <IconButton
               sx={{

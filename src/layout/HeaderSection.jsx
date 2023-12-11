@@ -53,7 +53,7 @@ const HeaderSection = () => {
       py: 1,
       alignItems: 'center',
       backdropFilter: 'blur(8px)',
-      boxShadow: (theme) => theme.shadows[10],
+      boxShadow: '7px 7px 10px 0px rgba(10, 10, 10, 1)',
       zIndex: 5
     }}
     >

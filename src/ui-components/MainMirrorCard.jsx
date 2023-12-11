@@ -13,7 +13,7 @@ const MainMirrorCard = React.forwardRef(({ children, sx }, ref) => (
       py: 2,
       px: 3,
       borderRadius: 2,
-      boxShadow: (theme) => theme.shadows[10],
+      boxShadow: '7px 7px 10px 0px rgba(10, 10, 10, 1)',
       color: 'white',
       maxWidth: '100%',
       mb: 3,
