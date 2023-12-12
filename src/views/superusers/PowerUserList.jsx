@@ -11,6 +11,7 @@ import {
 // project imports
 import EnhancedTableHead from '../../ui-components/EnhancedTableHead'
 import LoadingInfoTable from '../../ui-components/LoadingInfoTable'
+import MainMirrorCard from '../../ui-components/MainMirrorCard'
 import NoInfoOverlay from '../../ui-components/NoInfoOverlay'
 import Row from './Row'
 
@@ -92,7 +93,7 @@ const PowerUserList = ({ data, mainData, loading, onEdit, onDelete }) => {
   )
 
   return (
-    <>
+    <MainMirrorCard sx={{ minHeight: 'auto', display: 'flex', gap: 3, flexDirection: 'column' }}>
       <TableContainer sx={{ maxWidth: '100%' }}>
         <Table sx={{ maxWidth: '100%', '& .MuiTableCell-root': { borderColor: (theme) => theme.palette.grey[800] } }} aria-labelledby='tableTitle' size='medium'>
           {!loading && data.length === 0 && <caption><NoInfoOverlay /></caption>}
@@ -146,7 +147,7 @@ const PowerUserList = ({ data, mainData, loading, onEdit, onDelete }) => {
         labelRowsPerPage='Filas por página:'
         labelDisplayedRows={({ from, to, count }) => (`${from}-${to} de ${count}`)}
       />
-    </>
+    </MainMirrorCard>
   )
 }
 

@@ -7,32 +7,15 @@ import { toast } from 'sonner'
 import * as Yup from 'yup'
 
 // material-ui
-import VisibilityOffTwoToneIcon from '@mui/icons-material/VisibilityOffTwoTone'
-import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone'
-import {
-  Box,
-  Button,
-  Divider,
-  Grid,
-  IconButton,
-  InputAdornment,
-  Switch,
-  Tooltip,
-  Typography,
-  useMediaQuery
-} from '@mui/material'
+import { useMediaQuery } from '@mui/material'
 import { createTheme } from '@mui/material/styles'
-
-// third-party
-import PerfectScrollbar from 'react-perfect-scrollbar'
 
 // project imports
 import { BASE_URL_API } from '../../config'
 import { apiCallWithBody } from '../../contexts/api'
-import InputBase from '../../ui-components/InputBase'
 import MainMirrorCard from '../../ui-components/MainMirrorCard'
-
 import { emailerrorText, requiredText } from '../../utils/labelsErrorsFormik'
+import FormAuth from './components/FormAuth'
 
 
 // ==============================|| CONTACT CARD/LIST USER EDIT ||============================== //
@@ -83,9 +66,6 @@ const ContactEdit = ({ user, isAdd, onFinish, onCloseEdit, onCloseAdd, ...others
           setSubmitting(true)
           delete values.submit
           values.isEnabled = values.isEnabled ? 1 : 0
-          // console.log(contacts)
-          // console.log(values.clientId)
-          // console.log(values)
           const promise = () => new Promise((resolve) => {
             let data = null
             try {
@@ -117,128 +97,18 @@ const ContactEdit = ({ user, isAdd, onFinish, onCloseEdit, onCloseAdd, ...others
       >
         {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
           <form noValidate onSubmit={handleSubmit} style={{ width: '100%' }}>
-            <PerfectScrollbar style={{ height: 'auto', overflowX: 'hidden' }}>
-              <Grid container spacing={3} sx={{ p: 3 }}>
-                <Grid item xs={12}>
-                  <Typography variant='h2' color='whitesmoke'>
-                    {isAdd ? 'Nuevo Super Usuario' : 'Editando un Super Usuario'}
-                  </Typography>
-                </Grid>
-                <Grid item xs={12}>
-                  <Divider />
-                </Grid>
-                <Grid item xs={12}>
-                  <Tooltip arrow followCursor disableInteractive {...errors.fullName && { title: errors.fullName }}>
-                    <InputBase
-                      label='Nombre'
-                      name='fullName'
-                      value={values.fullName}
-                      variant='filled'
-                      size='small'
-                      fullWidth
-                      color='primary'
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      error={Boolean(touched.fullName && errors.fullName)}
-                      required
-                    />
-                  </Tooltip>
-                </Grid>
-                <Grid item xs={12}>
-                  <Tooltip arrow followCursor disableInteractive {...errors.email && { title: errors.email }}>
-                    <InputBase
-                      label='Correo Electrónico'
-                      type='email'
-                      name='email'
-                      value={values.email}
-                      variant='filled'
-                      size='small'
-                      fullWidth
-                      color='primary'
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      error={Boolean(touched.email && errors.email)}
-                      required
-                    />
-                  </Tooltip>
-                </Grid>
-                <Grid item xs={12}>
-                  <Tooltip arrow followCursor disableInteractive {...errors.password && { title: errors.password }}>
-                    <InputBase
-                      label='Contraseña'
-                      type={showPass ? 'text' : 'password'}
-                      name='password'
-                      value={values.password}
-                      variant='filled'
-                      size='small'
-                      fullWidth
-                      color='primary'
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      error={Boolean(touched.password && errors.password)}
-                      required
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position='end'>
-                            <IconButton size='small' onClick={() => setShowPass(current => !current)}>
-                              {showPass ? <VisibilityTwoToneIcon sx={{ color: 'grey.500' }} fontSize='small' /> : <VisibilityOffTwoToneIcon sx={{ color: 'grey.500' }} fontSize='small' />}
-                            </IconButton>
-                          </InputAdornment>)
-                      }}
-                    />
-                  </Tooltip>
-                </Grid>
-                {!isAdd && (
-                  <Grid item xs={12} position='relative' justifyContent='start'>
-                    <Typography variant='caption' color='primary' sx={{ position: 'absolute', top: '40%', left: '12%', fontSize: '10px' }}>Estatus</Typography>
-                    <Box display='flex' alignItems='center' width='100%' justifyContent='center' mt={2} gap={2}>
-                      <Typography
-                        variant='caption'
-                        sx={{
-                          color: (theme) => values.isEnabled ? theme.palette.grey[500] : theme.palette.grey[300],
-                          fontWeight: !values.isEnabled && '800',
-                          fontSize: !values.isEnabled && '13px',
-                          transition: 'color 0.3s ease-in-out, font-weight 0.3s ease-in-out, font-size 0.3s ease-in-out'
-                        }}
-                      >Inactivo
-                      </Typography>
-                      <Switch
-                        color='primary'
-                        size='small'
-                        checked={values.isEnabled}
-                        name='isEnabled'
-                        onChange={handleChange}
-                      />
-                      <Typography
-                        variant='caption'
-                        sx={{
-                          color: (theme) => !values.isEnabled ? theme.palette.grey[500] : theme.palette.grey[300],
-                          fontWeight: values.isEnabled && '800',
-                          fontSize: values.isEnabled && '13px',
-                          transition: 'color 0.3s ease-in-out, font-weight 0.3s ease-in-out, font-size 0.3s ease-in-out'
-                        }}
-                      >Activo
-                      </Typography>
-                    </Box>
-                  </Grid>
-                )}
-
-                <Grid item xs={12}>
-                  <Grid container spacing={5}>
-                    <Grid item xs={6}>
-                      <Button variant='outlined' color='error' fullWidth onClick={isAdd ? onCloseAdd : onCloseEdit}>
-                        Cancelar
-                      </Button>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Button variant='outlined' color='info' fullWidth type='submit'>
-                        Guardar
-                      </Button>
-                    </Grid>
-                  </Grid>
-                </Grid>
-              </Grid>
-            </PerfectScrollbar>
+            <FormAuth
+              values={values}
+              errors={errors}
+              touched={touched}
+              handleChange={handleChange}
+              handleBlur={handleBlur}
+              setShowPass={setShowPass}
+              isAdd={isAdd}
+              showPass={showPass}
+              onCloseAdd={onCloseAdd}
+              onCloseEdit={onCloseEdit}
+            />
           </form>
         )}
       </Formik>

@@ -1,33 +1,21 @@
-import { Fragment, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 // third
 import { isEmpty } from 'lodash'
 import { toast } from 'sonner'
 
 // mui imports
-import PersonAddAltTwoToneIcon from '@mui/icons-material/PersonAddAltTwoTone'
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Grid,
-  Typography
-} from '@mui/material'
+import { Box, Grid } from '@mui/material'
 
 // project imports
-import InputSearch from '../../ui-components/InputSearch'
-import MainMirrorCard from '../../ui-components/MainMirrorCard'
+import HeaderSearchBox from '../../ui-components/HeaderSearchBox'
+import ModalDelete from '../../ui-components/ModalDelete'
 import ContactEdit from './ContactEdit'
 import PowerUserList from './PowerUserList'
 
 // services
-import { apiCall } from '../../contexts/api'
-
 import { BASE_URL_API } from '../../config'
+import { apiCall } from '../../contexts/api'
 
 const SuperUsers = () => {
   const [render, setRender] = useState(null)
@@ -103,7 +91,7 @@ const SuperUsers = () => {
 
   const [open, setOpen] = useState(false)
 
-  const handleClose = (id) => {
+  const handleClose = () => {
     setOpen(false)
   }
 
@@ -122,6 +110,23 @@ const SuperUsers = () => {
     setOpen(true)
   }
 
+  const onFinish = (u) => {
+    if (u) setUser(u)
+    setContactDetails(true)
+    setContactEdit(false)
+    setRender(Math.random() * 99999)
+  }
+  const onCloseEdit = () => {
+    setContactDetails(true)
+    setContactEdit(false)
+    setContactAdd(false)
+  }
+  const onCloseAdd = () => {
+    setContactDetails(false)
+    setContactEdit(false)
+    setContactAdd(false)
+  }
+
   return (
     <>
       <Box sx={{ display: 'flex', flex: 1, px: '10%' }}>
@@ -131,33 +136,16 @@ const SuperUsers = () => {
 
               <Grid item xs={12} sx={{ '&.MuiGrid-item': { pl: 0 } }}>
                 <Grid container pl={0}>
-                  <MainMirrorCard sx={{ minHeight: 'auto', display: 'flex', gap: 3, justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Box>
-                      <Typography color='white' variant='h2'>Lista de Super Usuarios</Typography>
-                    </Box>
-                    <Box minWidth='40%'>
-                      <InputSearch handleSearch={() => {}} />
-                    </Box>
-                    <Box>
-                      <Button
-                        variant='contained'
-                        color='info'
-                        size='small'
-                        startIcon={<PersonAddAltTwoToneIcon fontSize='small' />}
-                        onClick={handleOnAdd}
-                      >
-                        Agregar
-                      </Button>
-                    </Box>
-                  </MainMirrorCard>
+                  <HeaderSearchBox
+                    handleOnAdd={handleOnAdd}
+                    title='Lista de Super Usuarios'
+                  />
                 </Grid>
               </Grid>
 
               <Grid item xs={12}>
                 <Grid container spacing={3}>
-                  <MainMirrorCard sx={{ minHeight: 'auto', display: 'flex', gap: 3, flexDirection: 'column' }}>
-                    <PowerUserList data={powerUsers} mainData={mainData} loading={loading} onEdit={onEditClick} onDelete={onDelete} />
-                  </MainMirrorCard>
+                  <PowerUserList data={powerUsers} mainData={mainData} loading={loading} onEdit={onEditClick} onDelete={onDelete} />
                 </Grid>
               </Grid>
             </Grid>
@@ -168,22 +156,9 @@ const SuperUsers = () => {
               <ContactEdit
                 user={user}
                 isAdd={contactAdd}
-                onFinish={(u) => {
-                  if (u) setUser(u)
-                  setContactDetails(true)
-                  setContactEdit(false)
-                  setRender(Math.random() * 99999)
-                }}
-                onCloseEdit={() => {
-                  setContactDetails(true)
-                  setContactEdit(false)
-                  setContactAdd(false)
-                }}
-                onCloseAdd={() => {
-                  setContactDetails(false)
-                  setContactEdit(false)
-                  setContactAdd(false)
-                }}
+                onFinish={(u) => { onFinish(u) }}
+                onCloseEdit={onCloseEdit}
+                onCloseAdd={onCloseAdd}
               />
             </Grid>
           )}
@@ -191,29 +166,14 @@ const SuperUsers = () => {
       </Box>
       {
         user &&
-          <Dialog
+          <ModalDelete
             open={open}
-            onClose={handleClose}
-            aria-labelledby='alert-dialog-title'
-            aria-describedby='alert-dialog-description'
-          >
-            <DialogTitle component='div' id='alert-dialog-title' sx={{ color: 'white' }}>
-              <Typography variant='h2' color='inherit'>
-                Eliminar Super Usuario
-              </Typography>
-            </DialogTitle>
-            <DialogContent>
-              <DialogContentText id='alert-dialog-description' sx={{ bgcolor: (theme) => theme.palette.background.paper, color: (theme) => theme.palette.grey[500] }}>
-                <b>¿Estás seguro de eliminar el Super Usuario {user?.fullName} ({user?.email})?</b> Al dar click en aceptar, esta de acuerdo que no podrá recuperar la información.
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions sx={{ display: 'flex', flex: 1, justifyContent: 'space-between' }}>
-              <Button onClick={handleClose} variant='outlined' color='error' autoFocus>Cancelar</Button>
-              <Button onClick={() => handleDelete(user?.powerUser_Id)} variant='outlined' color='info'>
-                Aceptar y Eliminar
-              </Button>
-            </DialogActions>
-          </Dialog>
+            handleClose={handleClose}
+            handleDelete={handleDelete}
+            id={user?.powerUser_Id}
+            title='Eliminar Super Usuario'
+            subtitle={<><b>¿Estás seguro de eliminar el Super Usuario {user?.fullName} ({user?.email})?</b> Al dar click en aceptar, esta de acuerdo que no podrá recuperar la información.</>}
+          />
       }
     </>
   )
