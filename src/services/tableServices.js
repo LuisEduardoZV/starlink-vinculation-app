@@ -42,5 +42,12 @@ function not (a, filter, keyFilter) {
   return a.filter((value) => value[keyFilter] !== filter)
 }
 
-export { descendingComparator, filterData, getComparator, ids, not, stableSort }
+const getContactAvatar = (name) => {
+  if (!name) return
+  let avatar = ''
+  name.trim().split(' ').forEach((op) => { avatar += op.charAt(0).toUpperCase() })
+  return avatar
+}
+
+export { descendingComparator, filterData, getComparator, getContactAvatar, ids, not, stableSort }
 

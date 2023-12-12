@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
 // third
@@ -6,40 +6,21 @@ import { isEmpty } from 'lodash'
 import { toast } from 'sonner'
 
 // mui imports
-import PersonAddAltTwoToneIcon from '@mui/icons-material/PersonAddAltTwoTone'
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Grid,
-  Typography
-} from '@mui/material'
+import { Box, Grid } from '@mui/material'
 
 // project imports
 import useAuth from '../../hooks/useAuth'
 import AsideBackButton from '../../ui-components/AsideBackButton'
-import InputSearch from '../../ui-components/InputSearch'
-import MainMirrorCard from '../../ui-components/MainMirrorCard'
-import NoInfoOverlay from '../../ui-components/NoInfoOverlay'
+import HeaderSearchBox from '../../ui-components/HeaderSearchBox'
+import ModalDelete from '../../ui-components/ModalDelete'
 import ContactDetails from './ContactDetails'
 import ContactEdit from './ContactEdit'
-import ContactList from './ContactList'
+import ContactListContainer from './components/ContactListContainer'
 
 // services
 import { apiCall } from '../../contexts/api'
 
 import { BASE_URL_API } from '../../config'
-
-const getContactAvatar = (name) => {
-  if (!name) return
-  let avatar = ''
-  name.trim().split(' ').forEach((op) => { avatar += op.charAt(0).toUpperCase() })
-  return avatar
-}
 
 const Contacts = () => {
   const { user: userProfile } = useAuth()
@@ -81,6 +62,7 @@ const Contacts = () => {
       loading: 'Procesando...',
       success: () => {
         setRender(Math.random() * 99999)
+        setOpen(false)
         return 'El contacto ha sido eliminado correctamente'
       },
       error: 'Error al eliminar el contacto'
@@ -134,8 +116,63 @@ const Contacts = () => {
 
   const [open, setOpen] = useState(false)
 
-  const handleClose = (id) => {
+  const handleClose = () => {
     setOpen(false)
+  }
+
+  const onActive = (user) => {
+    setUser(user)
+    setContactDetails(true)
+    setContactEdit(false)
+    setContactAdd(false)
+  }
+
+  const onEdit = (user) => {
+    setUser(user)
+    setContactDetails(false)
+    setContactEdit(true)
+    setContactAdd(false)
+  }
+
+  const onDelete = (user) => {
+    setUser(user)
+    setContactDetails(false)
+    setContactEdit(false)
+    setContactAdd(false)
+    setOpen(true)
+  }
+
+  const onEditDetails = () => {
+    setContactDetails(false)
+    setContactEdit(true)
+    setContactAdd(false)
+  }
+  const onCloseDetails = () => {
+    setContactDetails(false)
+    setContactEdit(false)
+  }
+  const onDeleteDetails = () => {
+    setContactDetails(false)
+    setContactEdit(false)
+    setContactAdd(false)
+    setOpen(true)
+  }
+
+  const onFinish = (u) => {
+    if (u) setUser(u)
+    setContactDetails(true)
+    setContactEdit(false)
+    setRender(Math.random() * 99999)
+  }
+  const onCloseEdit = () => {
+    setContactDetails(true)
+    setContactEdit(false)
+    setContactAdd(false)
+  }
+  const onCloseAdd = () => {
+    setContactDetails(false)
+    setContactEdit(false)
+    setContactAdd(false)
   }
 
   return (
@@ -149,75 +186,20 @@ const Contacts = () => {
 
               <Grid item xs={12} sx={{ '&.MuiGrid-item': { pl: 0 } }}>
                 <Grid container pl={0}>
-                  <MainMirrorCard sx={{ minHeight: 'auto', display: 'flex', gap: 3, justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Box>
-                      <Typography color='white' variant='h2'>Lista de contactos</Typography>
-                    </Box>
-                    <Box minWidth='40%'>
-                      <InputSearch handleSearch={() => {}} />
-                    </Box>
-                    <Box>
-                      <Button
-                        variant='contained'
-                        color='info'
-                        size='small'
-                        startIcon={<PersonAddAltTwoToneIcon fontSize='small' />}
-                        onClick={handleOnAdd}
-                      >
-                        Agregar
-                      </Button>
-                    </Box>
-                  </MainMirrorCard>
+                  <HeaderSearchBox handleOnAdd={handleOnAdd} />
                 </Grid>
               </Grid>
 
               <Grid item xs={12}>
                 <Grid container spacing={3}>
-                  <MainMirrorCard sx={{ minHeight: 'auto', display: 'flex', gap: 3, flexDirection: 'column' }}>
-                    {Object.keys(data).map((key, index) => (
-                      <Fragment key={index}>
-                        <Grid item xs={12}>
-                          <Typography variant='h4' color='primary' sx={{ fontSize: '1.5rem' }}>
-                            {key.toUpperCase()}
-                          </Typography>
-                        </Grid>
-                        <Grid item xs={12}>
-                          <Grid container direction='row' spacing={0}>
-                            {data[key].map((userRow, i) => (
-                              <Grid item xs={12} key={i}>
-                                <ContactList
-                                  avatar={getContactAvatar(userRow.contactName)}
-                                  name={userRow.contactName}
-                                  role={userRow.contactPosition}
-                                  phone={userRow.contactPhone}
-                                  onActive={() => {
-                                    setUser(userRow)
-                                    setContactDetails(true)
-                                    setContactEdit(false)
-                                    setContactAdd(false)
-                                  }}
-                                  onEditClick={() => {
-                                    setUser(userRow)
-                                    setContactDetails(false)
-                                    setContactEdit(true)
-                                    setContactAdd(false)
-                                  }}
-                                  onDeleteClick={() => {
-                                    setUser(userRow)
-                                    setContactDetails(false)
-                                    setContactEdit(false)
-                                    setContactAdd(false)
-                                    setOpen(true)
-                                  }}
-                                />
-                              </Grid>
-                            ))}
-                          </Grid>
-                        </Grid>
-                      </Fragment>
-                    ))}
-                    {(!loading && contacts.length === 0) && <NoInfoOverlay />}
-                  </MainMirrorCard>
+                  <ContactListContainer
+                    data={data}
+                    loading={loading}
+                    onActive={onActive}
+                    onDelete={onDelete}
+                    onEdit={onEdit}
+                    tamContacts={contacts.length}
+                  />
                 </Grid>
               </Grid>
             </Grid>
@@ -226,21 +208,9 @@ const Contacts = () => {
             <Grid item sx={{ width: 342, margin: { xs: '0 auto', md: 'initial' }, mt: 0 }}>
               <ContactDetails
                 user={user}
-                onEditClick={() => {
-                  setContactDetails(false)
-                  setContactEdit(true)
-                  setContactAdd(false)
-                }}
-                onClose={() => {
-                  setContactDetails(false)
-                  setContactEdit(false)
-                }}
-                onDelete={() => {
-                  setContactDetails(false)
-                  setContactEdit(false)
-                  setContactAdd(false)
-                  setOpen(true)
-                }}
+                onEditClick={onEditDetails}
+                onClose={onCloseDetails}
+                onDelete={onDeleteDetails}
               />
             </Grid>
           )}
@@ -250,22 +220,9 @@ const Contacts = () => {
               <ContactEdit
                 user={user}
                 isAdd={contactAdd}
-                onFinish={(u) => {
-                  if (u) setUser(u)
-                  setContactDetails(true)
-                  setContactEdit(false)
-                  setRender(Math.random() * 99999)
-                }}
-                onCloseEdit={() => {
-                  setContactDetails(true)
-                  setContactEdit(false)
-                  setContactAdd(false)
-                }}
-                onCloseAdd={() => {
-                  setContactDetails(false)
-                  setContactEdit(false)
-                  setContactAdd(false)
-                }}
+                onFinish={(u) => onFinish(u)}
+                onCloseEdit={onCloseEdit}
+                onCloseAdd={onCloseAdd}
               />
             </Grid>
           )}
@@ -273,29 +230,14 @@ const Contacts = () => {
       </Box>
       {
         user &&
-          <Dialog
+          <ModalDelete
+            title='Eliminar contacto'
+            subtitle={<><b>¿Estás seguro de eliminar el contacto {user?.contactName}?</b> Al dar click en aceptar, esta de acuerdo que no podrá recuperar la información.</>}
+            handleClose={handleClose}
+            handleDelete={handleDelete}
             open={open}
-            onClose={handleClose}
-            aria-labelledby='alert-dialog-title'
-            aria-describedby='alert-dialog-description'
-          >
-            <DialogTitle component='div' id='alert-dialog-title' sx={{ color: 'white' }}>
-              <Typography variant='h2' color='inherit'>
-                Eliminar contacto
-              </Typography>
-            </DialogTitle>
-            <DialogContent>
-              <DialogContentText id='alert-dialog-description' sx={{ bgcolor: (theme) => theme.palette.background.paper, color: (theme) => theme.palette.grey[500] }}>
-                <b>¿Estás seguro de eliminar el contacto {user?.contactName}?</b> Al dar click en aceptar, esta de acuerdo que no podrá recuperar la información.
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions sx={{ display: 'flex', flex: 1, justifyContent: 'space-between' }}>
-              <Button onClick={handleClose} variant='outlined' color='error' autoFocus>Cancelar</Button>
-              <Button onClick={() => handleDelete(user?.contactId)} variant='outlined' color='info'>
-                Aceptar y Eliminar
-              </Button>
-            </DialogActions>
-          </Dialog>
+            id={user?.contactId}
+          />
       }
     </>
   )

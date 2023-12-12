@@ -36,7 +36,17 @@ export default function ThemeCustomization ({ children }) {
         }
       },
       typography: themeTypography,
-      customShadows: themeCustomShadows
+      customShadows: themeCustomShadows,
+      breakpoints: {
+        values: {
+          xs: 0,
+          sm: 600,
+          md: 900,
+          lg: 1200,
+          xl: 1536,
+          '2xl': 1900
+        }
+      }
     }),
     [rtlLayout, theme, themeCustomShadows, themeTypography]
   )

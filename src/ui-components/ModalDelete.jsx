@@ -32,7 +32,7 @@ const ModalDelete = ({ open, id, handleClose, handleDelete, title, subtitle }) =
 
 ModalDelete.propTypes = {
   open: PropTypes.bool,
-  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   handleClose: PropTypes.func,
   handleDelete: PropTypes.func,
   title: PropTypes.string,

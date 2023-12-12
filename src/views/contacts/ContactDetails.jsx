@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 
 // material-ui
 import { Avatar, Button, Chip, Divider, Grid, IconButton, Typography, useMediaQuery } from '@mui/material'
-import { alpha, createTheme } from '@mui/material/styles'
+import { alpha, useTheme } from '@mui/material/styles'
 
 // project imports
 import MainMirrorCard from '../../ui-components/MainMirrorCard'
@@ -16,29 +16,10 @@ import InfoTwoToneIcon from '@mui/icons-material/InfoTwoTone'
 import NotInterestedTwoToneIcon from '@mui/icons-material/NotInterestedTwoTone'
 import WorkTwoToneIcon from '@mui/icons-material/WorkTwoTone'
 
-const getContactAvatar = (name) => {
-  if (!name) return
-  let avatar = ''
-  name.trim().split(' ').forEach((op) => { avatar += op.charAt(0).toUpperCase() })
-  return avatar
-}
-
-// ==============================|| CONTACT CARD/LIST USER DETAILS ||============================== //
+import { getContactAvatar } from '../../services/tableServices'
 
 const ContactDetails = ({ user, onClose, onEditClick, ...others }) => {
-  const theme = createTheme({
-    breakpoints: {
-      values: {
-        xs: 0,
-        sm: 600,
-        md: 900,
-        lg: 1200,
-        xl: 1536,
-        '2xl': 1900
-      }
-    }
-  })
-
+  const theme = useTheme()
   const matchDown2Xl = useMediaQuery(theme.breakpoints.down('2xl'))
 
   return (
