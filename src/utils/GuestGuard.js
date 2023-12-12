@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 // project imports
-import { DASHBOARD_PATH } from '../config'
+import { DASHBOARD_PATH, DASHBOARD_PATH_NOADMIN } from '../config'
 import useAuth from '../hooks/useAuth'
 
 // ==============================|| GUEST GUARD ||============================== //
@@ -14,14 +14,15 @@ import useAuth from '../hooks/useAuth'
  */
 
 const GuestGuard = ({ children }) => {
-  const { isLoggedIn } = useAuth()
+  const { isLoggedIn, user } = useAuth()
   const navigate = useNavigate()
 
   useEffect(() => {
     if (isLoggedIn) {
-      navigate(DASHBOARD_PATH, { replace: true })
+      const path = user.user.isPowerUser ? DASHBOARD_PATH : DASHBOARD_PATH_NOADMIN
+      navigate(path, { replace: true })
     }
-  }, [isLoggedIn, navigate])
+  }, [isLoggedIn, navigate, user])
 
   return children
 }

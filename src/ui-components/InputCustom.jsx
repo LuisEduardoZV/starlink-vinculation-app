@@ -1,11 +1,13 @@
 import TextField from '@mui/material/TextField'
 import PropTypes from 'prop-types'
+import React from 'react'
 
-const InputCustom = (props) => {
+const InputCustom = React.forwardRef((props, ref) => {
   const { error } = props
   return (
     <TextField
       {...props}
+      ref={ref}
       error={error}
       sx={{
         boxShadow: (theme) => theme.shadows[5],
@@ -41,7 +43,9 @@ const InputCustom = (props) => {
       InputProps={{ autoComplete: 'off', autoCorrect: 'off' }}
     />
   )
-}
+})
+
+InputCustom.displayName = 'InputCustom'
 
 InputCustom.propTypes = {
   error: PropTypes.bool

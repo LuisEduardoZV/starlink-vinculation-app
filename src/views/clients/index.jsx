@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 // third
@@ -8,98 +8,24 @@ import { toast } from 'sonner'
 import AccountCircleTwoToneIcon from '@mui/icons-material/AccountCircleTwoTone'
 import ContactPhoneTwoToneIcon from '@mui/icons-material/ContactPhoneTwoTone'
 import GroupAddTwoToneIcon from '@mui/icons-material/GroupAddTwoTone'
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Fade,
-  IconButton,
-  Table,
-  TableBody, TableCell, TableContainer,
-  TablePagination, TableRow,
-  Tooltip,
-  Typography, tooltipClasses
-} from '@mui/material'
-import { alpha, styled } from '@mui/material/styles'
+import { Box, Fade, IconButton } from '@mui/material'
 
 // project imports
-import useAuth from '../../hooks/useAuth'
 import AsideMenuCrud from '../../ui-components/AsideMenuCrud'
-import EnhancedTableHead from '../../ui-components/EnhancedTableHead'
-import LoadingInfoTable from '../../ui-components/LoadingInfoTable'
+import CustomTooltipBtns from '../../ui-components/CustomTooltipBtns'
 import MainMirrorCard from '../../ui-components/MainMirrorCard'
+import ModalDelete from '../../ui-components/ModalDelete'
 import Add from './Add'
+import ClientsTable from './ClientsTable'
 import Edit from './Edit'
-import Row from './Row'
 
 // services
 import { apiCall } from '../../contexts/api'
-import { getComparator, stableSort } from '../../services/tableServices'
 
 import { BASE_URL_API } from '../../config'
 
-const headCells = [
-  {
-    id: 'clientNumber',
-    label: '# Cliente'
-  },
-  {
-    id: 'clientTaxId',
-    label: 'CURP / ID'
-  },
-  {
-    id: 'clientName',
-    label: 'Nombre del cliente'
-  },
-  {
-    id: 'clientEmail',
-    label: 'E-mail'
-  },
-  {
-    id: 'clientPhone',
-    label: 'Teléfono'
-  },
-  {
-    id: 'isEnabled',
-    label: 'Estatus'
-  }
-]
-
-const CustomTooltipUsers = styled(({ className, ...props }) => (
-  <Tooltip {...props} arrow title='Usuarios' placement='right' classes={{ popper: className }} />
-))(({ theme }) => ({
-  [`& .${tooltipClasses.arrow}`]: {
-    color: theme.palette.warning.main
-  },
-  [`& .${tooltipClasses.tooltip}`]: {
-    backgroundColor: theme.palette.warning.main
-  }
-}))
-
-const CustomTooltipContacts = styled(({ className, ...props }) => (
-  <Tooltip {...props} arrow title='Contáctos' placement='right' classes={{ popper: className }} />
-))(({ theme }) => ({
-  [`& .${tooltipClasses.arrow}`]: {
-    color: theme.palette.secondary.main
-  },
-  [`& .${tooltipClasses.tooltip}`]: {
-    backgroundColor: theme.palette.secondary.main
-  }
-}))
-
 const Clients = () => {
-  const { user } = useAuth()
-
   const navigate = useNavigate()
-
-  const [order, setOrder] = useState('asc')
-  const [orderBy, setOrderBy] = useState('clientNumber')
-  const [page, setPage] = useState(0)
-  const [rowsPerPage, setRowsPerPage] = useState(10)
 
   const [mainData, setMainData] = useState([])
   const [data, setData] = useState(mainData)
@@ -141,7 +67,7 @@ const Clients = () => {
     setOpen(true)
   }
 
-  const handleClose = (id) => {
+  const handleClose = () => {
     setOpen(false)
   }
 
@@ -192,47 +118,7 @@ const Clients = () => {
     }
   }
 
-  const handleRequestSort = (event, property) => {
-    const isAsc = orderBy === property && order === 'asc'
-    setOrder(isAsc ? 'desc' : 'asc')
-    setOrderBy(property)
-  }
-
-  const handleClick = (event, id) => {
-    if (id === selected[0]) {
-      setSelected([])
-      setDataSelected(null)
-      setView(null)
-    } else {
-      setSelected([id])
-      const index = data.map((row) => row.clientId).indexOf(id)
-      setDataSelected(data[index])
-      setView(0)
-    }
-  }
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage)
-  }
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10))
-    setPage(0)
-  }
-
-  const isSelected = (name) => selected.indexOf(name) !== -1
-
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0
-
-  const visibleRows = useMemo(
-    () => stableSort(data, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-    [order, orderBy, page, rowsPerPage, data]
-  )
-
   useEffect(() => {
-    if (user && user.user && !user.user.isPowerUser) {
-      navigate(`/clients/${user.user.clientId}/users`, { replace: true })
-    }
     (async () => {
       try {
         setLoading(true)
@@ -245,12 +131,11 @@ const Clients = () => {
       }
     })()
 
-
     return () => {
       setLoading(true)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [forceRender, user])
+  }, [forceRender])
 
   return (
     <>
@@ -263,112 +148,50 @@ const Clients = () => {
         addIcon={GroupAddTwoToneIcon}
         handleSearch={handleSearch}
         extraBtns={[
-          <CustomTooltipUsers key='usersbtn'>
+          <CustomTooltipBtns key='usersbtn' type='warning' title='Usuarios'>
             <IconButton onClick={() => { navigate(`/clients/${selected[0]}/users`) }}>
               <AccountCircleTwoToneIcon color='warning' />
             </IconButton>
-          </CustomTooltipUsers>,
-          <CustomTooltipContacts key='contactbtn'>
+          </CustomTooltipBtns>,
+          <CustomTooltipBtns key='contactbtn' type='secondary' title='Contactos'>
             <IconButton onClick={() => { navigate(`/clients/${selected[0]}/contacts`) }}>
               <ContactPhoneTwoToneIcon color='secondary' />
             </IconButton>
-          </CustomTooltipContacts>]}
+          </CustomTooltipBtns>]}
       />
 
       <Box sx={{ display: 'flex', flex: 1, px: '10%', position: 'relative' }}>
         <Fade in={!collapsed} mountOnEnter unmountOnExit>
           <Box flex={1}>
-            <MainMirrorCard>
-              <TableContainer sx={{ maxWidth: '100%' }}>
-                <Table sx={{ maxWidth: '100%', '& .MuiTableCell-root': { borderColor: (theme) => theme.palette.grey[800] } }} aria-labelledby='tableTitle' size='medium'>
-                  {!loading && data.length === 0 && <caption>No se han encotrado datos</caption>}
-                  <EnhancedTableHead
-                    order={order}
-                    orderBy={orderBy}
-                    onRequestSort={handleRequestSort}
-                    headCells={headCells}
-                  />
-                  <TableBody>
-                    {loading
-                      ? <LoadingInfoTable headCells={headCells} />
-                      : visibleRows.map((row) => {
-                        const isItemSelected = isSelected(row.clientId)
-                        const labelId = `enhanced-table-checkbox-${row.clientId}`
-
-                        return (
-                          <Row
-                            key={labelId}
-                            element={row}
-                            handleClick={(event) => handleClick(event, row.clientId)}
-                            isItemSelected={isItemSelected}
-                            labelId={labelId}
-                            page={page}
-                          />
-                        )
-                      })}
-                    {emptyRows > 0 && (
-                      <TableRow
-                        style={{
-                          height: 53 * emptyRows
-                        }}
-                      >
-                        <TableCell colSpan={6} />
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-              <TablePagination
-                rowsPerPageOptions={[5, 10, 25]}
-                component='div'
-                sx={{
-                  color: 'white',
-                  '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': { color: 'white' },
-                  '& .MuiSelect-select, & .MuiSvgIcon-root': { color: (theme) => theme.palette.primary.main }
-                }}
-                count={data.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-                labelRowsPerPage='Filas por página:'
-                labelDisplayedRows={({ from, to, count }) => (`${from}-${to} de ${count}`)}
-              />
-            </MainMirrorCard>
+            <ClientsTable
+              loading={loading}
+              data={data}
+              selected={selected}
+              setDataSelected={setDataSelected}
+              setSelected={setSelected}
+              setView={setView}
+            />
           </Box>
         </Fade>
-        <Fade in={collapsed} sx={{ flex: 1, bgcolor: (theme) => alpha(theme.palette.grey[600], 0.7), py: 2, px: 3, borderRadius: 2, boxShadow: (theme) => theme.shadows[10], color: 'white', maxWidth: '100%', mb: 3, backdropFilter: 'blur(10px)', border: (theme) => `1px solid ${alpha(theme.palette.grey[600], 0.55)}`, minHeight: 300, transition: 'height 0.3s ease-in-out', position: 'absolute', width: '80%' }}>
-          <Box position='relative'>
-            {view ? <Add handleCancel={handleCancel} data={data} setData={setData} /> : <Edit handleCancel={handleCancel} selected={selected[0]} data={data} setData={setData} />}
+        <Fade in={collapsed} sx={{ position: 'absolute', width: '80%' }}>
+          <Box>
+            <MainMirrorCard sx={{ position: 'relative' }}>
+              {view ? <Add handleCancel={handleCancel} data={data} setData={setData} /> : <Edit handleCancel={handleCancel} selected={selected[0]} data={data} setData={setData} />}
+            </MainMirrorCard>
           </Box>
         </Fade>
       </Box>
 
       {
         dataSelected &&
-          <Dialog
+          <ModalDelete
+            title='Eliminar cliente'
+            subtitle={<><b>¿Estás seguro de eliminar al cliente {dataSelected?.clientName}?</b> Al dar click en aceptar, esta de acuerdo que no podrá recuperar la información.</>}
+            handleClose={handleClose}
+            handleDelete={handleDelete}
             open={open}
-            onClose={handleClose}
-            aria-labelledby='alert-dialog-title'
-            aria-describedby='alert-dialog-description'
-          >
-            <DialogTitle component='div' id='alert-dialog-title' sx={{ color: 'white' }}>
-              <Typography variant='h2' color='inherit'>
-                Eliminar cliente
-              </Typography>
-            </DialogTitle>
-            <DialogContent>
-              <DialogContentText id='alert-dialog-description' sx={{ bgcolor: (theme) => theme.palette.background.paper, color: (theme) => theme.palette.grey[500] }}>
-                <b>¿Estás seguro de eliminar al cliente {dataSelected?.clientName}?</b> Al dar click en aceptar, esta de acuerdo que no podrá recuperar la información.
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions sx={{ display: 'flex', flex: 1, justifyContent: 'space-between' }}>
-              <Button onClick={handleClose} variant='outlined' color='error' autoFocus>Cancelar</Button>
-              <Button onClick={() => handleDelete(dataSelected?.clientId)} variant='outlined' color='info'>
-                Aceptar y Eliminar
-              </Button>
-            </DialogActions>
-          </Dialog>
+            id={dataSelected?.clientId}
+          />
       }
     </>
   )

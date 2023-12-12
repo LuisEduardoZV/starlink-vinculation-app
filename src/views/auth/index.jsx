@@ -1,9 +1,7 @@
 import { useState } from 'react'
 
 // mui imports
-import VisibilityOffTwoToneIcon from '@mui/icons-material/VisibilityOffTwoTone'
-import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone'
-import { Box, Button, IconButton, InputAdornment, Tooltip, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 
 // third
 import { Formik } from 'formik'
@@ -12,8 +10,8 @@ import * as Yup from 'yup'
 
 // project imports
 import useAuth from '../../hooks/useAuth'
-import InputCustom from '../../ui-components/InputCustom'
 import MainMirrorCard from '../../ui-components/MainMirrorCard'
+import AuthLogin from './AuthLogin'
 
 // assets
 import bg from '../../assets/image/opcion.jpg'
@@ -76,68 +74,17 @@ const Auth = () => {
           >
             {({ handleSubmit, handleBlur, handleChange, touched, errors, values, isSubmitting }) => (
               <form noValidate onSubmit={handleSubmit}>
-                <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column', gap: 4 }}>
-                  <Tooltip arrow followCursor disableInteractive {...errors.user && { title: errors.user }}>
-                    <Box>
-                      <InputCustom
-                        label='Usuario'
-                        fullWidth size='small'
-                        error={Boolean(touched.user && errors.user)}
-                        value={values.user}
-                        name='user'
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        required
-                        InputProps={{ autoComplete: 'off' }}
-                      />
-                    </Box>
-                  </Tooltip>
-                  <Tooltip arrow followCursor disableInteractive {...errors.password && { title: errors.password }}>
-                    <Box>
-                      <InputCustom
-                        label='Contraseña' fullWidth size='small'
-                        type={showPass ? 'text' : 'password'}
-                        error={Boolean(touched.password && errors.password)}
-                        value={values.password}
-                        name='password'
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        required
-                        InputProps={{
-                          autoComplete: 'off',
-                          endAdornment: (
-                            <InputAdornment position='end' sx={{ position: 'absolute', right: '2%', bgcolor: 'black' }}>
-                              <IconButton size='small' sx={{ color: (theme) => theme.palette.primary[800] }} onClick={() => setShowPass(current => !current)} onMouseDown={handleMouseDownPassword}>
-                                {showPass ? <VisibilityOffTwoToneIcon /> : <VisibilityTwoToneIcon />}
-                              </IconButton>
-                            </InputAdornment>)
-                        }}
-                      />
-                    </Box>
-                  </Tooltip>
-                  <Button
-                    variant='contained'
-                    type='submit'
-                    sx={{
-                      width: '100%',
-                      bgcolor: 'black',
-                      color: 'white',
-                      boxShadow: (theme) => theme.shadows[5],
-                      transition: 'background-color 0.3s ease-in-out, color 0.3s ease-in-out',
-                      '&:hover': {
-                        bgcolor: (theme) => theme.palette.primary.main,
-                        color: 'black'
-                      }
-                    }}
-                    size='small'
-                    disableElevation
-                    disabled={isSubmitting}
-                    onClick={() => {
-                      if (errors.user && errors.password) toast.error('Es necesario que llene todos los campos para continuar')
-                    }}
-                  >Acceder
-                  </Button>
-                </Box>
+                <AuthLogin
+                  errors={errors}
+                  touched={touched}
+                  values={values}
+                  handleBlur={handleBlur}
+                  handleChange={handleChange}
+                  handleMouseDownPassword={handleMouseDownPassword}
+                  setShowPass={setShowPass}
+                  isSubmitting={isSubmitting}
+                  showPass={showPass}
+                />
               </form>)}
           </Formik>
         </MainMirrorCard>

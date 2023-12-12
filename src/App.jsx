@@ -5,6 +5,8 @@ import ThemeCustomization from './theme'
 
 import { AuthContextProvider as AuthContext } from './contexts/AuthContext'
 
+import Notify from './ui-components/Notify'
+
 import './assets/scss/style.scss'
 
 function App () {
@@ -14,6 +16,7 @@ function App () {
         <AuthContext>
           <>
             <Routes />
+            <Notify />
           </>
         </AuthContext>
       </NavigationScroll>
