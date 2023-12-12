@@ -186,7 +186,7 @@ const Contacts = () => {
 
               <Grid item xs={12} sx={{ '&.MuiGrid-item': { pl: 0 } }}>
                 <Grid container pl={0}>
-                  <HeaderSearchBox handleOnAdd={handleOnAdd} />
+                  <HeaderSearchBox title='Lista de contactos' handleOnAdd={handleOnAdd} />
                 </Grid>
               </Grid>
 

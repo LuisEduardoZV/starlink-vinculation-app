@@ -162,23 +162,19 @@ const Clients = () => {
 
       <Box sx={{ display: 'flex', flex: 1, px: '10%', position: 'relative' }}>
         <Fade in={!collapsed} mountOnEnter unmountOnExit>
-          <Box flex={1}>
-            <ClientsTable
-              loading={loading}
-              data={data}
-              selected={selected}
-              setDataSelected={setDataSelected}
-              setSelected={setSelected}
-              setView={setView}
-            />
-          </Box>
+          <ClientsTable
+            loading={loading}
+            data={data}
+            selected={selected}
+            setDataSelected={setDataSelected}
+            setSelected={setSelected}
+            setView={setView}
+          />
         </Fade>
         <Fade in={collapsed} sx={{ position: 'absolute', width: '80%' }}>
-          <Box>
-            <MainMirrorCard sx={{ position: 'relative' }}>
-              {view ? <Add handleCancel={handleCancel} data={data} setData={setData} /> : <Edit handleCancel={handleCancel} selected={selected[0]} data={data} setData={setData} />}
-            </MainMirrorCard>
-          </Box>
+          <MainMirrorCard sx={{ position: 'relative' }}>
+            {view ? <Add handleCancel={handleCancel} data={data} setData={setData} /> : <Edit handleCancel={handleCancel} selected={selected[0]} data={data} setData={setData} />}
+          </MainMirrorCard>
         </Fade>
       </Box>
 

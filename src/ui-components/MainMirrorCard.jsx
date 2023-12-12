@@ -4,9 +4,10 @@ import React from 'react'
 import { Box } from '@mui/material'
 import { alpha } from '@mui/material/styles'
 
-const MainMirrorCard = React.forwardRef(({ children, sx }, ref) => (
+const MainMirrorCard = React.forwardRef(({ children, sx, ...props }, ref) => (
   <Box
     ref={ref}
+    {...props}
     sx={{
       flex: 1,
       bgcolor: (theme) => alpha(theme.palette.grey[600], 0.7),

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 
 // mui imports
-import { Box, Button, Grid, Switch, Tooltip, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 
 // third imports
 import { Formik } from 'formik'
@@ -11,7 +11,7 @@ import * as Yup from 'yup'
 // project improts
 import { BASE_URL_API } from '../../config'
 import { apiCallWithBody } from '../../contexts/api'
-import InputBase from '../../ui-components/InputBase'
+import AddAuth from './components/AddAuth'
 
 import { emailerrorText, requiredText } from '../../utils/labelsErrorsFormik'
 
@@ -70,102 +70,16 @@ const Add = ({ handleReset, client, backBtn }) => {
       >
         {({ values, touched, errors, isSubmitting, handleSubmit, handleBlur, handleChange }) => (
           <form noValidate onSubmit={handleSubmit} style={{ width: '100%' }}>
-            <Grid container spacing={3}>
-              <Grid item xs={8}>
-                <Tooltip arrow followCursor disableInteractive {...errors.fullName && { title: errors.fullName }}>
-                  <InputBase
-                    name='fullName'
-                    label='Nombre'
-                    variant='filled'
-                    size='small'
-                    fullWidth
-                    color='primary'
-                    error={Boolean(touched.fullName && errors.fullName)}
-                    required
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                  />
-                </Tooltip>
-              </Grid>
-              <Grid item xs={4} position='relative'>
-                <Typography variant='caption' color='primary' sx={{ position: 'absolute', top: '30%', left: '19%', fontSize: '10px' }}>Tipo de usuario</Typography>
-                <Box display='flex' alignItems='center' width='100%' justifyContent='center' mt={2} gap={2}>
-                  <Typography
-                    variant='caption'
-                    sx={{
-                      color: (theme) => values.isAdmin ? theme.palette.grey[500] : theme.palette.grey[300],
-                      fontWeight: !values.isAdmin && '800',
-                      fontSize: !values.isAdmin && '13px',
-                      transition: 'color 0.3s ease-in-out, font-weight 0.3s ease-in-out, font-size 0.3s ease-in-out'
-                    }}
-                  >Normal
-                  </Typography>
-                  <Switch
-                    color='primary'
-                    size='small'
-                    checked={values.isAdmin}
-                    name='isAdmin'
-                    onChange={handleChange}
-                  />
-                  <Typography
-                    variant='caption'
-                    sx={{
-                      color: (theme) => !values.isAdmin ? theme.palette.grey[500] : theme.palette.grey[300],
-                      fontWeight: values.isAdmin && '800',
-                      fontSize: values.isAdmin && '13px',
-                      transition: 'color 0.3s ease-in-out, font-weight 0.3s ease-in-out, font-size 0.3s ease-in-out'
-                    }}
-                  >Administrador
-                  </Typography>
-                </Box>
-              </Grid>
-              <Grid item xs={6}>
-                <Tooltip arrow followCursor disableInteractive {...errors.email && { title: errors.email }}>
-                  <InputBase
-                    name='email'
-                    label='Correo electrónico'
-                    type='email'
-                    variant='filled'
-                    size='small'
-                    fullWidth
-                    color='primary'
-                    error={Boolean(touched.email && errors.email)}
-                    required
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                  />
-                </Tooltip>
-              </Grid>
-              <Grid item xs={6}>
-                <Tooltip arrow followCursor disableInteractive {...errors.password && { title: errors.password }}>
-                  <InputBase
-                    name='password'
-                    label='Contraseña'
-                    type='password'
-                    variant='filled'
-                    size='small'
-                    fullWidth
-                    color='primary'
-                    error={Boolean(touched.password && errors.password)}
-                    required
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    inputProps={{
-                      autocomplete: 'new-password',
-                      form: {
-                        autocomplete: 'off'
-                      }
-                    }}
-                  />
-                </Tooltip>
-              </Grid>
-            </Grid>
-            <Box width='100%' mt={5} display='flex' justifyContent={backBtn ? 'space-between' : 'flex-end'}>
-              {backBtn && (<Button type='submit' variant='outlined' color='error' onClick={handleReset}>Cancelar</Button>)}
-              <Button type='submit' variant='outlined' color='info' disabled={isSubmitting}>
-                Agregar
-              </Button>
-            </Box>
+            <AddAuth
+              errors={errors}
+              touched={touched}
+              values={values}
+              backBtn={backBtn}
+              handleBlur={handleBlur}
+              handleChange={handleChange}
+              handleReset={handleReset}
+              isSubmitting={isSubmitting}
+            />
           </form>
         )}
       </Formik>

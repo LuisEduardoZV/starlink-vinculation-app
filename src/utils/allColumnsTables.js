@@ -24,3 +24,26 @@ export const clientTableHeadders = [
     label: 'Estatus'
   }
 ]
+
+export const usersTableHeadders = [
+  {
+    id: 'fullName',
+    label: 'Nombre'
+  },
+  {
+    id: 'email',
+    label: 'E-mail'
+  },
+  {
+    id: 'isAdmin',
+    label: 'Tipo de usuario'
+  },
+  {
+    id: 'isEnabled',
+    label: 'Estatus'
+  },
+  {
+    id: 'actions',
+    label: 'Acciones'
+  }
+]

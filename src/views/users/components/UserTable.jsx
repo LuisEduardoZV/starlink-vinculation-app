@@ -5,17 +5,18 @@ import React, { useMemo, useState } from 'react'
 import { Table, TableBody, TableCell, TableContainer, TablePagination, TableRow } from '@mui/material'
 
 // project imports
-import EnhancedTableHead from '../../ui-components/EnhancedTableHead'
-import LoadingInfoTable from '../../ui-components/LoadingInfoTable'
-import MainMirrorCard from '../../ui-components/MainMirrorCard'
-import Row from './Row'
+import EnhancedTableHead from '../../../ui-components/EnhancedTableHead'
+import LoadingInfoTable from '../../../ui-components/LoadingInfoTable'
+import MainMirrorCard from '../../../ui-components/MainMirrorCard'
+import NoInfoOverlay from '../../../ui-components/NoInfoOverlay'
+import Row from '../Row'
 
-import { getComparator, stableSort } from '../../services/tableServices'
-import { clientTableHeadders as headCells } from '../../utils/allColumnsTables'
+import { getComparator, stableSort } from '../../../services/tableServices'
+import { usersTableHeadders as headCells } from '../../../utils/allColumnsTables'
 
-const ClientsTable = React.forwardRef(({ loading, setSelected, setDataSelected, setView, selected, data }, ref) => {
+const UserTable = React.forwardRef(({ loading, data, handleEdit, handleClickOpen }, ref) => {
   const [order, setOrder] = useState('asc')
-  const [orderBy, setOrderBy] = useState('clientNumber')
+  const [orderBy, setOrderBy] = useState('fullName')
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
 
@@ -23,19 +24,6 @@ const ClientsTable = React.forwardRef(({ loading, setSelected, setDataSelected, 
     const isAsc = orderBy === property && order === 'asc'
     setOrder(isAsc ? 'desc' : 'asc')
     setOrderBy(property)
-  }
-
-  const handleClick = (event, id) => {
-    if (id === selected[0]) {
-      setSelected([])
-      setDataSelected(null)
-      setView(null)
-    } else {
-      setSelected([id])
-      const index = data.map((row) => row.clientId).indexOf(id)
-      setDataSelected(data[index])
-      setView(0)
-    }
   }
 
   const handleChangePage = (event, newPage) => {
@@ -47,8 +35,6 @@ const ClientsTable = React.forwardRef(({ loading, setSelected, setDataSelected, 
     setPage(0)
   }
 
-  const isSelected = (name) => selected.indexOf(name) !== -1
-
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0
 
   const visibleRows = useMemo(
@@ -59,7 +45,7 @@ const ClientsTable = React.forwardRef(({ loading, setSelected, setDataSelected, 
     <MainMirrorCard ref={ref}>
       <TableContainer sx={{ maxWidth: '100%' }}>
         <Table sx={{ maxWidth: '100%', '& .MuiTableCell-root': { borderColor: (theme) => theme.palette.grey[800] } }} aria-labelledby='tableTitle' size='medium'>
-          {!loading && data.length === 0 && <caption>No se han encotrado datos</caption>}
+          {!loading && data.length === 0 && <caption><NoInfoOverlay /></caption>}
           <EnhancedTableHead
             order={order}
             orderBy={orderBy}
@@ -70,24 +56,22 @@ const ClientsTable = React.forwardRef(({ loading, setSelected, setDataSelected, 
             {loading
               ? <LoadingInfoTable headCells={headCells} />
               : visibleRows.map((row) => {
-                const isItemSelected = isSelected(row.clientId)
-                const labelId = `enhanced-table-checkbox-${row.clientId}`
+                const labelId = `enhanced-table-checkbox-${row.userId}`
 
                 return (
                   <Row
                     key={labelId}
                     element={row}
-                    handleClick={(event) => handleClick(event, row.clientId)}
-                    isItemSelected={isItemSelected}
-                    labelId={labelId}
                     page={page}
+                    onEdit={handleEdit}
+                    onDelete={handleClickOpen}
                   />
                 )
               })}
             {emptyRows > 0 && (
               <TableRow
                 style={{
-                  height: 53 * emptyRows
+                  height: 53 * 5
                 }}
               >
                 <TableCell colSpan={6} />
@@ -116,15 +100,13 @@ const ClientsTable = React.forwardRef(({ loading, setSelected, setDataSelected, 
   )
 })
 
-ClientsTable.displayName = 'ClientsTable'
+UserTable.displayName = 'UserTable'
 
-ClientsTable.propTypes = {
+UserTable.propTypes = {
   loading: PropTypes.bool,
-  setSelected: PropTypes.func,
-  setDataSelected: PropTypes.func,
-  setView: PropTypes.func,
-  selected: PropTypes.array,
-  data: PropTypes.array
+  data: PropTypes.array,
+  handleEdit: PropTypes.func,
+  handleClickOpen: PropTypes.func
 }
 
-export default ClientsTable
+export default UserTable
