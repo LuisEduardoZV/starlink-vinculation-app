@@ -1,12 +1,11 @@
 import PropTypes from 'prop-types'
-import React from 'react'
 
 // mui imports
 import { Box, Switch, Typography } from '@mui/material'
 
-const CustomSwitch = React.forwardRef(({ value, handleChange, name, label, option1, option2, ...props }, ref) =>
+const CustomSwitch = ({ value, handleChange, name, label, option1, option2, ...props }) =>
   (
-    <Box ref={ref}>
+    <>
       <Typography variant='caption' color='primary' sx={{ position: 'absolute', top: '30%', left: '19%', fontSize: '10px' }}>{label}</Typography>
       <Box display='flex' alignItems='center' width='100%' justifyContent='center' mt={2} gap={2}>
         <Typography
@@ -37,10 +36,8 @@ const CustomSwitch = React.forwardRef(({ value, handleChange, name, label, optio
         >{option2}
         </Typography>
       </Box>
-    </Box>
-  ))
-
-CustomSwitch.displayName = 'CustomSwitch'
+    </>
+  )
 
 CustomSwitch.propTypes = {
   value: PropTypes.oneOfType([PropTypes.bool, PropTypes.number, PropTypes.string]),

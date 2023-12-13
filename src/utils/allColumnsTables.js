@@ -47,3 +47,22 @@ export const usersTableHeadders = [
     label: 'Acciones'
   }
 ]
+
+export const terminalsTableHeadders = [
+  {
+    id: 'terminalSiteName',
+    label: 'Nombre del sitio'
+  },
+  {
+    id: 'terminalLineOfService',
+    label: 'Línea de servicio'
+  },
+  {
+    id: 'terminalKitNumber',
+    label: 'Número de kit'
+  },
+  {
+    id: 'terminalSerialNumber',
+    label: 'Número de serie'
+  }
+]
