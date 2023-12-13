@@ -8,12 +8,12 @@ import { toast } from 'sonner'
 import AccountCircleTwoToneIcon from '@mui/icons-material/AccountCircleTwoTone'
 import ContactPhoneTwoToneIcon from '@mui/icons-material/ContactPhoneTwoTone'
 import GroupAddTwoToneIcon from '@mui/icons-material/GroupAddTwoTone'
-import { Box, Fade, IconButton } from '@mui/material'
+import { Box, IconButton } from '@mui/material'
 
 // project imports
 import AsideMenuCrud from '../../ui-components/AsideMenuCrud'
 import CustomTooltipBtns from '../../ui-components/CustomTooltipBtns'
-import MainMirrorCard from '../../ui-components/MainMirrorCard'
+import MainMirrorFade from '../../ui-components/MainMirrorFade'
 import ModalDelete from '../../ui-components/ModalDelete'
 import Add from './Add'
 import ClientsTable from './ClientsTable'
@@ -161,7 +161,7 @@ const Clients = () => {
       />
 
       <Box sx={{ display: 'flex', flex: 1, px: '10%', position: 'relative' }}>
-        <Fade in={!collapsed} mountOnEnter unmountOnExit>
+        <MainMirrorFade open={!collapsed}>
           <ClientsTable
             loading={loading}
             data={data}
@@ -170,12 +170,10 @@ const Clients = () => {
             setSelected={setSelected}
             setView={setView}
           />
-        </Fade>
-        <Fade in={collapsed} sx={{ position: 'absolute', width: '80%' }}>
-          <MainMirrorCard sx={{ position: 'relative' }}>
-            {view ? <Add handleCancel={handleCancel} data={data} setData={setData} /> : <Edit handleCancel={handleCancel} selected={selected[0]} data={data} setData={setData} />}
-          </MainMirrorCard>
-        </Fade>
+        </MainMirrorFade>
+        <MainMirrorFade open={collapsed} sx={{ position: 'absolute', width: '80%' }}>
+          {view ? <Add handleCancel={handleCancel} data={data} setData={setData} /> : <Edit handleCancel={handleCancel} selected={selected[0]} data={data} setData={setData} />}
+        </MainMirrorFade>
       </Box>
 
       {

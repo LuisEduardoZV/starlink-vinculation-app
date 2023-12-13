@@ -1,13 +1,15 @@
 import PropTypes from 'prop-types'
 
 // mui imports
-import { Box, Button, Grid, Tooltip, Typography } from '@mui/material'
+import { Box, Grid, Tooltip, Typography } from '@mui/material'
 
 // third imports
 import { PatternFormat } from 'react-number-format'
 
 // project imports
+import CustomSwitch from '../../../ui-components/CustomSwitch'
 import InputBase from '../../../ui-components/InputBase'
+import DefaultBtnsForms from '../../../ui-components/extended/DefaultBtnsForms'
 import ContactsContainer from './ContactsContainer'
 
 const AuthContainer = ({ values, touched, errors, isSubmitting, handleBlur, handleChange, loading, contacts, contact, handleAddNewContact, handleDeleteContact, handleChangeContact, handleCancel, preContacts, handleDeletePreContact, isAdding }) => {
@@ -120,7 +122,7 @@ const AuthContainer = ({ values, touched, errors, isSubmitting, handleBlur, hand
           </Box>
         </Tooltip>
       </Grid>
-      <Grid item xs={12} md={12}>
+      <Grid item xs={12} md={isAdding ? 12 : 9}>
         <Tooltip arrow followCursor disableInteractive {...errors.clientEmail && { title: errors.clientEmail }}>
           <InputBase
             value={values.clientEmail}
@@ -138,6 +140,18 @@ const AuthContainer = ({ values, touched, errors, isSubmitting, handleBlur, hand
           />
         </Tooltip>
       </Grid>
+      {!isAdding && (
+        <Grid item xs={12} md={3} position='relative'>
+          <CustomSwitch
+            value={values.isEnabled}
+            handleChange={handleChange}
+            name='isEnabled'
+            label='Estatus'
+            option1='Inactivo'
+            option2='Activo'
+          />
+        </Grid>
+      )}
       <Grid item xs={12}>
         <Tooltip arrow followCursor disableInteractive {...errors.publicNote && { title: errors.publicNote }}>
           <InputBase
@@ -173,12 +187,11 @@ const AuthContainer = ({ values, touched, errors, isSubmitting, handleBlur, hand
         handleDeletePreContact={preContacts && handleDeletePreContact}
       />
       <Grid item xs={12}>
-        <Box width='100%' display='flex' justifyContent='space-evenly' height='100%'>
-          <Button color='info' variant='outlined' type='submit' disabled={isSubmitting} sx={{ alignSelf: 'flex-start' }}>
-            {isAdding ? 'Agregar' : 'Guardar'}
-          </Button>
-          <Button color='error' variant='outlined' onClick={handleCancel} sx={{ alignSelf: 'flex-start' }}>Cancelar</Button>
-        </Box>
+        <DefaultBtnsForms
+          okBtnLabel={isAdding ? 'Agregar' : 'Guardar'}
+          handleCancel={handleCancel}
+          isSubmitting={isSubmitting}
+        />
       </Grid>
     </Grid>
   )

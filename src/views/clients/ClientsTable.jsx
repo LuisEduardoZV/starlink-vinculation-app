@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React, { useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 
 // mui imports
 import { Table, TableBody, TableCell, TableContainer, TablePagination, TableRow } from '@mui/material'
@@ -7,13 +7,12 @@ import { Table, TableBody, TableCell, TableContainer, TablePagination, TableRow 
 // project imports
 import EnhancedTableHead from '../../ui-components/EnhancedTableHead'
 import LoadingInfoTable from '../../ui-components/LoadingInfoTable'
-import MainMirrorCard from '../../ui-components/MainMirrorCard'
 import Row from './Row'
 
 import { getComparator, stableSort } from '../../services/tableServices'
 import { clientTableHeadders as headCells } from '../../utils/allColumnsTables'
 
-const ClientsTable = React.forwardRef(({ loading, setSelected, setDataSelected, setView, selected, data }, ref) => {
+const ClientsTable = ({ loading, setSelected, setDataSelected, setView, selected, data }) => {
   const [order, setOrder] = useState('asc')
   const [orderBy, setOrderBy] = useState('clientNumber')
   const [page, setPage] = useState(0)
@@ -56,7 +55,7 @@ const ClientsTable = React.forwardRef(({ loading, setSelected, setDataSelected, 
     [order, orderBy, page, rowsPerPage, data]
   )
   return (
-    <MainMirrorCard ref={ref}>
+    <>
       <TableContainer sx={{ maxWidth: '100%' }}>
         <Table sx={{ maxWidth: '100%', '& .MuiTableCell-root': { borderColor: (theme) => theme.palette.grey[800] } }} aria-labelledby='tableTitle' size='medium'>
           {!loading && data.length === 0 && <caption>No se han encotrado datos</caption>}
@@ -112,11 +111,9 @@ const ClientsTable = React.forwardRef(({ loading, setSelected, setDataSelected, 
         labelRowsPerPage='Filas por página:'
         labelDisplayedRows={({ from, to, count }) => (`${from}-${to} de ${count}`)}
       />
-    </MainMirrorCard>
+    </>
   )
-})
-
-ClientsTable.displayName = 'ClientsTable'
+}
 
 ClientsTable.propTypes = {
   loading: PropTypes.bool,

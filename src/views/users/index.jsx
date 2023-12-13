@@ -5,13 +5,13 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'sonner'
 
 // mui imports
-import { Box, Fade } from '@mui/material'
+import { Box } from '@mui/material'
 
 // project imports
 import useAuth from '../../hooks/useAuth'
 import AsideBackButton from '../../ui-components/AsideBackButton'
 import HeaderSearchBox from '../../ui-components/HeaderSearchBox'
-import MainMirrorCard from '../../ui-components/MainMirrorCard'
+import MainMirrorFade from '../../ui-components/MainMirrorFade'
 import ModalDelete from '../../ui-components/ModalDelete'
 import Add from './Add'
 import Edit from './Edit'
@@ -142,22 +142,18 @@ const UserList = () => {
       {user?.user?.isPowerUser && <AsideBackButton inFade={collapsed} handleBack={collapsed ? handleCancel : null} />}
 
       <Box sx={{ display: 'flex', flex: 1, px: '10%', position: 'relative', flexDirection: 'column' }}>
-        <Fade in={!collapsed} unmountOnExit mountOnEnter>
-          <HeaderSearchBox title='Lista de usuarios' handleOnAdd={handleAdd} handleSearch={handleSearch} />
-        </Fade>
-        <Fade in={!collapsed} mountOnEnter unmountOnExit>
+        <HeaderSearchBox title='Lista de usuarios' handleOnAdd={handleAdd} handleSearch={handleSearch} open={!collapsed} />
+        <MainMirrorFade open={!collapsed}>
           <UserTable
             loading={loading}
             data={data}
             handleClickOpen={handleClickOpen}
             handleEdit={handleEdit}
           />
-        </Fade>
-        <Fade in={collapsed} sx={{ position: 'absolute', width: '80%' }}>
-          <MainMirrorCard sx={{ position: 'relative' }}>
-            {view ? <Add handleReset={handleCancel} client={clientId} backBtn={user?.user?.isPowerUser === 0} /> : <Edit handleReset={handleCancel} data={dataSelected} backBtn={user?.user?.isPowerUser === 0} />}
-          </MainMirrorCard>
-        </Fade>
+        </MainMirrorFade>
+        <MainMirrorFade open={collapsed} sx={{ position: 'absolute', width: '80%' }}>
+          {view ? <Add handleReset={handleCancel} client={clientId} backBtn={user?.user?.isPowerUser === 0} /> : <Edit handleReset={handleCancel} data={dataSelected} backBtn={user?.user?.isPowerUser === 0} />}
+        </MainMirrorFade>
       </Box>
 
       {

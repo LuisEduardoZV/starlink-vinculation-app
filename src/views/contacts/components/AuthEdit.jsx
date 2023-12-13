@@ -5,10 +5,11 @@ import { PatternFormat } from 'react-number-format'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 
 // mui importts
-import { Box, Button, Divider, Grid, Switch, Tooltip, Typography } from '@mui/material'
+import { Box, Divider, Grid, Switch, Tooltip, Typography } from '@mui/material'
 
 // project imports
 import InputBase from '../../../ui-components/InputBase'
+import DefaultBtnsForms from '../../../ui-components/extended/DefaultBtnsForms'
 
 const AuthEdit = ({ errors, values, touched, isAdd, handleBlur, handleChange, onCloseAdd, onCloseEdit }) => {
   return (
@@ -131,18 +132,11 @@ const AuthEdit = ({ errors, values, touched, isAdd, handleBlur, handleChange, on
         </Grid>
 
         <Grid item xs={12}>
-          <Grid container spacing={1}>
-            <Grid item xs={6}>
-              <Button variant='outlined' color='error' fullWidth onClick={isAdd ? onCloseAdd : onCloseEdit}>
-                Cancelar
-              </Button>
-            </Grid>
-            <Grid item xs={6}>
-              <Button variant='contained' fullWidth type='submit'>
-                Guardar
-              </Button>
-            </Grid>
-          </Grid>
+          <DefaultBtnsForms
+            handleCancel={isAdd ? onCloseAdd : onCloseEdit}
+            okBtnLabel={isAdd ? 'Agregar' : 'Guardar'}
+            justifyContent='space-between'
+          />
         </Grid>
       </Grid>
     </PerfectScrollbar>

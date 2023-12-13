@@ -63,7 +63,7 @@ const Terminals = () => {
     setOpen(true)
   }
 
-  const handleClose = (id) => {
+  const handleClose = () => {
     setOpen(false)
   }
 

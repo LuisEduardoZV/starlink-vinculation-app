@@ -1,11 +1,12 @@
 import PropTypes from 'prop-types'
 
 // mui imports
-import { Box, Button, Grid, Tooltip } from '@mui/material'
+import { Grid, Tooltip } from '@mui/material'
 
 // project imports
 import CustomSwitch from '../../../ui-components/CustomSwitch'
 import InputBase from '../../../ui-components/InputBase'
+import DefaultBtnsForms from '../../../ui-components/extended/DefaultBtnsForms'
 
 const EditAuth = ({ errors, values, touched, handleBlur, handleChange, backBtn, handleReset, isSubmitting }) => {
   return (
@@ -91,12 +92,12 @@ const EditAuth = ({ errors, values, touched, handleBlur, handleChange, backBtn, 
           </Tooltip>
         </Grid>
       </Grid>
-      <Box width='100%' mt={5} display='flex' justifyContent={backBtn ? 'space-between' : 'flex-end'}>
-        {backBtn && (<Button type='submit' variant='outlined' color='error' onClick={handleReset}>Cancelar</Button>)}
-        <Button type='submit' variant='outlined' color='info' disabled={isSubmitting}>
-          Guardar
-        </Button>
-      </Box>
+      <DefaultBtnsForms
+        okBtnLabel='Guardar'
+        handleCancel={handleReset}
+        isSubmitting={isSubmitting}
+        noCancel
+      />
     </>
   )
 }

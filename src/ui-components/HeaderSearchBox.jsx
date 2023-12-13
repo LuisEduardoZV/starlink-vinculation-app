@@ -1,5 +1,4 @@
 import PropTypes from 'prop-types'
-import React from 'react'
 
 // mui imports
 import PersonAddAltTwoToneIcon from '@mui/icons-material/PersonAddAltTwoTone'
@@ -7,12 +6,12 @@ import { Box, Button, Typography } from '@mui/material'
 
 // project imports
 import InputSearch from './InputSearch'
-import MainMirrorCard from './MainMirrorCard'
+import MainMirrorFade from './MainMirrorFade'
 
-const HeaderSearchBox = React.forwardRef(({ handleOnAdd, handleSearch, Icon, title }, ref) => {
+const HeaderSearchBox = ({ handleOnAdd, handleSearch, Icon, title, open = true }) => {
   const CustomIcon = Icon ?? PersonAddAltTwoToneIcon
   return (
-    <MainMirrorCard ref={ref} sx={{ minHeight: 'auto', display: 'flex', gap: 3, justifyContent: 'space-between', alignItems: 'center' }}>
+    <MainMirrorFade open={open} sx={{ minHeight: 'auto', display: 'flex', gap: 3, justifyContent: 'space-between', alignItems: 'center' }}>
       <Box>
         <Typography color='white' variant='h2'>{title}</Typography>
       </Box>
@@ -30,14 +29,13 @@ const HeaderSearchBox = React.forwardRef(({ handleOnAdd, handleSearch, Icon, tit
           Agregar
         </Button>
       </Box>
-    </MainMirrorCard>
+    </MainMirrorFade>
   )
-})
-
-HeaderSearchBox.displayName = 'HeaderSearchBox'
+}
 
 HeaderSearchBox.propTypes = {
   title: PropTypes.string,
+  open: PropTypes.bool,
   handleOnAdd: PropTypes.func,
   handleSearch: PropTypes.func,
   Icon: PropTypes.element

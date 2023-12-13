@@ -6,11 +6,12 @@ import PerfectScrollbar from 'react-perfect-scrollbar'
 // mui imports
 import VisibilityOffTwoToneIcon from '@mui/icons-material/VisibilityOffTwoTone'
 import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone'
-import { Button, Divider, Grid, IconButton, InputAdornment, Tooltip, Typography } from '@mui/material'
+import { Divider, Grid, IconButton, InputAdornment, Tooltip, Typography } from '@mui/material'
 
 // project importgs
 import CustomSwitch from '../../../ui-components/CustomSwitch'
 import InputBase from '../../../ui-components/InputBase'
+import DefaultBtnsForms from '../../../ui-components/extended/DefaultBtnsForms'
 
 const FormAuth = ({ isAdd, showPass, values, errors, touched, handleBlur, handleChange, onCloseAdd, onCloseEdit, setShowPass }) => {
   return (
@@ -99,18 +100,11 @@ const FormAuth = ({ isAdd, showPass, values, errors, touched, handleBlur, handle
         )}
 
         <Grid item xs={12}>
-          <Grid container spacing={5}>
-            <Grid item xs={6}>
-              <Button variant='outlined' color='error' fullWidth onClick={isAdd ? onCloseAdd : onCloseEdit}>
-                Cancelar
-              </Button>
-            </Grid>
-            <Grid item xs={6}>
-              <Button variant='outlined' color='info' fullWidth type='submit'>
-                Guardar
-              </Button>
-            </Grid>
-          </Grid>
+          <DefaultBtnsForms
+            handleCancel={isAdd ? onCloseAdd : onCloseEdit}
+            okBtnLabel={isAdd ? 'Agregar' : 'Guardar'}
+            justifyContent='space-between'
+          />
         </Grid>
       </Grid>
     </PerfectScrollbar>
