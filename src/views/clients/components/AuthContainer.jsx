@@ -37,7 +37,7 @@ const AuthContainer = ({ values, touched, errors, isSubmitting, handleBlur, hand
           <InputBase
             value={values.clientTaxId}
             name='clientTaxId'
-            label='CURP / ID'
+            label='RFC / ID'
             onBlur={handleBlur}
             onChange={handleChange}
             variant='filled'
@@ -188,7 +188,6 @@ const AuthContainer = ({ values, touched, errors, isSubmitting, handleBlur, hand
       />
       <Grid item xs={12}>
         <DefaultBtnsForms
-          okBtnLabel={isAdding ? 'Agregar' : 'Guardar'}
           handleCancel={handleCancel}
           isSubmitting={isSubmitting}
         />

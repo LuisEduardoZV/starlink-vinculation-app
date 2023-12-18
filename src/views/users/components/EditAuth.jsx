@@ -93,7 +93,6 @@ const EditAuth = ({ errors, values, touched, handleBlur, handleChange, backBtn, 
         </Grid>
       </Grid>
       <DefaultBtnsForms
-        okBtnLabel='Guardar'
         handleCancel={handleReset}
         isSubmitting={isSubmitting}
         noCancel

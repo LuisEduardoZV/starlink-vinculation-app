@@ -7,48 +7,30 @@ import DeleteSweepTwoToneIcon from '@mui/icons-material/DeleteSweepTwoTone'
 import HighlightOffTwoToneIcon from '@mui/icons-material/HighlightOffTwoTone'
 import ModeEditOutlineTwoToneIcon from '@mui/icons-material/ModeEditOutlineTwoTone'
 import SearchTwoToneIcon from '@mui/icons-material/SearchTwoTone'
-import { Box, Collapse, Divider, Fade, IconButton, Stack, Tooltip, tooltipClasses } from '@mui/material'
-import { alpha, styled } from '@mui/material/styles'
+import { Box, Collapse, Divider, Fade, IconButton, Stack } from '@mui/material'
+import { alpha } from '@mui/material/styles'
 
+// project imports
+import CustomTooltipBtns from './CustomTooltipBtns'
 import InputSearch from './InputSearch'
 
-const AsideMenuCrud = ({ inFade, view, dataSelected, handleAdd, handleEdit, handleOpenDelete, addIcon, handleSearch, extraBtns }) => {
+const AsideMenuCrud = ({ inFade, view, dataSelected, handleAdd, handleEdit, handleOpenDelete, addIcon, handleSearch, extraBtns, btnsAvailable = true }) => {
   const [activeSearch, setActiveSearch] = useState(false)
 
   const AddIcon = addIcon ?? AddCircleTwoToneIcon
 
-  const CustomTooltipAdd = styled(({ className, ...props }) => (
-    <Tooltip {...props} arrow title='Agregar' placement='right' classes={{ popper: className }} />
-  ))(({ theme }) => ({
-    [`& .${tooltipClasses.arrow}`]: {
-      color: theme.palette.primary.main
-    },
-    [`& .${tooltipClasses.tooltip}`]: {
-      backgroundColor: theme.palette.primary.main
+  const renderExtraBtn = () => {
+    if (extraBtns) {
+      return (
+        <>
+          {extraBtns}
+        </>
+      )
     }
-  }))
+    return null
+  }
 
-  const CustomTooltipEdit = styled(({ className, ...props }) => (
-    <Tooltip {...props} arrow title='Editar' placement='right' classes={{ popper: className }} />
-  ))(({ theme }) => ({
-    [`& .${tooltipClasses.arrow}`]: {
-      color: theme.palette.info.main
-    },
-    [`& .${tooltipClasses.tooltip}`]: {
-      backgroundColor: theme.palette.info.main
-    }
-  }))
-
-  const CustomTooltipDelete = styled(({ className, ...props }) => (
-    <Tooltip {...props} arrow title='Eliminar' placement='right' classes={{ popper: className }} />
-  ))(({ theme }) => ({
-    [`& .${tooltipClasses.arrow}`]: {
-      color: theme.palette.error.main
-    },
-    [`& .${tooltipClasses.tooltip}`]: {
-      backgroundColor: theme.palette.error.main
-    }
-  }))
+  const aditionalBtns = renderExtraBtn()
 
   return (
     <Fade in={!inFade} mountOnEnter unmountOnExit style={{ zIndex: 5 }}>
@@ -77,33 +59,33 @@ const AsideMenuCrud = ({ inFade, view, dataSelected, handleAdd, handleEdit, hand
                 </Box>
               </Box>
             </Collapse>
-            <Divider sx={{ borderColor: (theme) => theme.palette.grey[800], my: 0.5 }} />
-            <CustomTooltipAdd>
-              <IconButton onClick={handleAdd}>
-                <AddIcon color='primary' />
-              </IconButton>
-            </CustomTooltipAdd>
-            <Collapse in={!!dataSelected && !inFade && view !== 1}>
-              <Stack direction='column'>
-                <CustomTooltipEdit>
-                  <IconButton onClick={handleEdit}>
-                    <ModeEditOutlineTwoToneIcon color='info' />
+            {(!btnsAvailable && extraBtns) && (aditionalBtns)}
+            {btnsAvailable && (
+              <>
+                <Divider sx={{ borderColor: (theme) => theme.palette.grey[800], my: 0.5 }} />
+                <CustomTooltipBtns key='addbtn' type='primary' title='Agregar'>
+                  <IconButton onClick={handleAdd}>
+                    <AddIcon color='primary' />
                   </IconButton>
-                </CustomTooltipEdit>
-                {extraBtns && (
-                  <>
-                    {extraBtns}
+                </CustomTooltipBtns>
+                <Collapse in={!!dataSelected && !inFade && view !== 1}>
+                  <Stack direction='column'>
+                    <CustomTooltipBtns key='editbtn' type='info' title='Editar'>
+                      <IconButton onClick={handleEdit}>
+                        <ModeEditOutlineTwoToneIcon color='info' />
+                      </IconButton>
+                    </CustomTooltipBtns>
+                    {extraBtns && (aditionalBtns)}
                     <Divider sx={{ borderColor: (theme) => theme.palette.grey[800], my: 0.5 }} />
-                  </>
-                )}
-                <CustomTooltipDelete>
-                  <IconButton onClick={handleOpenDelete}>
-                    <DeleteSweepTwoToneIcon color='error' />
-                  </IconButton>
-                </CustomTooltipDelete>
-              </Stack>
-            </Collapse>
-
+                    <CustomTooltipBtns key='deletebtn' type='error' title='Eliminar'>
+                      <IconButton onClick={handleOpenDelete}>
+                        <DeleteSweepTwoToneIcon color='error' />
+                      </IconButton>
+                    </CustomTooltipBtns>
+                  </Stack>
+                </Collapse>
+              </>
+            )}
           </Stack>
         </Box>
       </Box>
@@ -113,6 +95,7 @@ const AsideMenuCrud = ({ inFade, view, dataSelected, handleAdd, handleEdit, hand
 
 AsideMenuCrud.propTypes = {
   inFade: PropTypes.bool,
+  btnsAvailable: PropTypes.bool,
   view: PropTypes.number,
   handleAdd: PropTypes.func,
   handleEdit: PropTypes.func,

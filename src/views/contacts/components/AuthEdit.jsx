@@ -134,7 +134,6 @@ const AuthEdit = ({ errors, values, touched, isAdd, handleBlur, handleChange, on
         <Grid item xs={12}>
           <DefaultBtnsForms
             handleCancel={isAdd ? onCloseAdd : onCloseEdit}
-            okBtnLabel={isAdd ? 'Agregar' : 'Guardar'}
             justifyContent='space-between'
           />
         </Grid>

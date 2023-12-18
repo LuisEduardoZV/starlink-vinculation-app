@@ -5,20 +5,19 @@ import { toast } from 'sonner'
 
 // mui imports
 import LeakAddTwoToneIcon from '@mui/icons-material/LeakAddTwoTone'
-import { Box } from '@mui/material'
+import RefreshTwoToneIcon from '@mui/icons-material/RefreshTwoTone'
+import { Box, IconButton } from '@mui/material'
 
 // project imports
 import useAuth from '../../hooks/useAuth'
 import AsideMenuCrud from '../../ui-components/AsideMenuCrud'
-import MainMirrorFade from '../../ui-components/MainMirrorFade'
-import ModalDelete from '../../ui-components/ModalDelete'
-import Add from './Add'
-import Edit from './Edit'
+import CustomTooltipBtns from '../../ui-components/CustomTooltipBtns'
+import MainMirrorCard from '../../ui-components/MainMirrorCard'
 import TableTerminals from './components/TableTerminals'
 
 // services
 import { BASE_URL_API } from '../../config'
-import { apiCall } from '../../contexts/api'
+import { apiCall, apiCallWithBody } from '../../contexts/api'
 
 const Terminals = () => {
   const { user } = useAuth()
@@ -31,65 +30,9 @@ const Terminals = () => {
   const [selected, setSelected] = useState([])
   const [dataSelected, setDataSelected] = useState(null)
 
-  const [view, setView] = useState(null)
-  const [collapsed, setCollapsed] = useState(false)
-
-  const [open, setOpen] = useState(false)
-
-  const [forceRender, setForceRender] = useState(null)
-
-  const handleCancel = async (e, needRender) => {
-    setView(null)
-    setCollapsed(false)
-    setDataSelected(null)
-    setSelected([])
-    setOpen(false)
-    if (needRender) {
-      await setForceRender(Math.random() * 9999)
-    }
-  }
-
-  const handleAdd = () => {
-    setCollapsed(current => !current)
-    setView(1)
-  }
-
-  const handleEdit = () => {
-    setCollapsed(current => !current)
-    setView(0)
-  }
-
-  const handleClickOpen = () => {
-    setOpen(true)
-  }
-
-  const handleClose = () => {
-    setOpen(false)
-  }
-
-  const handleDelete = (id) => {
-    const promise = () => new Promise((resolve) => {
-      let data = null
-      try {
-        data = apiCall({ url: `${BASE_URL_API}/Terminals/${id}`, method: 'DELETE' })
-      } catch (error) {
-        return resolve({ status: 500, data: null })
-      }
-      return resolve({ status: data ? 200 : 404, data })
-    })
-
-    toast.promise(promise, {
-      loading: 'Procesando...',
-      success: () => {
-        handleCancel('', true)
-        return 'La terminal ha sido eliminada correctamente'
-      },
-      error: 'Error al eliminar la terminal'
-    })
-  }
+  const [forceRender, setForceRender] = useState(false)
 
   const handleSearch = (e, filters) => {
-    setSelected([])
     if (filters.length === 0) {
       setData(mainData)
     } else {
@@ -99,12 +42,12 @@ const Terminals = () => {
       for (let j = 0; j < filters.length; j += 1) {
         for (let i = 0; i < available.length; i += 1) {
           if (
-            available[i].serviceLineNumber.toLowerCase().includes(filters[j]) ||
-            available[i].terminalFriendlyName.toLowerCase().includes(filters[j]) ||
-            available[i].terminalKitNumber.toLowerCase().includes(filters[j]) ||
-            available[i].terminalLineOfService.toLowerCase().includes(filters[j]) ||
-            available[i].terminalSerialNumber.toLowerCase().includes(filters[j]) ||
-            available[i].terminalSiteName.toLowerCase().includes(filters[j])
+            available[i]?.serviceLineNumber.toLowerCase().includes(filters[j].trim().toLowerCase()) ||
+            available[i]?.terminalFriendlyName?.toLowerCase()?.includes(filters[j].trim().toLowerCase()) ||
+            available[i]?.terminalKitNumber.toLowerCase().includes(filters[j].trim().toLowerCase()) ||
+            available[i]?.terminalLineOfService.toLowerCase().includes(filters[j].trim().toLowerCase()) ||
+            available[i]?.terminalSerialNumber.toLowerCase().includes(filters[j].trim().toLowerCase()) ||
+            available[i]?.terminalSiteName.toLowerCase().includes(filters[j].trim().toLowerCase())
           ) {
             if (!newRows.find((value) => value === available[i])) { newRows.push(available[i]) }
           }
@@ -118,13 +61,24 @@ const Terminals = () => {
     if (id === selected[0]) {
       setSelected([])
       setDataSelected(null)
-      setView(null)
     } else {
       setSelected([id])
       const index = data.map((row) => row.terminalId).indexOf(id)
       setDataSelected(data[index])
-      setView(0)
     }
+  }
+
+  const handleSave = async (info) => {
+    const id = toast.loading('Cargando...')
+    try {
+      const res = await apiCallWithBody({ url: `${BASE_URL_API}/Terminals/${info.terminalId}`, method: 'PUT', body: JSON.stringify(info) })
+      if (!res) throw new Error('Hubo un error al guardar los datos, inténtelo mas tarde')
+      else toast.success('Se ha actualizado la información', { id })
+    } catch (error) {
+      console.log(error)
+      toast.error(error.message, { id })
+    }
+    setForceRender((prev) => !prev)
   }
 
   useEffect(() => {
@@ -139,11 +93,10 @@ const Terminals = () => {
         setMainData(res)
         setData(res)
 
-        setTimeout(() => {
-          setLoading(false)
-        }, 1000)
+        setLoading(false)
       } catch (error) {
         console.log(error)
+        toast.error('Error al recibir la información, intente actualizar la página')
       }
     })()
 
@@ -155,40 +108,25 @@ const Terminals = () => {
   return (
     <>
       <AsideMenuCrud
-        inFade={collapsed}
+        inFade={false}
         dataSelected={dataSelected}
-        view={view} handleAdd={handleAdd}
-        handleEdit={handleEdit}
-        handleOpenDelete={handleClickOpen}
         addIcon={LeakAddTwoToneIcon}
         handleSearch={handleSearch}
+        btnsAvailable={false}
+        extraBtns={[<CustomTooltipBtns key='btnRefresh' type='secondary' title='Actualizar'><IconButton onClick={() => setForceRender((prev) => !prev)}><RefreshTwoToneIcon color='secondary' /></IconButton></CustomTooltipBtns>]}
       />
 
       <Box sx={{ display: 'flex', flex: 1, px: '10%' }}>
-        <MainMirrorFade open={!collapsed}>
+        <MainMirrorCard>
           <TableTerminals
             loading={loading}
             data={data}
             selected={selected}
             handleClick={handleClick}
+            handleSave={handleSave}
           />
-        </MainMirrorFade>
-        <MainMirrorFade open={collapsed} sx={{ position: 'absolute', width: '80%' }}>
-          {view ? <Add handleCancel={handleCancel} /> : <Edit handleCancel={handleCancel} selected={dataSelected} />}
-        </MainMirrorFade>
+        </MainMirrorCard>
       </Box>
-
-      {
-        dataSelected &&
-          <ModalDelete
-            title='Eliminar terminal'
-            subtitle={<><b>¿Estás seguro de eliminar la terminal {dataSelected.terminalFriendlyName ?? dataSelected.terminalSiteName} ({dataSelected.terminalSerialNumber})?</b> Al dar click en aceptar, esta de acuerdo que no podrá recuperar la información.</>}
-            handleClose={handleClose}
-            handleDelete={handleDelete}
-            open={open}
-            id={dataSelected?.terminalId}
-          />
-      }
     </>
   )
 }

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
@@ -28,13 +29,16 @@ const Contacts = () => {
   const { clientId } = useParams()
   const navigate = useNavigate()
 
-  const [render, setRender] = useState(null)
+  const [render, forceRender] = useState(false)
 
-  const [contacts, setContacts] = useState([])
+  const [mainData, setMainData] = useState([])
+  const [contacts, setContacts] = useState(mainData)
   const [user, setUser] = useState({})
   const [data, setData] = useState({})
 
   const [loading, setLoading] = useState(true)
+
+  const needRender = () => forceRender((prev) => !prev)
 
   const convertData = (userData) =>
     userData.reduce((a, curr) => {
@@ -47,26 +51,24 @@ const Contacts = () => {
       return a
     }, {})
 
-  const handleDelete = (id) => {
-    const promise = () => new Promise((resolve) => {
-      let data = null
-      try {
-        data = apiCall({ url: `${BASE_URL_API}/Contacts/${id}`, method: 'DELETE' })
-      } catch (error) {
-        return resolve({ status: 500, data: null })
-      }
-      return resolve({ status: data ? 200 : 404, data })
-    })
+  const onCloseDetails = () => {
+    setContactDetails(false)
+    setContactEdit(false)
+  }
 
-    toast.promise(promise, {
-      loading: 'Procesando...',
-      success: () => {
-        setRender(Math.random() * 99999)
-        setOpen(false)
-        return 'El contacto ha sido eliminado correctamente'
-      },
-      error: 'Error al eliminar el contacto'
-    })
+  const handleDelete = async (id) => {
+    const idToast = toast.loading('Cargando...')
+    try {
+      const data = await apiCall({ url: `${BASE_URL_API}/Contacts/${id}`, method: 'DELETE' })
+      if (!data) throw new Error('No se pudo eliminar el contacto')
+      onCloseDetails()
+      needRender()
+      setOpen(false)
+      toast.success('Contacto eliminado correctamente', { id: idToast })
+    } catch (error) {
+      console.log(error)
+      toast.error('No se pudo eliminar el contacto', { id: idToast })
+    }
   }
 
   useEffect(() => {
@@ -76,6 +78,7 @@ const Contacts = () => {
         setLoading(true)
         const res = await apiCall({ url: `${BASE_URL_API}/getClientContactos?id=${clientId}` })
 
+        setMainData(res)
         setContacts(res)
         setData(convertData(res))
         setLoading(false)
@@ -85,8 +88,7 @@ const Contacts = () => {
     })()
 
     return () => setLoading(true)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [render, clientId])
+  }, [clientId, render])
 
   useEffect(() => {
     setData(convertData(contacts))
@@ -99,6 +101,7 @@ const Contacts = () => {
   const [contactDetails, setContactDetails] = useState(false)
   const [contactEdit, setContactEdit] = useState(false)
   const [contactAdd, setContactAdd] = useState(false)
+
   const handleOnAdd = () => {
     setUser({
       contactId: 0,
@@ -136,7 +139,6 @@ const Contacts = () => {
 
   const onDelete = (user) => {
     setUser(user)
-    setContactDetails(false)
     setContactEdit(false)
     setContactAdd(false)
     setOpen(true)
@@ -147,22 +149,12 @@ const Contacts = () => {
     setContactEdit(true)
     setContactAdd(false)
   }
-  const onCloseDetails = () => {
-    setContactDetails(false)
-    setContactEdit(false)
-  }
-  const onDeleteDetails = () => {
-    setContactDetails(false)
-    setContactEdit(false)
-    setContactAdd(false)
-    setOpen(true)
-  }
 
   const onFinish = (u) => {
     if (u) setUser(u)
     setContactDetails(true)
     setContactEdit(false)
-    setRender(Math.random() * 99999)
+    needRender()
   }
   const onCloseEdit = () => {
     setContactDetails(true)
@@ -173,6 +165,28 @@ const Contacts = () => {
     setContactDetails(false)
     setContactEdit(false)
     setContactAdd(false)
+  }
+
+  const handleSearch = (e, filters) => {
+    if (filters.length === 0) {
+      setContacts(mainData)
+    } else {
+      const newRows = []
+      const available = mainData
+
+      for (let j = 0; j < filters.length; j += 1) {
+        for (let i = 0; i < available.length; i += 1) {
+          if (
+            available[i].contactName.toLowerCase().includes(filters[j].trim().toLowerCase()) ||
+            available[i].contactPosition.toLowerCase().includes(filters[j].trim().toLowerCase()) ||
+            available[i].contactPhone.toLowerCase().includes(filters[j].trim().toLowerCase())
+          ) {
+            if (!newRows.find((value) => value === available[i])) { newRows.push(available[i]) }
+          }
+        }
+      }
+      setContacts(newRows)
+    }
   }
 
   return (
@@ -186,7 +200,7 @@ const Contacts = () => {
 
               <Grid item xs={12} sx={{ '&.MuiGrid-item': { pl: 0 } }}>
                 <Grid container pl={0}>
-                  <HeaderSearchBox title='Lista de contactos' handleOnAdd={handleOnAdd} />
+                  <HeaderSearchBox title='Lista de contactos' handleOnAdd={handleOnAdd} handleSearch={handleSearch} />
                 </Grid>
               </Grid>
 
@@ -210,7 +224,7 @@ const Contacts = () => {
                 user={user}
                 onEditClick={onEditDetails}
                 onClose={onCloseDetails}
-                onDelete={onDeleteDetails}
+                onDelete={onDelete}
               />
             </Grid>
           )}

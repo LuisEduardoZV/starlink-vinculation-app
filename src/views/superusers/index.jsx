@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 // third
 import { isEmpty } from 'lodash'
@@ -8,6 +9,7 @@ import { toast } from 'sonner'
 import { Box, Grid } from '@mui/material'
 
 // project imports
+import useAuth from '../../hooks/useAuth'
 import HeaderSearchBox from '../../ui-components/HeaderSearchBox'
 import ModalDelete from '../../ui-components/ModalDelete'
 import ContactEdit from './ContactEdit'
@@ -18,7 +20,10 @@ import { BASE_URL_API } from '../../config'
 import { apiCall } from '../../contexts/api'
 
 const SuperUsers = () => {
-  const [render, setRender] = useState(null)
+  const { user: login } = useAuth()
+  const navigate = useNavigate()
+
+  const [render, setRender] = useState(false)
 
   const [mainData, setMainData] = useState([])
   const [powerUsers, setPowerUsers] = useState([])
@@ -27,30 +32,58 @@ const SuperUsers = () => {
   const [loading, setLoading] = useState(true)
 
   const handleDelete = (id) => {
-    const promise = () => new Promise((resolve) => {
+    const promise = () => new Promise((resolve, reject) => {
       let data = null
       try {
         data = apiCall({ url: `${BASE_URL_API}/PowerUsers/${id}`, method: 'DELETE' })
       } catch (error) {
-        return resolve({ status: 500, data: null })
+        return reject(new Error('No ha sido posible eliminar el super usuario'))
       }
       return resolve({ status: data ? 200 : 404, data })
     })
 
     toast.promise(promise, {
       loading: 'Procesando...',
-      success: () => {
-        setRender(Math.random() * 99999)
+      success: async () => {
+        await setRender((prev) => !prev)
+        setOpen(false)
         return 'El Super Usuario ha sido eliminado correctamente'
       },
-      error: 'Error al eliminar el Super Usuario'
+      error: (er) => {
+        return er.message
+      }
     })
   }
+
+  const handleSearch = (e, filters) => {
+    if (filters.length === 0) {
+      setPowerUsers(mainData)
+    } else {
+      const newRows = []
+      const available = mainData
+
+      for (let j = 0; j < filters.length; j += 1) {
+        for (let i = 0; i < available.length; i += 1) {
+          if (
+            available[i].fullName.toLowerCase().includes(filters[j].trim().toLowerCase()) ||
+            available[i].email.toLowerCase().includes(filters[j].trim().toLowerCase())
+          ) {
+            if (!newRows.find((value) => value === available[i])) { newRows.push(available[i]) }
+          }
+        }
+      }
+      setPowerUsers(newRows)
+    }
+  }
+
+  useEffect(() => {
+    if (!login || !login.user.isPowerUser) navigate('/terminals')
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [login])
 
   useEffect(() => {
     (async () => {
       try {
-        setLoading(true)
         const res = await apiCall({ url: `${BASE_URL_API}/PowerUsers` })
         setMainData(res)
         setPowerUsers(res)
@@ -63,7 +96,6 @@ const SuperUsers = () => {
     return () => {
       setLoading(true)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [render])
 
   useEffect(() => {
@@ -114,13 +146,15 @@ const SuperUsers = () => {
     if (u) setUser(u)
     setContactDetails(true)
     setContactEdit(false)
-    setRender(Math.random() * 99999)
+    setRender((prev) => !prev)
   }
+
   const onCloseEdit = () => {
     setContactDetails(true)
     setContactEdit(false)
     setContactAdd(false)
   }
+
   const onCloseAdd = () => {
     setContactDetails(false)
     setContactEdit(false)
@@ -138,6 +172,7 @@ const SuperUsers = () => {
                 <Grid container pl={0}>
                   <HeaderSearchBox
                     handleOnAdd={handleOnAdd}
+                    handleSearch={handleSearch}
                     title='Lista de Super Usuarios'
                   />
                 </Grid>

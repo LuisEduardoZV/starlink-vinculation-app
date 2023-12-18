@@ -14,7 +14,7 @@ import { clientTableHeadders as headCells } from '../../utils/allColumnsTables'
 
 const ClientsTable = ({ loading, setSelected, setDataSelected, setView, selected, data }) => {
   const [order, setOrder] = useState('asc')
-  const [orderBy, setOrderBy] = useState('clientNumber')
+  const [orderBy, setOrderBy] = useState('clientName')
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
 

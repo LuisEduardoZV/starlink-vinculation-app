@@ -18,7 +18,7 @@ import Edit from './Edit'
 import UserTable from './components/UserTable'
 
 // services
-import { apiCall } from '../../contexts/api'
+import { apiCall, apiCallWithBody } from '../../contexts/api'
 
 import { BASE_URL_API } from '../../config'
 
@@ -74,12 +74,13 @@ const UserList = () => {
   }
 
   const handleDelete = (id) => {
-    const promise = () => new Promise((resolve) => {
+    const promise = () => new Promise((resolve, reject) => {
       let data = null
       try {
-        data = apiCall({ url: `${BASE_URL_API}/Users/${id}`, method: 'DELETE' })
+        data = apiCallWithBody({ url: `${BASE_URL_API}/Users/${id}`, method: 'DELETE' })
       } catch (error) {
-        return resolve({ status: 500, data: null })
+        console.log(error)
+        return reject(new Error('No es posible eliminar el usuario ya que tiene una terminal vinculada'))
       }
       return resolve({ status: data ? 200 : 404, data })
     })
@@ -90,7 +91,10 @@ const UserList = () => {
         handleCancel('', true)
         return 'El usuario ha sido eliminado correctamente'
       },
-      error: 'Error al eliminar el usuario'
+      error: (error) => {
+        handleCancel()
+        return error.message
+      }
     })
   }
 
@@ -133,6 +137,9 @@ const UserList = () => {
 
     return () => {
       setLoading(true)
+      setMainData([])
+      setData([])
+      setDataSelected(null)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [forceRender])

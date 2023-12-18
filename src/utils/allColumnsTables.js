@@ -5,7 +5,7 @@ export const clientTableHeadders = [
   },
   {
     id: 'clientTaxId',
-    label: 'CURP / ID'
+    label: 'RFC / ID'
   },
   {
     id: 'clientName',
@@ -52,6 +52,10 @@ export const terminalsTableHeadders = [
   {
     id: 'terminalSiteName',
     label: 'Nombre del sitio'
+  },
+  {
+    id: 'terminalFriendlyName',
+    label: 'Nombre personalizado'
   },
   {
     id: 'terminalLineOfService',

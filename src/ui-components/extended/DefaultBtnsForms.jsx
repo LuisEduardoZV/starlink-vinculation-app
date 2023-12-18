@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 // mui imports
 import { Box, Button } from '@mui/material'
 
-const DefaultBtnsForms = ({ okBtnLabel, cancelBtnLabel = 'Cancelar', handleCancel, isSubmitting, noCancel = false, ...props }) => {
+const DefaultBtnsForms = ({ okBtnLabel = 'Guardar', cancelBtnLabel = 'Cancelar', handleCancel, isSubmitting, noCancel = false, ...props }) => {
   return (
     <Box width='100%' display='flex' justifyContent={noCancel ? 'flex-end' : 'space-evenly'} height='100%' {...noCancel && { mt: 4 }} {...props}>
       {!noCancel && (

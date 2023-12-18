@@ -80,7 +80,6 @@ const AddAuth = ({ errors, values, touched, handleBlur, handleChange, backBtn, h
         </Grid>
       </Grid>
       <DefaultBtnsForms
-        okBtnLabel='Agregar'
         handleCancel={handleReset}
         isSubmitting={isSubmitting}
         noCancel

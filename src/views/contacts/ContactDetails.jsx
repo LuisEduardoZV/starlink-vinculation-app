@@ -18,7 +18,7 @@ import WorkTwoToneIcon from '@mui/icons-material/WorkTwoTone'
 
 import { getContactAvatar } from '../../services/tableServices'
 
-const ContactDetails = ({ user, onClose, onEditClick, ...others }) => {
+const ContactDetails = ({ user, onClose, onEditClick, onDelete, ...others }) => {
   const theme = useTheme()
   const matchDown2Xl = useMediaQuery(theme.breakpoints.down('2xl'))
 
@@ -70,7 +70,7 @@ const ContactDetails = ({ user, onClose, onEditClick, ...others }) => {
               </Button>
             </Grid>
             <Grid item xs={6}>
-              <Button variant='outlined' color='error' fullWidth startIcon={<NotInterestedTwoToneIcon />}>
+              <Button variant='outlined' color='error' fullWidth startIcon={<NotInterestedTwoToneIcon />} onClick={() => onDelete(user)}>
                 Elminar
               </Button>
             </Grid>
@@ -134,6 +134,7 @@ const ContactDetails = ({ user, onClose, onEditClick, ...others }) => {
 ContactDetails.propTypes = {
   user: PropTypes.object,
   onClose: PropTypes.func,
+  onDelete: PropTypes.func,
   onEditClick: PropTypes.func
 }
 

@@ -50,7 +50,7 @@ const Step2 = ({ values, errors, active, handleChange }) => {
       try {
         if (client) {
           setLoading(true)
-          const res = await apiCall({ url: `${BASE_URL_API}/getClientTerminales?id=${client}` })
+          const res = await apiCall({ url: `${BASE_URL_API}/Terminals` })
           setAllTerminals(res)
 
           setLoading(false)
