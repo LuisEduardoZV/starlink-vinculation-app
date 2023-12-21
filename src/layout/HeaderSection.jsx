@@ -13,6 +13,7 @@ import ProfileSection from './ProfileSection'
 
 import AccountCircleTwoToneIcon from '@mui/icons-material/AccountCircleTwoTone'
 import AdminPanelSettingsTwoToneIcon from '@mui/icons-material/AdminPanelSettingsTwoTone'
+import CloudDoneTwoToneIcon from '@mui/icons-material/CloudDoneTwoTone'
 import ContactPhoneTwoToneIcon from '@mui/icons-material/ContactPhoneTwoTone'
 import InsertLinkIcon from '@mui/icons-material/InsertLink'
 import SatelliteAltTwoToneIcon from '@mui/icons-material/SatelliteAltTwoTone'
@@ -97,7 +98,10 @@ const HeaderSection = () => {
               )}
           <LinkTab label='Terminales' href='/terminals' icon={<SatelliteAltTwoToneIcon fontSize='small' sx={{ color: tab === 2 ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />} />
           {user?.user?.isPowerUser && <LinkTab
-            label='Vincular' href='/linking' icon={<InsertLinkIcon fontSize='small' sx={{ color: tab === 3 ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />}
+            label={<Typography whiteSpace='break-spaces' display='flex'>Terminales Asignadas</Typography>} href='/terminalsAssigned' icon={<CloudDoneTwoToneIcon fontSize='small' sx={{ color: tab === 3 ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />}
+                                      />}
+          {user?.user?.isPowerUser && <LinkTab
+            label='Vincular' href='/linking' icon={<InsertLinkIcon fontSize='small' sx={{ color: tab === 4 ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />}
                                       />}
         </Tabs>
       </Box>

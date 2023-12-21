@@ -6,18 +6,21 @@ import Routes from './routes'
 
 import { AuthContextProvider as AuthContext } from './contexts/AuthContext'
 
+import ThemeCustomization from './theme'
 import Notify from './ui-components/Notify'
 
 function App () {
   return (
-    <NavigationScroll>
-      <AuthContext>
-        <>
-          <Routes />
-          <Notify />
-        </>
-      </AuthContext>
-    </NavigationScroll>
+    <ThemeCustomization>
+      <NavigationScroll>
+        <AuthContext>
+          <>
+            <Routes />
+            <Notify />
+          </>
+        </AuthContext>
+      </NavigationScroll>
+    </ThemeCustomization>
   )
 }
 

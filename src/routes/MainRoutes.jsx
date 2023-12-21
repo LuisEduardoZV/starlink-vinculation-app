@@ -7,6 +7,7 @@ import Contacts from '../views/contacts'
 import Linking from '../views/linking'
 import SuperUsers from '../views/superusers'
 import Terminals from '../views/terminals'
+import TerminalsAssigned from '../views/terminalsAssigned'
 import Users from '../views/users'
 
 import AuthGuard from '../utils/AuthGuard'
@@ -36,6 +37,10 @@ const MainRoutes = {
     {
       path: '/clients/:clientId/users',
       element: <Users />
+    },
+    {
+      path: '/terminalsAssigned',
+      element: <TerminalsAssigned />
     },
     {
       path: '/terminals',

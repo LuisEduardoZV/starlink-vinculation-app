@@ -95,7 +95,7 @@ const TermianlsList = ({ values, handleChange, inView }) => {
   useEffect(() => {
     (async () => {
       try {
-        const res = await apiCall({ url: `${BASE_URL_API}/Terminals` })
+        const res = await apiCall({ url: `${BASE_URL_API}/TerminalNotAsigment` })
         setData(res)
 
         setLoading(false)
