@@ -51,9 +51,6 @@ const CustomListItemButtonInfo = styled(ListItemButton)(({ theme }) => ({
   '&.Mui-selected': {
     backgroundColor: alpha(theme.palette.info.dark, 0.2),
     borderColor: theme.palette.info.main,
-    position: 'sticky',
-    top: 1,
-    zIndex: 2,
     backdropFilter: 'blur(60px)'
   },
   '&.Mui-selected .MuiListItemText-primary': {
