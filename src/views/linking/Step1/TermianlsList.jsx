@@ -79,9 +79,7 @@ const TermianlsList = ({ values, handleChange, inView }) => {
           if (
             available[i]?.serviceLineNumber.toLowerCase().includes(filters[j].trim().toLowerCase()) ||
             available[i]?.terminalFriendlyName?.toLowerCase()?.includes(filters[j].trim().toLowerCase()) ||
-            available[i]?.terminalKitNumber.toLowerCase().includes(filters[j].trim().toLowerCase()) ||
             available[i]?.terminalLineOfService.toLowerCase().includes(filters[j].trim().toLowerCase()) ||
-            available[i]?.terminalSerialNumber.toLowerCase().includes(filters[j].trim().toLowerCase()) ||
             available[i]?.terminalSiteName.toLowerCase().includes(filters[j].trim().toLowerCase())
           ) {
             if (!newRows.find((value) => value === available[i])) { newRows.push(available[i]) }

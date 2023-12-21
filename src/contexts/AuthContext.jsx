@@ -66,7 +66,6 @@ export const AuthContextProvider = ({ children }) => {
   const loginProvider = async (user, password) => {
     try {
       const res = await apiCall({ url: `${BASE_URL_API}/Login?email=${user}&password=${password}` })
-      console.log(res)
       if (res) {
         if (!res.isAdmin && !res.isPowerUser) return -1
         setConfig({

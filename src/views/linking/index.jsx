@@ -40,7 +40,6 @@ const Linking = () => {
         })}
         onSubmit={async (values, { setStatus, setSubmitting }) => {
           delete values.submit
-          console.log(values)
 
           const toastId = toast.loading('Vinculando...')
           try {
@@ -59,8 +58,6 @@ const Linking = () => {
               }
             }
 
-            console.log(usersInfo)
-
             const globalData = []
             for (let i = 0; i < usersInfo.length; i++) {
               const data = usersInfo[i]
@@ -72,10 +69,7 @@ const Linking = () => {
               }
             }
 
-            console.log(globalData)
-
             const response = await apiCallWithBody({ url: `${BASE_URL_API}/AssignsALL`, method: 'POST', body: JSON.stringify(globalData) })
-            console.log(response)
 
             if (response === 'Insert') {
               toast.success('Se han vinculado correctamente', { id: toastId })
@@ -86,46 +80,6 @@ const Linking = () => {
           } catch (error) {
             toast.error(error.message, { id: toastId })
           }
-
-          //
-          /*
-          try {
-            // if (!values.dashboardId) throw new Error('Debe seleccionar un Dashboard')
-            // if (!values.userId && values.user?.trim() === '' && values.password?.trim() === '') throw new Error('Debe seleccionar un usuario disponible o crear uno nuevo, si así se desea')
-            // if (!values.userId && (values.user?.trim() === '' || values.password?.trim() === '')) throw new Error('Para crear un nuevo usuario debe proporcionar toda la información solicitada')
-            const data = {
-              userId: 0,
-              clientId: values.client,
-              fullName: `NewUser-Terminal-${values.terminals?.toString()}`,
-              email: values.user,
-              password: values.password,
-              isEnabled: 1,
-              isAdmin: 0
-            }
-            const newUser = await apiCallWithBody({ url: `${BASE_URL_API}/Users`, method: 'POST', body: JSON.stringify(data) })
-            if (!newUser) throw new Error('Hubo un error al crear el nuveo usuario')
-
-            delete values.user
-            delete values.password
-            // delete values.client
-            values.dashboardId = values.dashboardId.dashboardId
-            values.userId = newUser.userId
-
-            values.terminals.forEach(async (id) => {
-              const data = { ...values, terminalId: id }
-              delete data.terminals
-              const res = await apiCallWithBody({ url: `${BASE_URL_API}/Assigns`, method: 'POST', body: JSON.stringify(data) })
-              if (!res) throw new Error(`Error al vincularse con la terminal ${id}`)
-            })
-
-            toast.success('Se han vinculado conrrectamente', { id: toastId })
-            setStatus({ success: true })
-            setSubmitting(false)
-            navigate('/terminals', { replace: true, state: { view: 2 } })
-          } catch (error) {
-            toast.error(error.message, { id: toastId })
-          }
-          */
         }}
       >
         {({ values, errors, touched, handleSubmit, setFieldValue, handleBlur }) => (

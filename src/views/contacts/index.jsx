@@ -77,6 +77,13 @@ const Contacts = () => {
       try {
         setLoading(true)
         const res = await apiCall({ url: `${BASE_URL_API}/getClientContactos?id=${clientId}` })
+        res.sort((a, b) => {
+          const nameA = a.contactName.toUpperCase()
+          const nameB = b.contactName.toUpperCase()
+          if (nameA < nameB) return -1
+          if (nameA > nameB) return 1
+          return 0
+        })
 
         setMainData(res)
         setContacts(res)
