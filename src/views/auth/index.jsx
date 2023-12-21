@@ -62,7 +62,9 @@ const Auth = () => {
                 setSubmitting(true)
                 const account = await loginProvider(values.user, values.password)
 
-                if (account) {
+                if (account === -1) {
+                  toast.error('No tiene permisos suficientes para ingresar', { id: notify })
+                } else if (account) {
                   toast.success(`Sesión iniciada como: ${values.user}`, { id: notify })
                 } else {
                   toast.error('El usuario y/o contraseña no son correctos', { id: notify })
