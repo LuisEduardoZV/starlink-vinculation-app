@@ -73,15 +73,15 @@ export const terminalsTableHeadders = [
 
 export const terminalsAssignedTableHeadders = [
   {
+    id: 'fullName',
+    label: 'Nombre del usuario'
+  },
+  {
     id: 'terminalSiteName',
     label: 'Nombre del sitio'
   },
   {
     id: 'dashboardName',
     label: 'Nombre del dashboard'
-  },
-  {
-    id: 'fullName',
-    label: 'Nombre del usuario'
   }
 ]

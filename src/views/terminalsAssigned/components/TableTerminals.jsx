@@ -16,7 +16,7 @@ import { terminalsAssignedTableHeadders as headCells } from '../../../utils/allC
 
 const TableTerminals = ({ loading, data, selected, handleClick, handleSave }) => {
   const [order, setOrder] = React.useState('asc')
-  const [orderBy, setOrderBy] = React.useState('terminalSiteName')
+  const [orderBy, setOrderBy] = React.useState('fullName')
   const [page, setPage] = React.useState(0)
   const [rowsPerPage, setRowsPerPage] = React.useState(10)
 
@@ -53,6 +53,7 @@ const TableTerminals = ({ loading, data, selected, handleClick, handleSave }) =>
             orderBy={orderBy}
             onRequestSort={handleRequestSort}
             headCells={headCells}
+            hasExtendedRowOption
           />
           <TableBody>
             {loading
@@ -65,10 +66,11 @@ const TableTerminals = ({ loading, data, selected, handleClick, handleSave }) =>
                   <Row
                     key={labelId}
                     element={row}
-                    handleClick={(event) => handleClick(event, row.terminalId)}
+                    handleClick={(event) => handleClick(event, row.assignId)}
                     isItemSelected={isItemSelected}
                     labelId={labelId}
                     page={page}
+                    hasMoreActions
                   />
                 )
               })}

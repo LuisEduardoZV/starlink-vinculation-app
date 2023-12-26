@@ -64,3 +64,30 @@ export async function apiCallWithBody ({
     Promise.reject(error)
   }
 }
+
+export async function apiCallGrafana ({
+  url,
+  method = 'POST',
+  body = JSON.stringify({}),
+  headers
+}) {
+  try {
+    const datos = await fetch(url, {
+      method,
+      body,
+      headers,
+      mode: 'no-cors'
+    })
+      .then((response) => {
+        if (response.ok) {
+          if (response.status === 204) return []
+          return response.json()
+        }
+        return false
+      })
+      .then((data) => data)
+    return datos
+  } catch (error) {
+    Promise.reject(error)
+  }
+}

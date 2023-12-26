@@ -10,6 +10,7 @@ import { Box } from '@mui/material'
 // project imports
 import AsideMenuCrud from '../../ui-components/AsideMenuCrud'
 import MainMirrorCard from '../../ui-components/MainMirrorCard'
+import ModalDelete from '../../ui-components/ModalDelete'
 import TableTerminals from './components/TableTerminals'
 
 // services
@@ -22,8 +23,12 @@ const TerminalsAssigned = () => {
 
   const [loading, setLoading] = useState(true)
 
+  const [open, setOpen] = useState(false)
+
   const [selected, setSelected] = useState([])
   const [dataSelected, setDataSelected] = useState(null)
+
+  const handleClose = () => { setOpen(false) }
 
   const handleSearch = (e, filters) => {
     if (filters.length === 0) {
@@ -55,6 +60,8 @@ const TerminalsAssigned = () => {
       setSelected([id])
       const index = data.map((row) => row.terminalId).indexOf(id)
       setDataSelected(data[index])
+      console.log(data[index])
+      setOpen(true)
     }
   }
 
@@ -97,6 +104,14 @@ const TerminalsAssigned = () => {
           />
         </MainMirrorCard>
       </Box>
+
+      <ModalDelete
+        handleClose={handleClose}
+        open={open}
+        id={selected[0]}
+        title='Eliminar vinculo de terminal'
+        subtitle={<><b>¿Estás seguro de eliminar al usuario {dataSelected?.fullName} <i>({dataSelected?.email})</i>?</b> Al dar click en aceptar, esta de acuerdo que no podrá recuperar la información.</>}
+      />
     </>
   )
 }

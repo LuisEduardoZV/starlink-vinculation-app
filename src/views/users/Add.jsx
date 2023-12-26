@@ -43,29 +43,32 @@ const Add = ({ handleReset, client, backBtn }) => {
           dataForm.isAdmin = values.isAdmin ? 1 : 0
           dataForm.isEnabled = 1
           // console.log(values)
-          const promise = () => new Promise((resolve) => {
-            let data = null
-            try {
-              data = apiCallWithBody({ url: `${BASE_URL_API}/Users`, method: 'POST', body: JSON.stringify(dataForm) })
-            } catch (error) {
-              return resolve({ status: 500, data: null })
-            }
+          const idToast = toast.loading('Cargando...')
+          try {
+            const data = await apiCallWithBody({ url: `${BASE_URL_API}/Users`, method: 'POST', body: JSON.stringify(dataForm) })
+            let userGraf = null
             if (data) {
+              userGraf = await apiCallWithBody({
+                url: `${BASE_URL_API}/AltaUserGraf?type=1`,
+                body: JSON.stringify({
+                  name: values.fullName,
+                  email: values.email,
+                  login: values.email,
+                  password: values.password,
+                  OrgId: 1
+                })
+              })
+            }
+            if (userGraf) {
               setStatus({ success: true })
               setSubmitting(false)
-            }
-            return resolve({ status: data ? 200 : 404, data })
-          })
-
-          toast.promise(promise, {
-            loading: 'Cargando...',
-            success: () => {
               handleReset('', true)
               resetForm()
-              return `El usuario ${values.fullName} se agregó correctamente`
-            },
-            error: 'Error al agregar el usuario'
-          })
+              toast.success(`El usuario ${values.fullName} se agregó correctamente`, { id: idToast })
+            }
+          } catch (error) {
+            toast.error('Error al crear el usuario', { id: idToast })
+          }
         }}
       >
         {({ values, touched, errors, isSubmitting, handleSubmit, handleBlur, handleChange }) => (

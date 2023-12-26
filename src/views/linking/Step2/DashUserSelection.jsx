@@ -4,7 +4,7 @@ import React, { useMemo, useState } from 'react'
 // mui imports
 import VisibilityOffTwoToneIcon from '@mui/icons-material/VisibilityOffTwoTone'
 import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone'
-import { Autocomplete, Box, Button, Divider, IconButton, InputAdornment, TextField, Typography } from '@mui/material'
+import { Autocomplete, Box, Button, Collapse, Divider, Fade, IconButton, InputAdornment, TextField, Typography } from '@mui/material'
 import { alpha } from '@mui/material/styles'
 
 // project imports
@@ -68,102 +68,110 @@ const DashUserSelection = React.forwardRef(({ values, errors, touched, handleBlu
         />
       </Box>
       <Divider sx={{ borderColor: 'grey.700' }} />
-      <Box width='100%'>
-        <Autocomplete
-          disablePortal
-          fullWidth
-          size='small'
-          id='auto-combo-users'
-          disabled={isUserNewComplete}
-          options={cancelBtn ? [] : users}
-          value={userId}
-          onChange={(e, nue) => handleChangeAutocompleteInfo('userId', nue)}
-          getOptionLabel={(option) => option.fullName}
-          isOptionEqualToValue={(a, b) => (a.userId === b.userId)}
-          renderInput={(params) => <TextField
-            {...params}
-            label='Usuarios disponibles'
-            sx={{
-              '& .MuiButtonBase-root': {
-                color: (theme) => theme.palette.primary.main
-              },
-              '& .MuiChip-root': {
-                color: 'black',
-                bgcolor: (theme) => theme.palette.primary.main
-              },
-              '& .MuiChip-root.Mui-disabled': {
-                color: 'black',
-                bgcolor: (theme) => theme.palette.primary[800]
-              },
-              '& .MuiButtonBase-root.Mui-disabled': {
-                color: (theme) => theme.palette.primary[800]
-              },
-              '.Mui-disabled': {
-                bgcolor: (theme) => alpha(theme.palette.grey[600], 1)
-              }
+      <Collapse in={!isUserNewComplete}>
+        <>
+          <Box width='100%'>
+            <Autocomplete
+              disablePortal
+              fullWidth
+              size='small'
+              id='auto-combo-users'
+              disabled={isUserNewComplete}
+              options={cancelBtn ? [] : users}
+              value={userId}
+              onChange={(e, nue) => handleChangeAutocompleteInfo('userId', nue)}
+              getOptionLabel={(option) => option.fullName}
+              isOptionEqualToValue={(a, b) => (a.userId === b.userId)}
+              renderInput={(params) => <TextField
+                {...params}
+                label='Usuarios disponibles'
+                sx={{
+                  '& .MuiButtonBase-root': {
+                    color: (theme) => theme.palette.primary.main
+                  },
+                  '& .MuiChip-root': {
+                    color: 'black',
+                    bgcolor: (theme) => theme.palette.primary.main
+                  },
+                  '& .MuiChip-root.Mui-disabled': {
+                    color: 'black',
+                    bgcolor: (theme) => theme.palette.primary[800]
+                  },
+                  '& .MuiButtonBase-root.Mui-disabled': {
+                    color: (theme) => theme.palette.primary[800]
+                  },
+                  '.Mui-disabled': {
+                    bgcolor: (theme) => alpha(theme.palette.grey[600], 1)
+                  }
+                }}
+                                       />}
+              sx={{
+                bgcolor: (theme) => alpha(theme.palette.grey[600], 1),
+                color: 'white',
+                '.Mui-disabled': {
+                  bgcolor: (theme) => alpha(theme.palette.grey[600], 1),
+                  color: (theme) => theme.palette.grey[700]
+                },
+                '& .MuiInputBase-input, & .MuiInputBase-root': {
+                  bgcolor: (theme) => alpha(theme.palette.grey[600], 1),
+                  color: 'white'
+                }
+              }}
+            />
+          </Box>
+          <Fade in={(!isUserNewComplete && userId === null)}>
+            <Divider sx={{ mt: 2.5 }}>O</Divider>
+          </Fade>
+        </>
+      </Collapse>
+      <Collapse in={userId === null}>
+        <Box display='flex' flexDirection='column' rowGap={3}>
+          <Typography variant='h4' color='grey.400'>Cree un nuevo usuario para el cliente</Typography>
+          <InputBase
+            value={values.email}
+            name='email'
+            label='Usuario'
+            onBlur={handleBlur}
+            onChange={handleChange}
+            variant='filled'
+            fullWidth
+            size='small'
+            color='primary'
+            error={Boolean(touched.email && errors.email)}
+            disabled={isUserSelected}
+            InputProps={{
+              autoComplete: 'new-password'
             }}
-                                   />}
-          sx={{
-            bgcolor: (theme) => alpha(theme.palette.grey[600], 1),
-            color: 'white',
-            '.Mui-disabled': {
-              bgcolor: (theme) => alpha(theme.palette.grey[600], 1),
-              color: (theme) => theme.palette.grey[700]
-            },
-            '& .MuiInputBase-input, & .MuiInputBase-root': {
-              bgcolor: (theme) => alpha(theme.palette.grey[600], 1),
-              color: 'white'
-            }
-          }}
-        />
-      </Box>
-      <Divider>O</Divider>
-      <Box display='flex' flexDirection='column' rowGap={3}>
-        <Typography variant='h4' color='grey.400'>Cree un nuevo usuario para el cliente</Typography>
-        <InputBase
-          value={values.email}
-          name='email'
-          label='Usuario'
-          onBlur={handleBlur}
-          onChange={handleChange}
-          variant='filled'
-          fullWidth
-          size='small'
-          color='primary'
-          error={Boolean(touched.email && errors.email)}
-          disabled={isUserSelected}
-          InputProps={{
-            autoComplete: 'new-password'
-          }}
-        />
-        <InputBase
-          value={values.password}
-          name='password'
-          label='Contraseña'
-          type={showPass ? 'text' : 'password'}
-          onBlur={handleBlur}
-          onChange={handleChange}
-          variant='filled'
-          fullWidth
-          size='small'
-          color='primary'
-          error={Boolean(touched.password && errors.password)}
-          disabled={isUserSelected}
-          InputProps={{
-            autoComplete: 'new-password',
-            endAdornment: (
-              <InputAdornment position='end'>
-                <IconButton
-                  edge='end'
-                  onClick={() => setShowPass((show) => !show)}
-                  onMouseDown={(e) => e.preventDefault()}
-                  sx={{ color: (theme) => theme.palette.grey[400] }}
-                >{showPass ? <VisibilityOffTwoToneIcon /> : <VisibilityTwoToneIcon />}
-                </IconButton>
-              </InputAdornment>)
-          }}
-        />
-      </Box>
+          />
+          <InputBase
+            value={values.password}
+            name='password'
+            label='Contraseña'
+            type={showPass ? 'text' : 'password'}
+            onBlur={handleBlur}
+            onChange={handleChange}
+            variant='filled'
+            fullWidth
+            size='small'
+            color='primary'
+            error={Boolean(touched.password && errors.password)}
+            disabled={isUserSelected}
+            InputProps={{
+              autoComplete: 'new-password',
+              endAdornment: (
+                <InputAdornment position='end'>
+                  <IconButton
+                    edge='end'
+                    onClick={() => setShowPass((show) => !show)}
+                    onMouseDown={(e) => e.preventDefault()}
+                    sx={{ color: (theme) => theme.palette.grey[400] }}
+                  >{showPass ? <VisibilityOffTwoToneIcon /> : <VisibilityTwoToneIcon />}
+                  </IconButton>
+                </InputAdornment>)
+            }}
+          />
+        </Box>
+      </Collapse>
       <Box mt={2} display='flex' justifyContent='space-between'>
         {!disabledBtns && (
           <>

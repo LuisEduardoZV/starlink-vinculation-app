@@ -135,7 +135,7 @@ const TermianlsList = ({ values, handleChange, inView }) => {
         </Box>
         <PerfectScrollbar style={{ height: 'fit-content', maxHeight: matchDown2Xl ? '55vh' : '60vh', paddingLeft: 10, paddingRight: 15 }}>
           <List component={Box} display='flex' flexWrap='wrap' columnGap={1} rowGap={2}>
-            {selected.length !== 0 && <Typography variant='h4' color='grey.400' width='100%'>Cliente Seleccionado:</Typography>}
+            {selected.length !== 0 && <Typography variant='h4' color='grey.400' width='100%'>Terminal(es) Seleccionada(s):</Typography>}
             {selected.length !== 0 && selected.map(({ terminalId, terminalFriendlyName, serviceLineNumber, terminalSiteName }) => (
               <CustomListItemButton
                 key={terminalId}

@@ -66,16 +66,26 @@ const ContactEdit = ({ user, isAdd, onFinish, onCloseEdit, onCloseAdd, ...others
           setSubmitting(true)
           delete values.submit
           values.isEnabled = values.isEnabled ? 1 : 0
-          const promise = () => new Promise((resolve) => {
+          const promise = () => new Promise((resolve, reject) => {
             let data = null
             try {
               if (isAdd) {
                 data = apiCallWithBody({ url: `${BASE_URL_API}/PowerUsers`, method: 'POST', body: JSON.stringify(values) })
+                apiCallWithBody({
+                  url: `${BASE_URL_API}/AltaUserGraf?type=2`,
+                  body: JSON.stringify({
+                    name: values.fullName,
+                    email: values.email,
+                    login: values.email,
+                    password: values.password,
+                    OrgId: 1
+                  })
+                })
               } else {
                 data = apiCallWithBody({ url: `${BASE_URL_API}/PowerUsers/${values.powerUser_Id}`, method: 'PUT', body: JSON.stringify(values) })
               }
             } catch (error) {
-              return resolve({ status: 500, data: null })
+              return reject(new Error(error))
             }
             if (data) {
               setStatus({ success: true })
@@ -91,7 +101,9 @@ const ContactEdit = ({ user, isAdd, onFinish, onCloseEdit, onCloseAdd, ...others
               if (isAdd) return `El Super Usuario ${values.fullName} se agregó correctamente`
               return `El Super Usuario ${values.fullName} se editó correctamente`
             },
-            error: isAdd ? 'Error al agregar el Super Usuario' : 'Error al editar el Super Usuario'
+            error: (er) => {
+              return er.message
+            }
           })
         }}
       >
