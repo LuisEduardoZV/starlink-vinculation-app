@@ -12,13 +12,13 @@ const HeaderSearchBox = ({ handleOnAdd, handleSearch, Icon, title, open = true }
   const CustomIcon = Icon ?? PersonAddAltTwoToneIcon
   return (
     <MainMirrorFade open={open} sx={{ minHeight: 'auto', display: 'flex', gap: 3, justifyContent: 'space-between', alignItems: 'center' }}>
-      <Box>
-        <Typography color='white' variant='h2'>{title}</Typography>
+      <Box flex={1}>
+        <Typography color='white' variant='h3'>{title}</Typography>
       </Box>
-      <Box minWidth='40%'>
+      <Box flex={1}>
         <InputSearch handleSearch={handleSearch} />
       </Box>
-      <Box>
+      <Box flex={1} justifyContent='end' display='flex'>
         <Button
           variant='contained'
           color='info'

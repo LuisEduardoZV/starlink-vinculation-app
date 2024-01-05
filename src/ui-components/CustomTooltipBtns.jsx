@@ -17,7 +17,7 @@ function getColor (type, theme) {
 const CustomTooltipBtns = ({ className, children, type, ...props }) => {
   const theme = useTheme()
 
-  const color = getColor(type, theme)
+  const color = type === 'orange' ? theme.palette.orange.main : getColor(type, theme)
 
   return (
     <Tooltip

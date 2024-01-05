@@ -11,15 +11,18 @@ import { toast } from 'sonner'
 import * as Yup from 'yup'
 
 // project imports
-import { BASE_URL_API } from '../../config'
-import { apiCallWithBody } from '../../contexts/api'
+import { useDispatch, useSelector } from '../../store'
+import { addNewClient } from '../../store/slices/clients'
 import AuthContainer from './components/AuthContainer'
 
 import { emailerrorText, phonelenghtText, requiredText, ziplenghtText } from '../../utils/labelsErrorsFormik'
 
 import 'react-perfect-scrollbar/dist/css/styles.css'
 
-const Add = ({ handleCancel, data, setData }) => {
+const Add = ({ handleCancel, toastId }) => {
+  const dispatch = useDispatch()
+  const { success } = useSelector((state) => state.clients)
+
   const [contacts, setContacts] = useState([])
   const [contact, setContact] = useState({ contactId: 0, clientId: 0, contactName: '', contactPosition: '', contactPhone: '', isEnabled: 1, publicNote: '', client: '' })
 
@@ -83,28 +86,12 @@ const Add = ({ handleCancel, data, setData }) => {
             delete values.submit
             values.contacts = contacts
             // console.log(values)
-            const promise = () => new Promise((resolve) => {
-              let data = null
-              try {
-                data = apiCallWithBody({ url: `${BASE_URL_API}/Clients`, method: 'POST', body: JSON.stringify(values) })
-              } catch (error) {
-                return resolve({ status: 500, data: null })
-              }
-              if (data) {
-                setStatus({ success: true })
-                setSubmitting(false)
-                handleCancel('', true)
-              }
-              return resolve({ status: data ? 200 : 404, data })
-            })
-
-            toast.promise(promise, {
-              loading: 'Cargando...',
-              success: () => {
-                return `El cliente ${values.clientName} se agregó correctamente`
-              },
-              error: 'Error al agregar el cliente'
-            })
+            toast.loading('Cargando...', { id: toastId })
+            dispatch(addNewClient(values))
+            if (success) toast.success(`El cliente ${values.clientName} se agregó correctamente`, { id: toastId })
+            handleCancel()
+            setStatus({ success: true })
+            setSubmitting(false)
           }}
         >
           {({ values, touched, errors, isSubmitting, handleSubmit, handleBlur, handleChange }) => (
@@ -138,8 +125,7 @@ const Add = ({ handleCancel, data, setData }) => {
 
 Add.propTypes = {
   handleCancel: PropTypes.func,
-  setData: PropTypes.func,
-  data: PropTypes.array
+  toastId: PropTypes.number
 }
 
 export default Add

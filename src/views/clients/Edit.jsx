@@ -11,14 +11,18 @@ import { toast } from 'sonner'
 import * as Yup from 'yup'
 
 // project imports
-import { BASE_URL_API } from '../../config'
-import { apiCall, apiCallWithBody } from '../../contexts/api'
+import { useDispatch, useSelector } from '../../store'
+import { editClient, getClientInfo } from '../../store/slices/clients'
 import LoadingInfo from '../../ui-components/LoadingInfo'
 import AuthContainer from './components/AuthContainer'
 
 import { emailerrorText, phonelenghtText, requiredText } from '../../utils/labelsErrorsFormik'
 
-const Edit = ({ handleCancel, selected }) => {
+const Edit = ({ handleCancel, selected, toastId }) => {
+  const dispatch = useDispatch()
+
+  const { clientInfo, success } = useSelector((state) => state.clients)
+
   const [initVal, setInitVal] = useState({})
   const [loading, setLoading] = useState(true)
   const [loadingContact, setLoadingContact] = useState(true)
@@ -60,13 +64,17 @@ const Edit = ({ handleCancel, selected }) => {
   }
 
   useEffect(() => {
+    dispatch(getClientInfo(selected))
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
     (async () => {
       try {
-        if (selected) {
-          const res = await apiCall({ url: `${BASE_URL_API}/Clients/${selected}` })
-          setInitVal({ ...res, isEnabled: res.isEnabled === 1, submit: null })
-          setPreContacts(res.contacts)
-          setContact({ ...contact, clientId: res.clientId })
+        if (clientInfo) {
+          setInitVal({ ...clientInfo, isEnabled: clientInfo.isEnabled === 1, submit: null })
+          setPreContacts(clientInfo.contacts)
+          setContact({ ...contact, clientId: clientInfo.clientId })
           setLoading(false)
           setLoadingContact(false)
         }
@@ -84,7 +92,7 @@ const Edit = ({ handleCancel, selected }) => {
       setContactsDeleted([])
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selected])
+  }, [clientInfo])
 
   if (loading) return <LoadingInfo />
   return (
@@ -114,39 +122,12 @@ const Edit = ({ handleCancel, selected }) => {
             values.contacts = []
             values.users = []
             values.isEnabled = values.isEnabled ? 1 : 0
-            const promise = () => new Promise((resolve) => {
-              let data = null
-              try {
-                data = apiCallWithBody({ url: `${BASE_URL_API}/Clients/${selected}`, method: 'PUT', body: JSON.stringify(values) })
-
-                if (contactsDeleted.length > 0) {
-                  contactsDeleted.forEach(({ contactId }) => {
-                    apiCall({ url: `${BASE_URL_API}/Contacts/${contactId}`, method: 'DELETE' })
-                  })
-                }
-                if (contacts.length > 0) {
-                  contacts.forEach((op) => {
-                    apiCallWithBody({ url: `${BASE_URL_API}/Contacts`, method: 'POST', body: JSON.stringify(op) })
-                  })
-                }
-              } catch (error) {
-                return resolve({ status: 500, data: null })
-              }
-              if (data) {
-                setStatus({ success: true })
-                setSubmitting(false)
-                handleCancel('', true)
-              }
-              return resolve({ status: data ? 200 : 404, data })
-            })
-
-            toast.promise(promise, {
-              loading: 'Cargando...',
-              success: () => {
-                return `El cliente ${values.clientName} se editó correctamente`
-              },
-              error: 'Error al editar el cliente'
-            })
+            const toastId = toast.loading('Cargando...')
+            dispatch(editClient(values, selected, contactsDeleted, contacts))
+            if (success) toast.success(`El cliente ${values.clientName} se editó correctamente`, { id: toastId })
+            setStatus({ success: true })
+            setSubmitting(false)
+            handleCancel('', true)
 
             setInitVal({})
             setLoading(true)
@@ -187,7 +168,8 @@ const Edit = ({ handleCancel, selected }) => {
 
 Edit.propTypes = {
   handleCancel: PropTypes.func,
-  selected: PropTypes.number
+  selected: PropTypes.number,
+  toastId: PropTypes.number
 }
 
 export default Edit

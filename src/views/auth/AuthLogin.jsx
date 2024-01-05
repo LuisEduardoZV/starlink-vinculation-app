@@ -9,7 +9,7 @@ import { Box, Button, IconButton, InputAdornment, Tooltip } from '@mui/material'
 import { toast } from 'sonner'
 
 // project imports
-import InputCustom from '../../ui-components/InputCustom'
+import InputBase from '../../ui-components/InputBase'
 
 const AuthLogin = ({
   errors, touched, values, showPass, isSubmitting, handleBlur, handleChange, setShowPass, handleMouseDownPassword
@@ -17,7 +17,7 @@ const AuthLogin = ({
   return (
     <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column', gap: 4 }}>
       <Tooltip arrow followCursor disableInteractive {...errors.user && { title: errors.user }}>
-        <InputCustom
+        <InputBase
           label='Usuario'
           fullWidth size='small'
           error={Boolean(touched.user && errors.user)}
@@ -25,12 +25,14 @@ const AuthLogin = ({
           name='user'
           onBlur={handleBlur}
           onChange={handleChange}
+          variant='filled'
+          color='primary'
           required
           InputProps={{ autoComplete: 'off' }}
         />
       </Tooltip>
       <Tooltip arrow followCursor disableInteractive {...errors.password && { title: errors.password }}>
-        <InputCustom
+        <InputBase
           label='Contraseña' fullWidth size='small'
           type={showPass ? 'text' : 'password'}
           error={Boolean(touched.password && errors.password)}
@@ -39,10 +41,12 @@ const AuthLogin = ({
           onBlur={handleBlur}
           onChange={handleChange}
           required
+          variant='filled'
+          color='primary'
           InputProps={{
             autoComplete: 'off',
             endAdornment: (
-              <InputAdornment position='end' sx={{ position: 'absolute', right: '2%', bgcolor: 'black' }}>
+              <InputAdornment position='end' sx={{ position: 'absolute', right: '2%' }}>
                 <IconButton size='small' sx={{ color: (theme) => theme.palette.primary[800] }} onClick={() => setShowPass(current => !current)} onMouseDown={handleMouseDownPassword}>
                   {showPass ? <VisibilityOffTwoToneIcon /> : <VisibilityTwoToneIcon />}
                 </IconButton>

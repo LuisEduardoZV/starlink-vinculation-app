@@ -143,7 +143,7 @@ const AuthContainer = ({ values, touched, errors, isSubmitting, handleBlur, hand
       {!isAdding && (
         <Grid item xs={12} md={3} position='relative'>
           <CustomSwitch
-            value={values.isEnabled}
+            value={!!values.isEnabled}
             handleChange={handleChange}
             name='isEnabled'
             label='Estatus'

@@ -4,7 +4,7 @@ export const BASE_URL = 'https://ws-tangraph.ever-track.com'
 
 export const BASE_URL_API = 'https://ws-tangraph.ever-track.com/api'
 
-export const BASE_URL_GRAFANA = 'http://localhost:3000/api/'
+export const BASE_URL_GRAFANA = 'http://starlink.tangerinemetrics.com/api/'
 
 export const GRAFANA_TOKEN = 'YWRtaW46YmxhY2thbnNpYmxl'
 export const GRAFANA_USER = 'admin'
@@ -20,7 +20,8 @@ const config = {
   borderRadius: 8,
   outlinedFilled: true,
   navType: 'light',
-  locale: 'es'
+  locale: 'es',
+  tutorialsAvailable: true
 }
 
 export default config

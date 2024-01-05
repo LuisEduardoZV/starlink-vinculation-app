@@ -7,7 +7,8 @@ import { dispatch } from '../index'
 
 const initialState = {
   error: null,
-  contacts: []
+  contacts: [],
+  contactInfo: null
 }
 
 const slice = createSlice({
@@ -25,6 +26,15 @@ const slice = createSlice({
     },
     addContactSuccess (state, action) {
       state.contacts = action.payload
+    },
+    deleteContactSuccess (state, action) {
+      state.contacts = action.payload
+    },
+    getContactInfoSuccess (state, action) {
+      state.contactInfo = action.payload
+    },
+    setContactInfoSuccess (state, action) {
+      state.contactInfo = action.payload
     }
   }
 })

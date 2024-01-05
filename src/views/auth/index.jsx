@@ -15,6 +15,7 @@ import AuthLogin from './AuthLogin'
 
 // assets
 import bg from '../../assets/image/opcion.jpg'
+import tangerine from '../../assets/image/tangerine.svg'
 
 import { requiredText } from '../../utils/labelsErrorsFormik'
 
@@ -36,6 +37,8 @@ const Auth = () => {
       height: '100%',
       position: 'relative',
       display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
       flex: 1,
       backgroundImage: `url(${bg})`,
       backgroundRepeat: 'no-repeat',
@@ -44,9 +47,18 @@ const Auth = () => {
       backgroundPosition: 'bottom'
     }}
     >
-      <Box sx={{ position: 'absolute', p: 2, top: '30%', bottom: '30%', left: '15%', right: '60%', borderRadius: 2, zIndex: 5, animation: 'floating 3s ease-in-out infinite' }}>
-        <MainMirrorCard>
-          <Typography variant='h1' color='white' textAlign='right' mt={1} mb={3} sx={{ textShadow: (theme) => `1px 2px 1px ${theme.palette.primary[800]}` }}>Iniciar Sesión</Typography>
+      <Box sx={{ position: 'relative', minWidth: 450, width: 'max-content', borderRadius: 2, zIndex: 5, animation: 'floating 3s ease-in-out infinite' }}>
+        <MainMirrorCard sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1, py: 4 }}>
+          <img src={tangerine} alt='Tangerine icon' style={{ width: 90, height: 80 }} />
+          <Typography variant='h1' color='white' textAlign='center' mt={1} sx={{ textShadow: (theme) => `1px 2px 1px ${theme.palette.primary[800]}`, letterSpacing: '0.1rem' }}>Tan-Graph</Typography>
+          <Box sx={{
+            width: '100%',
+            borderImage: (theme) => (`linear-gradient(to right, ${theme.palette.background.paper}, ${theme.palette.primary[800]}, ${theme.palette.background.paper}) 30`),
+            borderWidth: '0.06em',
+            borderStyle: 'solid',
+            mb: 3
+          }}
+          />
           <Formik
             initialValues={{
               user: '',
@@ -75,7 +87,7 @@ const Auth = () => {
             }}
           >
             {({ handleSubmit, handleBlur, handleChange, touched, errors, values, isSubmitting }) => (
-              <form noValidate onSubmit={handleSubmit}>
+              <form noValidate onSubmit={handleSubmit} style={{ width: '100%' }}>
                 <AuthLogin
                   errors={errors}
                   touched={touched}

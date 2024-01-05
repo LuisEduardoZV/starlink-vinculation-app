@@ -18,12 +18,11 @@ const Row = ({ element, handleClick, isItemSelected, labelId, hasExtendedRow, Ro
 
   return (
     <>
-      <TableRow hover aria-checked={isItemSelected} tabIndex={-1} selected={isItemSelected} sx={{ cursor: 'pointer' }}>
+      <TableRow hover aria-checked={isItemSelected} tabIndex={-1} selected={isItemSelected} sx={{ cursor: 'pointer' }} onClick={(event) => handleClick(event, element.user_Id)}>
         <TableCell padding='checkbox'>
           <Checkbox
             color='primary'
             checked={isItemSelected}
-            onClick={(event) => handleClick(event, element.user_Id)}
             inputProps={{
               'aria-labelledby': 'selection-row'
             }}

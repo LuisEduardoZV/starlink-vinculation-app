@@ -85,3 +85,21 @@ export const terminalsAssignedTableHeadders = [
     label: 'Nombre del dashboard'
   }
 ]
+
+export const gridExample = [
+  {
+    field: 'fullName',
+    headerName: 'Nombre del usuario',
+    flex: 1
+  },
+  {
+    field: 'terminalSiteName',
+    headerName: 'Nombre del sitio',
+    flex: 1
+  },
+  {
+    field: 'dashboardName',
+    headerName: 'Nombre del dashboard',
+    flex: 1
+  }
+]

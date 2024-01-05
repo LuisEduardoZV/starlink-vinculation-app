@@ -2,29 +2,18 @@ import PropTypes from 'prop-types'
 import React from 'react'
 
 // mui imports
-import { Table, TableBody, TableCell, TableContainer, TablePagination, TableRow } from '@mui/material'
+import { DataGrid } from '@mui/x-data-grid'
 
 // project imports
-import EnhancedTableHead from '../../../ui-components/EnhancedTableHead'
-import LoadingInfoTable from '../../../ui-components/LoadingInfoTable'
 import NoInfoOverlay from '../../../ui-components/NoInfoOverlay'
-import Row from '../Row'
+import Pagination from './Pagination'
 
 // services
-import { getComparator, stableSort } from '../../../services/tableServices'
-import { terminalsAssignedTableHeadders as headCells } from '../../../utils/allColumnsTables'
+import { gridExample } from '../../../utils/allColumnsTables'
 
 const TableTerminals = ({ loading, data, selected, handleClick, handleSave }) => {
-  const [order, setOrder] = React.useState('asc')
-  const [orderBy, setOrderBy] = React.useState('fullName')
   const [page, setPage] = React.useState(0)
   const [rowsPerPage, setRowsPerPage] = React.useState(10)
-
-  const handleRequestSort = (event, property) => {
-    const isAsc = orderBy === property && order === 'asc'
-    setOrder(isAsc ? 'desc' : 'asc')
-    setOrderBy(property)
-  }
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage)
@@ -35,73 +24,61 @@ const TableTerminals = ({ loading, data, selected, handleClick, handleSave }) =>
     setPage(0)
   }
 
-  const isSelected = (name) => selected.indexOf(name) !== -1
-
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0
-
-  const visibleRows = React.useMemo(
-    () => stableSort(data, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-    [order, orderBy, page, rowsPerPage, data]
-  )
   return (
     <>
-      <TableContainer sx={{ maxWidth: '100%' }}>
-        <Table sx={{ maxWidth: '100%', '& .MuiTableCell-root': { borderColor: (theme) => theme.palette.grey[800] } }} aria-labelledby='tableTitle' size='medium'>
-          {!loading && data.length === 0 && <caption><NoInfoOverlay /></caption>}
-          <EnhancedTableHead
-            order={order}
-            orderBy={orderBy}
-            onRequestSort={handleRequestSort}
-            headCells={headCells}
-            hasExtendedRowOption
-          />
-          <TableBody>
-            {loading
-              ? <LoadingInfoTable headCells={headCells} />
-              : visibleRows.map((row, index) => {
-                const isItemSelected = isSelected(row.terminalId)
-                const labelId = `enhanced-table-checkbox-${index}`
-
-                return (
-                  <Row
-                    key={labelId}
-                    element={row}
-                    handleClick={(event) => handleClick(event, row.assignId)}
-                    isItemSelected={isItemSelected}
-                    labelId={labelId}
-                    page={page}
-                    hasMoreActions
-                  />
-                )
-              })}
-            {emptyRows > 0 && (
-              <TableRow
-                style={{
-                  height: 53 * emptyRows
-                }}
-              >
-                <TableCell colSpan={6} />
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[5, 10, 25]}
-        component='div'
-        sx={{
-          color: 'white',
-          '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': { color: 'white' },
-          '& .MuiSelect-select, & .MuiSvgIcon-root': { color: (theme) => theme.palette.primary.main }
-        }}
-        count={data.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-        labelRowsPerPage='Filas por página:'
-        labelDisplayedRows={({ from, to, count }) => (`${from}-${to} de ${count}`)}
-      />
+      {data && (
+        <DataGrid
+          loading={loading}
+          columns={gridExample}
+          rows={data}
+          getRowId={(row) => (row.fullName + row.terminalSiteName + row.dashboardName)}
+          autoHeight
+          pagination
+          pageSizeOptions={rowsPerPage}
+          page={page}
+          disableRowSelectionOnClick
+          sx={{
+            border: 0,
+            borderColor: 'primary.light',
+            height: '100%',
+            outline: 'none',
+            '& .MuiDataGrid-cell:focus, & .MuiDataGrid-columnHeader:focus': {
+              outline: 'none'
+            },
+            '& .MuiDataGrid-cell': {
+              color: (theme) => theme.palette.grey[500]
+            },
+            '& .MuiDataGrid-cell:hover': {
+              color: (theme) => theme.palette.grey[300]
+            },
+            '& .MuiDataGrid-columnHeaderTitle': {
+              color: 'whitesmoke'
+            },
+            '& .MuiIconButton-root': {
+              color: (theme) => theme.palette.grey[500],
+              outline: 'none'
+            },
+            '& .MuiDataGrid-columnSeparator': {
+              color: 'transparent'
+            },
+            '& .MuiDataGrid-withBorderColor': {
+              borderColor: (theme) => (theme.palette.grey[800]),
+              borderWidth: '1px'
+            }
+          }}
+          disableColumnMenu
+          rowHeight={55}
+          slots={{
+            pagination: Pagination,
+            noRowsOverlay: NoInfoOverlay
+          }}
+          slotProps={{
+            pagination: { rowsPerPage, handleChangePage, handleChangeRowsPerPage }
+          }}
+          initialState={{
+            pagination: { paginationModel: { pageSize: rowsPerPage } }
+          }}
+        />)}
     </>
   )
 }

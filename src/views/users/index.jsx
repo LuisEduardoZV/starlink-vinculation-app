@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
 // third
 import { toast } from 'sonner'
@@ -27,6 +27,7 @@ const UserList = () => {
 
   const navigate = useNavigate()
   const { clientId } = useParams()
+  const { state } = useLocation()
 
   const [mainData, setMainData] = useState([])
   const [data, setData] = useState(mainData)
@@ -144,12 +145,14 @@ const UserList = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [forceRender])
 
+  const titleList = state.client ? `Usuarios de ${state.client}` : 'Lista de usuarios'
+
   return (
     <>
       {user?.user?.isPowerUser && <AsideBackButton inFade={collapsed} handleBack={collapsed ? handleCancel : null} />}
 
       <Box sx={{ display: 'flex', flex: 1, px: '10%', position: 'relative', flexDirection: 'column' }}>
-        <HeaderSearchBox title='Lista de usuarios' handleOnAdd={handleAdd} handleSearch={handleSearch} open={!collapsed} />
+        <HeaderSearchBox title={titleList} handleOnAdd={handleAdd} handleSearch={handleSearch} open={!collapsed} />
         <MainMirrorFade open={!collapsed}>
           <UserTable
             loading={loading}

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -11,6 +12,8 @@ import GroupAddTwoToneIcon from '@mui/icons-material/GroupAddTwoTone'
 import { Box, IconButton } from '@mui/material'
 
 // project imports
+import { useDispatch, useSelector } from '../../store'
+import { deleteClient, getAllClients, resetErrorUsed, setClientInfo } from '../../store/slices/clients'
 import AsideMenuCrud from '../../ui-components/AsideMenuCrud'
 import CustomTooltipBtns from '../../ui-components/CustomTooltipBtns'
 import MainMirrorFade from '../../ui-components/MainMirrorFade'
@@ -19,15 +22,15 @@ import Add from './Add'
 import ClientsTable from './ClientsTable'
 import Edit from './Edit'
 
-// services
-import { apiCall } from '../../contexts/api'
-
-import { BASE_URL_API } from '../../config'
+const toastId = toast()
 
 const Clients = () => {
   const navigate = useNavigate()
+  const dispatch = useDispatch()
 
-  const [mainData, setMainData] = useState([])
+  const { list, error, success } = useSelector((state) => state.clients)
+
+  const [mainData, setMainData] = useState(list)
   const [data, setData] = useState(mainData)
 
   const [loading, setLoading] = useState(true)
@@ -40,17 +43,13 @@ const Clients = () => {
 
   const [open, setOpen] = useState(false)
 
-  const [forceRender, setForceRender] = useState(null)
-
-  const handleCancel = async (e, needRender) => {
+  const handleCancel = async (e) => {
+    dispatch(setClientInfo())
     setView(null)
     setCollapsed(false)
     setDataSelected(null)
     setSelected([])
     setOpen(false)
-    if (needRender) {
-      await setForceRender(Math.random() * 9999)
-    }
   }
 
   const handleAdd = () => {
@@ -71,25 +70,11 @@ const Clients = () => {
     setOpen(false)
   }
 
-  const handleDelete = (id) => {
-    const promise = () => new Promise((resolve) => {
-      let data = null
-      try {
-        data = apiCall({ url: `${BASE_URL_API}/Clients/${id}`, method: 'DELETE' })
-      } catch (error) {
-        return resolve({ status: 500, data: null })
-      }
-      return resolve({ status: data ? 200 : 404, data })
-    })
-
-    toast.promise(promise, {
-      loading: 'Procesando...',
-      success: () => {
-        handleCancel('', true)
-        return 'El cliente ha sido eliminado correctamente'
-      },
-      error: 'Error al agregar el cliente'
-    })
+  const handleDelete = async (id) => {
+    toast.loading('Cargando...', { id: toastId })
+    dispatch(deleteClient(id))
+    if (success) toast.success('El cliente ha sido eliminado correctamente', { id: toastId })
+    handleCancel()
   }
 
   const handleSearch = (e, filters) => {
@@ -120,22 +105,28 @@ const Clients = () => {
 
   useEffect(() => {
     (async () => {
-      try {
-        setLoading(true)
-        const res = await apiCall({ url: `${BASE_URL_API}/Clients` })
-        setMainData(res)
-        setData(res)
-        setLoading(false)
-      } catch (error) {
-        console.log(error)
-      }
+      setLoading(true)
+      dispatch(getAllClients())
+      setLoading(false)
     })()
 
     return () => {
       setLoading(true)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [forceRender])
+  }, [])
+
+  useEffect(() => {
+    setData(list)
+    setMainData(list)
+    dispatch(setClientInfo())
+  }, [list])
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error?.message, { id: toastId })
+      dispatch(resetErrorUsed())
+    }
+  }, [error])
 
   return (
     <>
@@ -149,7 +140,7 @@ const Clients = () => {
         handleSearch={handleSearch}
         extraBtns={[
           <CustomTooltipBtns key='usersbtn' type='warning' title='Usuarios'>
-            <IconButton onClick={() => { navigate(`/clients/${selected[0]}/users`) }}>
+            <IconButton onClick={() => { navigate(`/clients/${selected[0]}/users`, { state: { client: dataSelected?.clientName } }) }}>
               <AccountCircleTwoToneIcon color='warning' />
             </IconButton>
           </CustomTooltipBtns>,
@@ -172,7 +163,7 @@ const Clients = () => {
           />
         </MainMirrorFade>
         <MainMirrorFade open={collapsed} sx={{ position: 'absolute', width: '80%' }}>
-          {view ? <Add handleCancel={handleCancel} data={data} setData={setData} /> : <Edit handleCancel={handleCancel} selected={selected[0]} data={data} setData={setData} />}
+          {view ? <Add handleCancel={handleCancel} toastId={toastId} /> : <Edit handleCancel={handleCancel} selected={selected[0]} toastId={toastId} />}
         </MainMirrorFade>
       </Box>
 
