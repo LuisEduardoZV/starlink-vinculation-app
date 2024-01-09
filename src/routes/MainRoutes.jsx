@@ -5,6 +5,7 @@ import MainLayout from '../layout/MainLayout'
 import Clients from '../views/clients'
 import Contacts from '../views/contacts'
 import Linking from '../views/linking'
+import Reportes from '../views/reports'
 import SuperUsers from '../views/superusers'
 import Terminals from '../views/terminals'
 import TerminalsAssigned from '../views/terminalsAssigned'
@@ -49,6 +50,10 @@ const MainRoutes = {
     {
       path: '/admins',
       element: <SuperUsers />
+    },
+    {
+      path: '/reports',
+      element: <Reportes />
     }
   ]
 }

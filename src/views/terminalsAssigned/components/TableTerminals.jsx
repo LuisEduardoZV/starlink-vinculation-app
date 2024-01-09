@@ -120,7 +120,7 @@ const TableTerminals = ({ loading, data, selected, handleClick, handleSave }) =>
               backgroundColor: 'blue',
               color: 'blue'
             }
-          }}
+          }}// .p-paginator-bottom .p-paginator .p-component. Did you mean .pPaginatorBottom .pPaginator .pComponent?
           paginatorTemplate='RowsPerPageDropdown PrevPageLink CurrentPageReport NextPageLink'
           currentPageReportTemplate='{first} - {last} de {totalRecords}'
           paginatorLeft

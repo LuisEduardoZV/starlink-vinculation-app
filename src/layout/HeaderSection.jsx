@@ -11,12 +11,14 @@ import { samePageLinkNavigation } from '../services/samplePageLinkNavigation'
 import LinkTab from '../ui-components/LinkTab'
 import ProfileSection from './ProfileSection'
 
+// icons
 import AccountCircleTwoToneIcon from '@mui/icons-material/AccountCircleTwoTone'
 import AdminPanelSettingsTwoToneIcon from '@mui/icons-material/AdminPanelSettingsTwoTone'
 import CloudDoneTwoToneIcon from '@mui/icons-material/CloudDoneTwoTone'
 import ContactPhoneTwoToneIcon from '@mui/icons-material/ContactPhoneTwoTone'
 import InsertLinkIcon from '@mui/icons-material/InsertLink'
 import SatelliteAltTwoToneIcon from '@mui/icons-material/SatelliteAltTwoTone'
+import SummarizeTwoToneIcon from '@mui/icons-material/SummarizeTwoTone'
 import SupervisedUserCircleTwoToneIcon from '@mui/icons-material/SupervisedUserCircleTwoTone'
 
 const HeaderSection = () => {
@@ -111,6 +113,9 @@ const HeaderSection = () => {
                                       />}
           {user?.user?.isPowerUser && <LinkTab
             label='Vincular' href='/linking' icon={<InsertLinkIcon fontSize='small' sx={{ color: tab === 4 ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />}
+                                      />}
+          {user?.user?.isPowerUser && <LinkTab
+            label='Reportes' href='/reports' icon={<SummarizeTwoToneIcon fontSize='small' sx={{ color: tab === 5 ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />} sx={{ borderLeft: `solid 1px ${theme.palette.mode === 'light' ? theme.palette.grey[400] : theme.palette.grey[400]}` }}
                                       />}
         </Tabs>
       </Box>
