@@ -1,9 +1,18 @@
 function descendingComparator (a, b, orderBy) {
-  if (b[orderBy]?.toUpperCase() < a[orderBy]?.toUpperCase()) {
-    return -1
-  }
-  if (b[orderBy]?.toUpperCase() > a[orderBy]?.toUpperCase()) {
-    return 1
+  if (typeof b[orderBy] === 'string') {
+    if (b[orderBy].toUpperCase() < a[orderBy].toUpperCase()) {
+      return -1
+    }
+    if (b[orderBy].toUpperCase() > a[orderBy].toUpperCase()) {
+      return 1
+    }
+  } else if (typeof b[orderBy] === 'number') {
+    if (b[orderBy] < a[orderBy]) {
+      return -1
+    }
+    if (b[orderBy] > a[orderBy]) {
+      return 1
+    }
   }
   return 0
 }

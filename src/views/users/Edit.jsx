@@ -19,7 +19,7 @@ const Edit = ({ handleReset, data, backBtn }) => {
   if (!data) return
   return (
     <Box sx={{ display: 'flex', flex: 1, width: '100%', height: '100%', alignItems: 'flex-start', bgcolor: 'transparent', flexDirection: 'column', gap: 5, maxHeight: '70vh' }}>
-      <Typography variant='h2' sx={{ color: (theme) => theme.palette.grey[200] }}>Editar usuario</Typography>
+      <Typography variant='h2' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white }}>Editar usuario</Typography>
       <Formik
         initialValues={{
           ...data,

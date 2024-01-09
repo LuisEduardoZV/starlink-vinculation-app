@@ -119,7 +119,6 @@ export default function TransferList ({ terminals, termSelected, setNewTerms, di
                 color='primary'
                 onClick={handleToggle(op)}
                 sx={{
-                  // border: (theme) => `1px solid ${theme.palette.primary[800]}`,
                   mb: 1.5
                 }}
               >
@@ -134,7 +133,7 @@ export default function TransferList ({ terminals, termSelected, setNewTerms, di
                     }}
                   />
                 </ListItemIcon>
-                <ListItemText id={labelId} primary={<Typography variant='body1'>{terminalSiteName}</Typography>} sx={{ color: 'white' }} />
+                <ListItemText id={labelId} primary={<Typography variant='body1'>{terminalSiteName}</Typography>} sx={{ color: (theme) => theme.palette.mode === 'light' ? 'grey.800' : 'white' }} />
               </ListItem>
             </Fragment>
           )

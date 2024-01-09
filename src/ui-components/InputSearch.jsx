@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import { useState } from 'react'
 
 // mui imports
-import { Autocomplete, TextField, createFilterOptions } from '@mui/material'
+import { Autocomplete, Chip, TextField, createFilterOptions } from '@mui/material'
 import { alpha } from '@mui/material/styles'
 
 const filter = createFilterOptions()
@@ -73,23 +73,29 @@ const InputSearch = ({ handleSearch }) => {
           {...params}
           fullWidth
           label='Buscar...'
+          variant='outlined'
           sx={{
             '& .MuiButtonBase-root': {
               color: (theme) => theme.palette.primary.main
             },
-            '& .MuiChip-root': {
-              color: 'black',
-              bgcolor: (theme) => theme.palette.primary.main
+            '& .MuiAutocomplete-tag': {
+              borderRadius: 10,
+              bgcolor: 'transparent'
             }
           }}
         />
       )}
+      renderTags={(tagValue, getTagProps) => {
+        return tagValue.map((op, index) => (
+          <Chip key={index} {...getTagProps({ index })} label={op} variant='outlined' color='primary' size='small' sx={{ bgcolor: 'transparent' }} />
+        ))
+      }}
       sx={{
-        bgcolor: (theme) => alpha(theme.palette.grey[600], 1),
-        color: 'white',
+        bgcolor: (theme) => alpha(theme.palette.background.paper, 1),
+        color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white,
         '& .MuiInputBase-input, & .MuiInputBase-root': {
-          bgcolor: (theme) => alpha(theme.palette.grey[600], 1),
-          color: 'white'
+          bgcolor: (theme) => alpha(theme.palette.background.paper, 1),
+          color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white
         }
       }}
     />

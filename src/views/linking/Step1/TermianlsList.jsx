@@ -127,29 +127,30 @@ const TermianlsList = ({ values, handleChange, inView }) => {
       }}
     >
       <Box display='flex' flexDirection='column' rowGap={3} position='relative'>
-        <Typography component='div' variant='h2' color='white' display='flex' gap={1} alignItems='flex-start'>
-          <LooksTwoTwoToneIcon color='info' /> Selección de 1 o más terminales a vincular *
+        <Typography component='div' variant='h2' display='flex' gap={1} alignItems='flex-start' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white }}>
+          <LooksTwoTwoToneIcon sx={{ color: theme.palette.mode === 'light' ? 'success.dark' : 'info.main' }} /> Selección de 1 o más terminales a vincular *
         </Typography>
         <Box>
           <InputSearch handleSearch={handleSearch} />
         </Box>
         <PerfectScrollbar style={{ height: 'fit-content', maxHeight: matchDown2Xl ? '55vh' : '60vh', paddingLeft: 10, paddingRight: 15 }}>
           <List component={Box} display='flex' flexWrap='wrap' columnGap={1} rowGap={2}>
-            {selected.length !== 0 && <Typography variant='h4' color='grey.400' width='100%'>Terminal(es) Seleccionada(s):</Typography>}
-            {selected.length !== 0 && selected.map(({ terminalId, terminalFriendlyName, serviceLineNumber, terminalSiteName }) => (
+            {selected.length !== 0 && <Typography variant='h4' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[800] : theme.palette.grey[400] }} width='100%'>Terminal(es) Seleccionada(s):</Typography>}
+            {selected.length !== 0 && selected.map(({ terminalId, terminalKitNumber, serviceLineNumber, terminalSiteName }) => (
               <CustomListItemButton
                 key={terminalId}
                 onClick={(e) => handleClick(e, terminalId, terminalSiteName)}
                 selected
-                sx={{ maxWidth: '45%', width: '100%' }}
+                sx={{ maxWidth: '31%', width: '100%' }}
               >
                 <ListItemText
-                  primary={`${terminalSiteName} (${terminalFriendlyName})`} secondary={serviceLineNumber} color='info' sx={{
+                  primary={terminalKitNumber} secondary={serviceLineNumber} color='info' sx={{
                     '& .MuiTypography-root': {
-                      color: (theme) => theme.palette.grey[400]
+                      color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.grey[400]
                     },
                     '& .MuiListItemText-secondary': {
-                      color: (theme) => theme.palette.grey[700]
+                      color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.grey[700],
+                      fontWeight: 300
                     }
                   }}
                 />
@@ -157,22 +158,24 @@ const TermianlsList = ({ values, handleChange, inView }) => {
             )
             )}
             {selected.length !== 0 && <Divider sx={{ borderColor: 'grey.800', my: 0.5, width: '100%' }} />}
-            <Typography variant='h4' color='grey.400' width='100%'>Terminales Disponibles:</Typography>
+            <Typography variant='h4' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[800] : theme.palette.grey[400] }} width='100%'>Terminales Disponibles:</Typography>
             {loading
               ? skeltonsLoaders.map((op) => (<Skeleton key={op} height={70} />))
-              : (allTerminal.map(({ terminalId, terminalFriendlyName, serviceLineNumber, terminalSiteName }) => (
+              : (allTerminal.map(({ terminalId, serviceLineNumber, terminalSiteName, terminalKitNumber }) => (
                 <CustomListItemButton
                   key={terminalId}
                   onClick={(e) => handleClick(e, terminalId, terminalSiteName)}
-                  sx={{ maxWidth: '45%', width: '100%' }}
+                  sx={{ maxWidth: '31%', width: '100%' }}
                 >
                   <ListItemText
-                    primary={`${terminalSiteName} (${terminalFriendlyName})`} secondary={serviceLineNumber} color='info' sx={{
+                    primary={`${terminalKitNumber}`} secondary={serviceLineNumber} color='info' sx={{
                       '& .MuiTypography-root': {
-                        color: (theme) => theme.palette.grey[400]
+                        color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.grey[400],
+                        fontWeight: 800
                       },
                       '& .MuiListItemText-secondary': {
-                        color: (theme) => theme.palette.grey[700]
+                        color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[500] : theme.palette.grey[700],
+                        fontWeight: 400
                       }
                     }}
                   />

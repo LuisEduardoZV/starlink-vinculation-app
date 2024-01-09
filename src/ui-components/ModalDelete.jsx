@@ -11,12 +11,12 @@ const ModalDelete = ({ open, id, handleClose, handleDelete, title, subtitle }) =
       aria-describedby='alert-dialog-description'
     >
       <DialogTitle component='div' id='alert-dialog-title' sx={{ color: 'white' }}>
-        <Typography variant='h2' color='inherit'>
+        <Typography variant='h2' color='inherit' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white }}>
           {title}
         </Typography>
       </DialogTitle>
       <DialogContent>
-        <DialogContentText id='alert-dialog-description' sx={{ bgcolor: (theme) => theme.palette.background.paper, color: (theme) => theme.palette.grey[500] }}>
+        <DialogContentText id='alert-dialog-description' sx={{ bgcolor: (theme) => theme.palette.background.paper, color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.grey[500] }}>
           {subtitle}
         </DialogContentText>
       </DialogContent>

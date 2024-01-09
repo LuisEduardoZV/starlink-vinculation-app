@@ -39,6 +39,11 @@ const Palette = (navType) => {
         main: colors.orangeMain,
         dark: colors.orangeDark
       },
+      rose: {
+        light: colors.roseLight,
+        main: colors.roseMain,
+        dark: colors.roseDark
+      },
       warning: {
         light: colors.warningLight,
         main: colors.warningMain,
@@ -73,8 +78,8 @@ const Palette = (navType) => {
       },
       divider: navType === 'dark' ? colors.darkTextPrimary : colors.grey200,
       background: {
-        paper: navType === 'dark' ? colors.darkLevel2 : colors.paper,
-        default: navType === 'dark' ? colors.darkPaper : colors.paper
+        paper: navType === 'dark' ? colors.darkPaper : colors.paper,
+        default: navType === 'dark' ? colors.darkBackground : colors.paper
       }
     }
   })

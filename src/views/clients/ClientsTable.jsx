@@ -100,7 +100,7 @@ const ClientsTable = ({ loading, setSelected, setDataSelected, setView, selected
         component='div'
         sx={{
           color: 'white',
-          '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': { color: 'white' },
+          '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': { color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white },
           '& .MuiSelect-select, & .MuiSvgIcon-root': { color: (theme) => theme.palette.primary.main }
         }}
         count={data.length}

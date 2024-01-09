@@ -4,6 +4,7 @@ import React from 'react'
 
 // mui imports
 import { Box, Chip, Collapse, TableCell, TableRow, Typography } from '@mui/material'
+import { alpha } from '@mui/material/styles'
 
 const RowExpanded = ({ rowExpanded, element }) => {
   return (
@@ -15,9 +16,8 @@ const RowExpanded = ({ rowExpanded, element }) => {
           width: '20px',
           height: '20px'
         },
-        bgcolor: (theme) => (rowExpanded ? theme.palette.grey[900] : theme.palette.background.default),
+        backgroundColor: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[300] : alpha(theme.palette.common.white, 0.05),
         width: '100%',
-        borderRadius: '50%',
         transition: 'all',
         transitionDuration: rowExpanded ? '400ms' : '500ms',
         transitionTimingFunction: 'ease-in'
@@ -47,7 +47,7 @@ const RowExpanded = ({ rowExpanded, element }) => {
           >
             <Box
               sx={{
-                bgcolor: 'grey.900',
+                bgcolor: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[300] : alpha(theme.palette.common.white, 0.05),
                 px: 3,
                 py: 1,
                 display: 'flex',
@@ -59,25 +59,25 @@ const RowExpanded = ({ rowExpanded, element }) => {
               }}
             >
               <Box display='flex' gap={1} alignItems='center'>
-                <Typography variant='subtitle1' color='whitesmoke'>
+                <Typography variant='subtitle1' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[800] : alpha(theme.palette.common.white, 0.8) }}>
                   Latitud:
                 </Typography>
                 <Typography>{element.terminalLatitude}</Typography>
               </Box>
               <Box display='flex' gap={1} alignItems='center'>
-                <Typography variant='subtitle1' color='whitesmoke'>
+                <Typography variant='subtitle1' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[800] : alpha(theme.palette.common.white, 0.8) }}>
                   Longitud:
                 </Typography>
                 <Typography>{element.terminalLongitude}</Typography>
               </Box>
               <Box display='flex' gap={1} alignItems='center'>
-                <Typography variant='subtitle1' color='whitesmoke'>
+                <Typography variant='subtitle1' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[800] : alpha(theme.palette.common.white, 0.8) }}>
                   Número de la línea de servicio:
                 </Typography>
                 <Typography>{element.serviceLineNumber}</Typography>
               </Box>
               <Box display='flex' gap={1} alignItems='center'>
-                <Typography variant='subtitle1' color='whitesmoke'>
+                <Typography variant='subtitle1' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[800] : alpha(theme.palette.common.white, 0.8) }}>
                   Histórico:
                 </Typography>
                 <Chip label={element.dataHistoric ? 'Activado' : 'Desactivado'} color={element.dataHistoric ? 'primary' : 'error'} clickable size='small' variant='outlined' />

@@ -23,22 +23,22 @@ const ContactList = ({ avatar, phone, name, role, onActive, onEditClick, onDelet
   const theme = useTheme()
 
   return (
-    <ListWrapper>
+    <ListWrapper sx={{ borderColor: theme.palette.mode === 'light' ? `${theme.palette.grey[300]}!important` : `${theme.palette.grey[700]}!important` }}>
       <Grid container alignItems='center' spacing={3}>
         <Grid item xs={12} sm={6} onClick={() => onActive && onActive()} style={{ cursor: 'pointer' }}>
           <Grid container alignItems='center' spacing={3} sx={{ flexWrap: 'nowrap' }}>
             <Grid item>
-              <Avatar sx={{ width: 48, height: 48, fontSize: '15px', color: theme.palette.grey[400], bgcolor: alpha(theme.palette.grey[800], 0.2), backdropFilter: 'blur(10px)' }}>{avatar}</Avatar>
+              <Avatar sx={{ width: 48, height: 48, fontSize: '15px', color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.white : theme.palette.grey[400], bgcolor: (theme) => theme.palette.mode === 'light' ? alpha(theme.palette.common.black, 0.5) : alpha(theme.palette.grey[800], 0.2), backdropFilter: 'blur(10px)' }}>{avatar}</Avatar>
             </Grid>
             <Grid item sm zeroMinWidth>
               <Grid container spacing={0}>
                 <Grid item xs={12}>
-                  <Typography variant='h4' component='div' color='whitesmoke'>
+                  <Typography variant='h4' component='div' sx={{ color: (theme) => theme.palette.mode === 'light' ? alpha(theme.palette.common.black, 0.85) : theme.palette.grey[300] }}>
                     {name} ({role})
                   </Typography>
                 </Grid>
                 <Grid item xs={12}>
-                  <Typography variant='caption'>{phone}</Typography>
+                  <Typography variant='caption' sx={{ color: (theme) => theme.palette.mode === 'light' && alpha(theme.palette.common.black, 0.85) }}>{phone}</Typography>
                 </Grid>
               </Grid>
             </Grid>
@@ -59,7 +59,7 @@ const ContactList = ({ avatar, phone, name, role, onActive, onEditClick, onDelet
             </Grid>
             <Grid item>
               <Tooltip placement='top' title='Editar'>
-                <Button variant='outlined' color='info' sx={{ minWidth: 32, height: 32, p: 0 }} onClick={() => onEditClick && onEditClick()}>
+                <Button variant='outlined' sx={{ minWidth: 32, height: 32, p: 0, color: theme.palette.mode === 'light' ? 'success.dark' : 'info.main', borderColor: theme.palette.mode === 'light' ? 'success.dark' : 'info.main' }} onClick={() => onEditClick && onEditClick()}>
                   <EditNoteTwoToneIcon fontSize='small' />
                 </Button>
               </Tooltip>

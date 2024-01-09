@@ -40,7 +40,7 @@ const Row = ({ element, handleClick, isItemSelected, labelId, hasExtendedRow, ha
   return (
     <>
       <TableRow hover aria-checked={isItemSelected} tabIndex={-1} sx={{ cursor: 'pointer' }}>
-        <TableCell component='th' colSpan={2} id={labelId} align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>
+        <TableCell component='th' colSpan={2} id={labelId} align='left' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[400] }}>
           {mode === 0
             ? element.terminalSiteName
             : (
@@ -57,7 +57,7 @@ const Row = ({ element, handleClick, isItemSelected, labelId, hasExtendedRow, ha
               />
               )}
         </TableCell>
-        <TableCell align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>
+        <TableCell align='left' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[400] }}>
           {mode === 0
             ? element.terminalFriendlyName ?? ''
             : (
@@ -74,9 +74,9 @@ const Row = ({ element, handleClick, isItemSelected, labelId, hasExtendedRow, ha
               />
               )}
         </TableCell>
-        <TableCell align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>{element.terminalLineOfService}</TableCell>
-        <TableCell align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>{element.terminalKitNumber}</TableCell>
-        <TableCell align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>{element.terminalSerialNumber}</TableCell>
+        <TableCell align='left' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[400] }}>{element.terminalLineOfService}</TableCell>
+        <TableCell align='left' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[400] }}>{element.terminalKitNumber}</TableCell>
+        <TableCell align='left' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[400] }}>{element.terminalSerialNumber}</TableCell>
         {hasExtendedRow && (
           <TableCell>
             <Box sx={{ width: '100%', display: 'flex' }}>
@@ -88,12 +88,12 @@ const Row = ({ element, handleClick, isItemSelected, labelId, hasExtendedRow, ha
                       handleClick(e, element.terminalId)
                     }}
                   >
-                    <Icon fontSize='small' sx={{ color: mode ? 'primary.dark' : 'info.main' }} />
+                    <Icon fontSize='small' sx={{ color: (theme) => mode ? theme.palette.mode === 'light' ? 'primary.main' : 'primary.dark' : theme.palette.mode === 'light' ? 'success.dark' : 'info.main' }} />
                   </IconButton>
                 </>
               )}
               <IconButton aria-label='expand row' size='small' onClick={() => setRowExpanded(!rowExpanded)}>
-                {rowExpanded ? <KeyboardArrowUpIcon sx={{ color: 'grey.300' }} /> : <KeyboardArrowDownIcon sx={{ color: 'grey.300' }} />}
+                {rowExpanded ? <KeyboardArrowUpIcon sx={{ color: (theme) => theme.palette.mode === 'light' ? 'grey.700' : 'grey.300' }} /> : <KeyboardArrowDownIcon sx={{ color: (theme) => theme.palette.mode === 'light' ? 'grey.700' : 'grey.300' }} />}
               </IconButton>
             </Box>
           </TableCell>

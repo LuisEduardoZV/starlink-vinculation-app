@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom'
 
 // mui imports
 import { Box, Tabs, Typography } from '@mui/material'
-import { alpha } from '@mui/material/styles'
+import { alpha, useTheme } from '@mui/material/styles'
 
 // project imports
 import useAuth from '../hooks/useAuth'
@@ -21,6 +21,8 @@ import SupervisedUserCircleTwoToneIcon from '@mui/icons-material/SupervisedUserC
 
 const HeaderSection = () => {
   const { user } = useAuth()
+
+  const theme = useTheme()
 
   const { state, pathname } = useLocation()
   const [tab, setTab] = useState(0)
@@ -40,6 +42,13 @@ const HeaderSection = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname])
 
+  const extraTheme = theme.palette.mode === 'dark'
+    ? {
+        borderRadius: 2,
+        boxShadow: '7px 7px 10px 0px rgba(10, 10, 10, 1)'
+      }
+    : { borderRadius: 3, boxShadow: '20px 20px 48px #c8c8c8, -20px -20px 48px #ffffff' }
+
   return (
     <Box sx={{
       color: 'white',
@@ -49,16 +58,16 @@ const HeaderSection = () => {
       top: 0,
       left: '4%',
       right: '4%',
-      borderRadius: 2,
       px: 3,
       py: 1,
       alignItems: 'center',
       backdropFilter: 'blur(8px)',
-      boxShadow: '7px 7px 10px 0px rgba(10, 10, 10, 1)',
-      zIndex: 5
+      backgroundColor: (theme) => theme.palette.background.paper,
+      zIndex: 5,
+      ...extraTheme
     }}
     >
-      <Typography flex={1} variant='h2' color='white' sx={{ textShadow: (theme) => `1px 2px 1px ${theme.palette.primary[800]}` }}>Tan-Graph</Typography>
+      <Typography flex={1} variant='h2' sx={{ textShadow: theme.palette.mode === 'light' ? `2px 2px 1px ${theme.palette.grey[400]}` : `1px 2px 1px ${theme.palette.primary[800]}`, color: theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white }}>Tan-Graph</Typography>
       <Box flex={5} display='flex' justifyContent='center'>
         <Tabs
           value={tab}
@@ -78,7 +87,7 @@ const HeaderSection = () => {
               <LinkTab
                 label='Clientes' href='/clients'
                 icon={<SupervisedUserCircleTwoToneIcon
-                  fontSize='small' sx={{ color: tab === 0 ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }}
+                  fontSize='small' sx={{ color: tab === 0 ? theme.palette.primary[800] : theme.palette.primary.main }}
                       />}
               />)
             : (

@@ -145,14 +145,14 @@ const SecondContainer = ({ inView, values, errors, touched, handleBlur, handleCh
     >
       <Box display='flex' flexDirection='row' columnGap={3} position='relative'>
         <Box display='flex' flexDirection='column' width='65%'>
-          <Typography component='div' variant='h2' color='white' display='flex' gap={1} alignItems='flex-start'>
+          <Typography component='div' variant='h2' color={theme.palette.mode === 'light' ? 'black' : 'white'} display='flex' gap={1} alignItems='flex-start'>
             <Looks3TwoToneIcon color='info' /> Vinculación de usuarios con las terminales
           </Typography>
           <TransferList terminals={terminals} termSelected={terminalsAsigned} setNewTerms={setTerminalsUser} disabled={terminalsAsigned.length > 0} />
         </Box>
 
         <Box width='35%' display='flex' flexDirection='column'>
-          <Typography variant='subtitle1' sx={{ color: 'grey.400' }}>Selección o creación de usuarios</Typography>
+          <Typography variant='subtitle1' sx={{ color: theme.palette.mode === 'light' ? 'grey.800' : 'grey.400' }}>Selección o creación de usuarios</Typography>
           <Box sx={{ borderBottom: 1, borderColor: 'divider', maxWidth: '100%' }}>
             <Tabs
               value={viewTab}
@@ -163,7 +163,7 @@ const SecondContainer = ({ inView, values, errors, touched, handleBlur, handleCh
                 minHeight: '40px',
                 display: 'flex',
                 width: 'auto',
-                '& .MuiTab-root.Mui-selected': { color: 'grey.500', transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms' },
+                '& .MuiTab-root.Mui-selected': { color: theme.palette.mode === 'light' ? 'grey.700' : 'grey.500', transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms' },
                 '& .MuiTab-root': { py: 0, minHeight: '40px', pt: 0.5 },
                 '& .MuiTabs-flexContainer': { borderColor: (theme) => theme.palette.grey[800] }
               }}

@@ -8,13 +8,15 @@ import HighlightOffTwoToneIcon from '@mui/icons-material/HighlightOffTwoTone'
 import ModeEditOutlineTwoToneIcon from '@mui/icons-material/ModeEditOutlineTwoTone'
 import SearchTwoToneIcon from '@mui/icons-material/SearchTwoTone'
 import { Box, Collapse, Divider, Fade, IconButton, Stack } from '@mui/material'
-import { alpha } from '@mui/material/styles'
+import { alpha, useTheme } from '@mui/material/styles'
 
 // project imports
 import CustomTooltipBtns from './CustomTooltipBtns'
 import InputSearch from './InputSearch'
 
 const AsideMenuCrud = ({ inFade, view, dataSelected, handleAdd, handleEdit, handleOpenDelete, addIcon, handleSearch, extraBtns, btnsAvailable = true }) => {
+  const theme = useTheme()
+
   const [activeSearch, setActiveSearch] = useState(false)
 
   const AddIcon = addIcon ?? AddCircleTwoToneIcon
@@ -31,11 +33,19 @@ const AsideMenuCrud = ({ inFade, view, dataSelected, handleAdd, handleEdit, hand
   }
 
   const aditionalBtns = renderExtraBtn()
+  /*
+  boxShadow: '7px 7px 10px 0px rgba(10, 10, 10, 1)', borderRadius: 2,
+  */
+
+  const extraTheme = theme.palette.mode === 'dark' ? { boxShadow: '7px 7px 10px 0px rgba(10, 10, 10, 1)', borderRadius: 2 } : { borderRadius: 3, boxShadow: '20px 20px 48px #c8c8c8, -20px -20px 48px #ffffff' }
+
+  const extraThemeSearch = theme.palette.mode === 'dark' ? { borderRadius: 2, boxShadow: '7px 7px 10px 0px rgba(10, 10, 10, 1)' } : { borderRadius: 3, boxShadow: '20px 20px 48px #c8c8c8, -20px -20px 48px #ffffff' }
+
 
   return (
     <Fade in={!inFade} mountOnEnter unmountOnExit style={{ zIndex: 5 }}>
       <Box position='relative' width='auto'>
-        <Box sx={{ position: 'fixed', color: 'white', left: '4%', bgcolor: (theme) => alpha(theme.palette.grey[600], 0.7), boxShadow: '7px 7px 10px 0px rgba(10, 10, 10, 1)', borderRadius: 2, p: 1 }}>
+        <Box sx={{ position: 'fixed', color: 'white', left: '4%', bgcolor: theme.palette.background.paper, p: 1, ...extraTheme }}>
           <Stack direction='column'>
             <IconButton
               sx={{
@@ -43,7 +53,7 @@ const AsideMenuCrud = ({ inFade, view, dataSelected, handleAdd, handleEdit, hand
               }}
               onClick={() => setActiveSearch(current => !current)}
             >
-              <SearchTwoToneIcon sx={{ color: 'white' }} />
+              <SearchTwoToneIcon sx={{ color: theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white }} />
             </IconButton>
             <Collapse
               in={activeSearch}
@@ -54,7 +64,7 @@ const AsideMenuCrud = ({ inFade, view, dataSelected, handleAdd, handleEdit, hand
                 <IconButton size='small' color='primary' sx={{ position: 'absolute', top: -13, right: -13 }} onClick={() => setActiveSearch(false)}>
                   <HighlightOffTwoToneIcon fontSize='small' />
                 </IconButton>
-                <Box color='white' sx={{ bgcolor: (theme) => alpha(theme.palette.grey[600], 1), borderRadius: 2, boxShadow: (theme) => theme.shadows[10], py: 1, pr: 2, pl: 1, height: '100%', minHeight: 50, minWidth: 350 }}>
+                <Box color='white' sx={{ bgcolor: alpha(theme.palette.background.paper, 1), py: 1, pr: 2, pl: 1, height: '100%', minHeight: 50, minWidth: 350, ...extraThemeSearch }}>
                   <InputSearch handleSearch={handleSearch} />
                 </Box>
               </Box>
@@ -62,7 +72,7 @@ const AsideMenuCrud = ({ inFade, view, dataSelected, handleAdd, handleEdit, hand
             {(!btnsAvailable && extraBtns) && (aditionalBtns)}
             {btnsAvailable && (
               <>
-                <Divider sx={{ borderColor: (theme) => theme.palette.grey[800], my: 0.5 }} />
+                <Divider sx={{ borderColor: theme.palette.grey[800], my: 0.5 }} />
                 <CustomTooltipBtns key='addbtn' type='primary' title='Agregar'>
                   <IconButton onClick={handleAdd}>
                     <AddIcon color='primary' />
@@ -70,13 +80,13 @@ const AsideMenuCrud = ({ inFade, view, dataSelected, handleAdd, handleEdit, hand
                 </CustomTooltipBtns>
                 <Collapse in={!!dataSelected && !inFade && view !== 1}>
                   <Stack direction='column'>
-                    <CustomTooltipBtns key='editbtn' type='info' title='Editar'>
+                    <CustomTooltipBtns key='editbtn' type={theme.palette.mode === 'light' ? 'success' : 'info'} title='Editar'>
                       <IconButton onClick={handleEdit}>
-                        <ModeEditOutlineTwoToneIcon color='info' />
+                        <ModeEditOutlineTwoToneIcon color={theme.palette.mode === 'light' ? 'success' : 'info'} />
                       </IconButton>
                     </CustomTooltipBtns>
                     {extraBtns && (aditionalBtns)}
-                    <Divider sx={{ borderColor: (theme) => theme.palette.grey[800], my: 0.5 }} />
+                    <Divider sx={{ borderColor: theme.palette.grey[800], my: 0.5 }} />
                     <CustomTooltipBtns key='deletebtn' type='error' title='Eliminar'>
                       <IconButton onClick={handleOpenDelete}>
                         <DeleteSweepTwoToneIcon color='error' />

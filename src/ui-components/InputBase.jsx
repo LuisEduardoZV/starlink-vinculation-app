@@ -10,9 +10,10 @@ const InputBase = React.forwardRef(({ error, ...others }, ref) => (
     error={error}
     sx={{
       boxShadow: (theme) => theme.shadows[5],
+      bgcolor: (theme) => theme.palette.background.default,
       '& .MuiInputBase-input': {
-        color: 'white',
-        WebkitTextFillColor: 'white'
+        color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white,
+        WebkitTextFillColor: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white
       },
       '& .MuiInputLabel-root': {
         color: !error && ((theme) => theme.palette.primary.main)
@@ -24,7 +25,7 @@ const InputBase = React.forwardRef(({ error, ...others }, ref) => (
         color: (theme) => theme.palette.primary[800]
       },
       '& .MuiInputBase-input.MuiFilledInput-input.Mui-disabled ': {
-        color: (theme) => theme.palette.grey[500],
+        color: (theme) => theme.palette.primary[500],
         WebkitTextFillColor: 'inherit'
       }
     }}

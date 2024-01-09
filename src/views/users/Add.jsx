@@ -18,7 +18,7 @@ import { emailerrorText, requiredText } from '../../utils/labelsErrorsFormik'
 const Add = ({ handleReset, client, backBtn }) => {
   return (
     <Box sx={{ display: 'flex', flex: 1, width: '100%', height: '100%', alignItems: 'flex-start', bgcolor: 'transparent', flexDirection: 'column', gap: 5, maxHeight: '70vh' }}>
-      <Typography variant='h2' sx={{ color: (theme) => theme.palette.grey[200] }}>Agregar nuevo usuario</Typography>
+      <Typography variant='h2' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white }}>Agregar nuevo usuario</Typography>
       <Formik
         initialValues={{
           userId: 0,

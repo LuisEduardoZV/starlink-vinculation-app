@@ -19,9 +19,9 @@ const Row = ({ element, handleClick, isItemSelected, hasExtendedRow, hasMoreActi
     <>
       <TableRow hover aria-checked={isItemSelected} tabIndex={-1} sx={{ cursor: 'pointer' }}>
         <TableCell />
-        <TableCell component='th' align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>{element.fullName}</TableCell>
-        <TableCell align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>{element.terminalSiteName}</TableCell>
-        <TableCell align='left' sx={{ color: (theme) => theme.palette.grey[400] }}>{element.dashboardName}</TableCell>
+        <TableCell component='th' align='left' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[400] }}>{element.fullName}</TableCell>
+        <TableCell align='left' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[400] }}>{element.terminalSiteName}</TableCell>
+        <TableCell align='left' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[400] }}>{element.dashboardName}</TableCell>
         {hasMoreActions && (
           <TableCell width='auto'>
             <Box sx={{ width: 'auto', display: 'flex' }}>

@@ -18,7 +18,7 @@ const FormAuth = ({ isAdd, showPass, values, errors, touched, handleBlur, handle
     <PerfectScrollbar style={{ height: 'auto', overflowX: 'hidden' }}>
       <Grid container spacing={3} sx={{ p: 3 }}>
         <Grid item xs={12}>
-          <Typography variant='h2' color='whitesmoke'>
+          <Typography variant='h2' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white }}>
             {isAdd ? 'Nuevo Super Usuario' : 'Editando un Super Usuario'}
           </Typography>
         </Grid>

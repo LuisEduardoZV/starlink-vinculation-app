@@ -22,10 +22,10 @@ const ContactListContainer = ({ data, loading, tamContacts, onActive, onEdit, on
               {key.toUpperCase()}
             </Typography>
           </Grid>
-          <Grid item xs={12}>
-            <Grid container direction='row' spacing={0}>
+          <Grid item xs={12} borderColor='transparent'>
+            <Grid container direction='row' spacing={1} borderColor='transparent'>
               {data[key].map((userRow, i) => (
-                <Grid item xs={12} key={i}>
+                <Grid item xs={12} key={i} borderColor='transparent'>
                   <ContactList
                     avatar={getContactAvatar(userRow.contactName)}
                     name={userRow.contactName}

@@ -4,8 +4,8 @@ import React, { useMemo, useState } from 'react'
 // mui imports
 import VisibilityOffTwoToneIcon from '@mui/icons-material/VisibilityOffTwoTone'
 import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone'
-import { Autocomplete, Box, Button, Collapse, Divider, Fade, IconButton, InputAdornment, TextField, Typography } from '@mui/material'
-import { alpha } from '@mui/material/styles'
+import { Autocomplete, Box, Button, Chip, Collapse, Divider, Fade, IconButton, InputAdornment, TextField, Typography } from '@mui/material'
+import { alpha, useTheme } from '@mui/material/styles'
 
 // project imports
 import InputBase from '../../../ui-components/InputBase'
@@ -13,6 +13,8 @@ import InputBase from '../../../ui-components/InputBase'
 import 'react-perfect-scrollbar/dist/css/styles.css'
 
 const DashUserSelection = React.forwardRef(({ values, errors, touched, handleBlur, handleChange, handleChangeAutocompleteInfo, handleAddUser, disabledBtns, cancelBtn, handleDeleteUser, finishBtn, users, dash, loading }, ref) => {
+  const theme = useTheme()
+
   const { userId, dashboards, email, password, terminals } = values
   const [showPass, setShowPass] = useState(false)
 
@@ -40,8 +42,8 @@ const DashUserSelection = React.forwardRef(({ values, errors, touched, handleBlu
           getOptionLabel={(option) => (option.dashboardName)}
           renderOption={(props, option) => (
             <Box key={option.dashboards} component='li' sx={{ width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'start' }} {...props}>
-              <Typography variant='body2' color='grey.400' textAlign='start' width='100%'>{option.dashboardName}</Typography>
-              <Typography variant='subtitle2' color='grey.700' textAlign='start' width='100%'>{option.dashboardDesc}</Typography>
+              <Typography variant='body2' textAlign='start' width='100%' sx={{ color: (theme) => theme.palette.mode === 'light' ? 'grey.800' : 'grey.400' }}>{option.dashboardName}</Typography>
+              <Typography variant='subtitle2' textAlign='start' width='100%' sx={{ color: (theme) => theme.palette.mode === 'light' ? 'primary.dark' : 'grey.700' }}>{option.dashboardDesc}</Typography>
             </Box>
           )}
           renderInput={(params) => <TextField
@@ -57,12 +59,17 @@ const DashUserSelection = React.forwardRef(({ values, errors, touched, handleBlu
               }
             }}
                                    />}
+          renderTags={(tagValue, getTagProps) => {
+            return tagValue.map((op, index) => (
+              <Chip key={index} {...getTagProps({ index })} label={op.dashboardName} variant='outlined' color='primary' size='small' sx={{ bgcolor: 'transparent' }} />
+            ))
+          }}
           sx={{
-            bgcolor: (theme) => alpha(theme.palette.grey[600], 1),
-            color: 'white',
+            bgcolor: (theme) => alpha(theme.palette.background.paper, 1),
+            color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white,
             '& .MuiInputBase-input, & .MuiInputBase-root': {
-              bgcolor: (theme) => alpha(theme.palette.grey[600], 1),
-              color: 'white'
+              bgcolor: (theme) => alpha(theme.palette.background.paper, 1),
+              color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white
             }
           }}
         />
@@ -76,7 +83,6 @@ const DashUserSelection = React.forwardRef(({ values, errors, touched, handleBlu
               fullWidth
               size='small'
               id='auto-combo-users'
-              disabled={isUserNewComplete}
               options={cancelBtn ? [] : users}
               value={userId}
               onChange={(e, nue) => handleChangeAutocompleteInfo('userId', nue)}
@@ -106,27 +112,33 @@ const DashUserSelection = React.forwardRef(({ values, errors, touched, handleBlu
                 }}
                                        />}
               sx={{
-                bgcolor: (theme) => alpha(theme.palette.grey[600], 1),
-                color: 'white',
+                bgcolor: (theme) => alpha(theme.palette.background.paper, 1),
+                color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white,
                 '.Mui-disabled': {
                   bgcolor: (theme) => alpha(theme.palette.grey[600], 1),
                   color: (theme) => theme.palette.grey[700]
                 },
                 '& .MuiInputBase-input, & .MuiInputBase-root': {
-                  bgcolor: (theme) => alpha(theme.palette.grey[600], 1),
-                  color: 'white'
+                  bgcolor: (theme) => alpha(theme.palette.background.paper, 1),
+                  color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white
                 }
               }}
             />
           </Box>
           <Fade in={(!isUserNewComplete && userId === null)}>
-            <Divider sx={{ mt: 2.5 }}>O</Divider>
+            <Divider sx={{
+              mt: 2.5,
+              color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white,
+              '&:before, &:after': { borderColor: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[800] : theme.palette.common.white }
+            }}
+            >O
+            </Divider>
           </Fade>
         </>
       </Collapse>
       <Collapse in={userId === null}>
         <Box display='flex' flexDirection='column' rowGap={3}>
-          <Typography variant='h4' color='grey.400'>Cree un nuevo usuario para el cliente</Typography>
+          <Typography variant='h4' sx={{ color: (theme) => theme.palette.mode === 'light' ? 'grey.800' : 'grey.400' }}>Cree un nuevo usuario para el cliente</Typography>
           <InputBase
             value={values.email}
             name='email'
@@ -177,7 +189,7 @@ const DashUserSelection = React.forwardRef(({ values, errors, touched, handleBlu
           <>
             {cancelBtn
               ? <Button variant='outlined' color='error' onClick={handleDeleteUser}>Eliminar</Button>
-              : <Button variant='outlined' color='secondary' disabled={!validFinish} onClick={handleAddUser}>Guardar usuario</Button>}
+              : <Button variant='outlined' color={theme.palette.mode === 'light' ? 'primary' : 'secondary'} disabled={!validFinish} onClick={handleAddUser}>Guardar usuario</Button>}
             {finishBtn && <Button variant='outlined' color='info' type='submit' disabled={!validFinish}>Terminar & Vincular</Button>}
           </>
         )}

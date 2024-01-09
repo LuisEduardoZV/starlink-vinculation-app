@@ -101,7 +101,7 @@ const ClientList = ({ handleChange, inView }) => {
       }}
     >
       <Box display='flex' flexDirection='column' rowGap={3} position='relative'>
-        <Typography component='div' variant='h2' color='white' display='flex' gap={1} alignItems='center'>
+        <Typography component='div' variant='h2' display='flex' gap={1} alignItems='center' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white }}>
           <LooksOneTwoToneIcon color='primary' /> Selección de cliente *
         </Typography>
         <Box>
@@ -111,7 +111,7 @@ const ClientList = ({ handleChange, inView }) => {
           <List component={Box}>
             {selected && (
               <Box width='100%' display='flex' flexDirection='column' gap={1}>
-                <Typography variant='h4' color='grey.400'>Cliente Seleccionado:</Typography>
+                <Typography variant='h4' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[800] : theme.palette.grey[400] }}>Cliente Seleccionado:</Typography>
                 <CustomListItemButton
                   key='client-selected'
                   selected
@@ -127,7 +127,7 @@ const ClientList = ({ handleChange, inView }) => {
                 <Divider sx={{ borderColor: 'grey.800', my: 2 }} />
               </Box>
             )}
-            <Typography variant='h4' color='grey.400'>Clientes Disponibles:</Typography>
+            <Typography variant='h4' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[800] : theme.palette.grey[400] }}>Clientes Disponibles:</Typography>
             {loading
               ? skeltonsLoaders.map((op) => (<Skeleton key={op} height={70} />))
               : clients.map(({ clientId, clientName, clientEmail }, index) => (
@@ -138,7 +138,7 @@ const ClientList = ({ handleChange, inView }) => {
                   <ListItemText
                     primary={clientName} secondary={clientEmail} sx={{
                       '& .MuiListItemText-primary': {
-                        color: (theme) => theme.palette.grey[400]
+                        color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[600] : theme.palette.grey[400]
                       }
                     }}
                   />

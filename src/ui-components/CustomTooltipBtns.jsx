@@ -10,6 +10,9 @@ function getColor (type, theme) {
     case 'error': return theme.palette.error.main
     case 'primary': return theme.palette.primary.main
     case 'secondary': return theme.palette.secondary.main
+    case 'success': return theme.palette.success.main
+    case 'rose': return theme.palette.rose.main
+    case 'orange': return theme.palette.orange.main
     case 'info': default: return theme.palette.info.main
   }
 }
@@ -17,7 +20,7 @@ function getColor (type, theme) {
 const CustomTooltipBtns = ({ className, children, type, ...props }) => {
   const theme = useTheme()
 
-  const color = type === 'orange' ? theme.palette.orange.main : getColor(type, theme)
+  const color = getColor(type, theme)
 
   return (
     <Tooltip
@@ -32,7 +35,8 @@ const CustomTooltipBtns = ({ className, children, type, ...props }) => {
             [`& .${tooltipClasses.arrow}`]: {
               color
             },
-            backgroundColor: color
+            backgroundColor: color,
+            color: theme.palette[type].contrastText
           }
         }
       }}

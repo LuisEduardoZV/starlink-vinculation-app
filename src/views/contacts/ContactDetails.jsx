@@ -33,14 +33,14 @@ const ContactDetails = ({ user, onClose, onEditClick, onDelete, ...others }) => 
     >
       <Grid container spacing={3}>
         <Grid item xs={12}>
-          <Grid container alignItems='center' spacing={1}>
-            <Grid item>
-              <Avatar sx={{ width: 64, height: 64, color: theme.palette.grey[400], bgcolor: alpha(theme.palette.grey[800], 0.2), backdropFilter: 'blur(10px)' }}>{getContactAvatar(user.contactName)}</Avatar>
+          <Grid container alignItems='start' spacing={1}>
+            <Grid item alignSelf='center'>
+              <Avatar sx={{ width: 64, height: 64, color: theme.palette.mode === 'light' ? theme.palette.common.white : theme.palette.grey[400], bgcolor: theme.palette.mode === 'light' ? alpha(theme.palette.common.black, 0.5) : alpha(theme.palette.grey[800], 0.2), backdropFilter: 'blur(10px)' }}>{getContactAvatar(user.contactName)}</Avatar>
             </Grid>
             <Grid item xs zeroMinWidth>
               <Grid container spacing={1}>
                 <Grid item xs={12}>
-                  <Typography variant='h5' component='div' sx={{ fontSize: '1rem', color: 'whitesmoke' }}>
+                  <Typography variant='h5' component='div' sx={{ fontSize: '1rem', color: theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.grey[200] }}>
                     {user.contactName}
                   </Typography>
                 </Grid>
@@ -49,13 +49,16 @@ const ContactDetails = ({ user, onClose, onEditClick, onDelete, ...others }) => 
                     label={user.contactPosition}
                     size='small'
                     variant='outlined'
-                    color='primary'
                     clickable
+                    sx={{
+                      color: theme.palette.mode === 'light' ? theme.palette.info.main : theme.palette.primary.main,
+                      borderColor: theme.palette.mode === 'light' ? theme.palette.info.main : theme.palette.primary.main
+                    }}
                   />
                 </Grid>
               </Grid>
             </Grid>
-            <Grid item>
+            <Grid item height='max-content'>
               <IconButton onClick={onClose} size='large' sx={{ color: theme.palette.grey[500] }}>
                 <HighlightOffTwoToneIcon />
               </IconButton>
@@ -65,7 +68,7 @@ const ContactDetails = ({ user, onClose, onEditClick, onDelete, ...others }) => 
         <Grid item xs={12}>
           <Grid container spacing={1}>
             <Grid item xs={6}>
-              <Button variant='outlined' color='info' fullWidth startIcon={<EditNoteTwoToneIcon />} onClick={onEditClick}>
+              <Button variant='outlined' fullWidth startIcon={<EditNoteTwoToneIcon />} onClick={onEditClick} sx={{ color: theme.palette.mode === 'light' ? 'success.dark' : 'info.main', borderColor: theme.palette.mode === 'light' ? 'success.dark' : 'info.main' }}>
                 Editar
               </Button>
             </Grid>
@@ -82,30 +85,30 @@ const ContactDetails = ({ user, onClose, onEditClick, onDelete, ...others }) => 
         <Grid item xs={12}>
           <Grid container spacing={1}>
             <Grid item>
-              <BadgeTwoToneIcon sx={{ verticalAlign: 'sub', fontSize: '1.125rem', mr: 0.625 }} />
+              <BadgeTwoToneIcon sx={{ verticalAlign: 'sub', fontSize: '1.125rem', mr: 0.625 }} color={theme.palette.mode === 'light' ? 'secondary' : 'white'} />
             </Grid>
             <Grid item xs zeroMinWidth>
-              <Typography variant='body2' color={theme.palette.grey[500]}>{user.contactName}</Typography>
+              <Typography variant='body2' color={theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[500]}>{user.contactName}</Typography>
             </Grid>
           </Grid>
         </Grid>
         <Grid item xs={12}>
           <Grid container spacing={1}>
             <Grid item>
-              <WorkTwoToneIcon sx={{ verticalAlign: 'sub', fontSize: '1.125rem', mr: 0.625 }} />
+              <WorkTwoToneIcon sx={{ verticalAlign: 'sub', fontSize: '1.125rem', mr: 0.625 }} color={theme.palette.mode === 'light' ? 'secondary' : 'white'} />
             </Grid>
             <Grid item xs zeroMinWidth>
-              <Typography variant='body2' color={theme.palette.grey[500]}>{user.contactPosition}</Typography>
+              <Typography variant='body2' color={theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[500]}>{user.contactPosition}</Typography>
             </Grid>
           </Grid>
         </Grid>
         <Grid item xs={12}>
           <Grid container spacing={1}>
             <Grid item>
-              <CallTwoToneIcon sx={{ verticalAlign: 'sub', fontSize: '1.125rem', mr: 0.625 }} />
+              <CallTwoToneIcon sx={{ verticalAlign: 'sub', fontSize: '1.125rem', mr: 0.625 }} color={theme.palette.mode === 'light' ? 'secondary' : 'white'} />
             </Grid>
             <Grid item xs zeroMinWidth>
-              <Typography variant='body2' color={theme.palette.grey[500]} sx={{ mb: 0.625 }}>
+              <Typography variant='body2' color={theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[500]} sx={{ mb: 0.625 }}>
                 {user.contactPhone}{' '}
                 <Typography component='span' color='primary'>
                   Oficina
@@ -117,10 +120,10 @@ const ContactDetails = ({ user, onClose, onEditClick, onDelete, ...others }) => 
         <Grid item xs={12}>
           <Grid container spacing={1}>
             <Grid item>
-              <InfoTwoToneIcon sx={{ verticalAlign: 'sub', fontSize: '1.125rem', mr: 0.625 }} />
+              <InfoTwoToneIcon sx={{ verticalAlign: 'sub', fontSize: '1.125rem', mr: 0.625 }} color={theme.palette.mode === 'light' ? 'secondary' : 'white'} />
             </Grid>
             <Grid item xs zeroMinWidth>
-              <Typography variant='body2' color={theme.palette.grey[500]} sx={{ mb: 0.625 }}>
+              <Typography variant='body2' color={theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[500]} sx={{ mb: 0.625 }}>
                 {user.publicNote}
               </Typography>
             </Grid>

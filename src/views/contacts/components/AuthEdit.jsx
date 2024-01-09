@@ -5,9 +5,10 @@ import { PatternFormat } from 'react-number-format'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 
 // mui importts
-import { Box, Divider, Grid, Switch, Tooltip, Typography } from '@mui/material'
+import { Box, Divider, Grid, Tooltip, Typography } from '@mui/material'
 
 // project imports
+import CustomSwitch from '../../../ui-components/CustomSwitch'
 import InputBase from '../../../ui-components/InputBase'
 import DefaultBtnsForms from '../../../ui-components/extended/DefaultBtnsForms'
 
@@ -16,12 +17,12 @@ const AuthEdit = ({ errors, values, touched, isAdd, handleBlur, handleChange, on
     <PerfectScrollbar style={{ height: 'auto', overflowX: 'hidden' }}>
       <Grid container spacing={3} sx={{ p: 3 }}>
         <Grid item xs={12}>
-          <Typography variant='h2' color='whitesmoke'>
+          <Typography variant='h2' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : 'white' }}>
             {isAdd ? 'Nuevo contácto' : 'Editando contácto'}
           </Typography>
         </Grid>
         <Grid item xs={12}>
-          <Divider />
+          <Divider sx={{ borderColor: (theme) => theme.palette.mode === 'light' && theme.palette.grey[400] }} />
         </Grid>
         <Grid item xs={12}>
           <Tooltip arrow followCursor disableInteractive {...errors.contactName && { title: errors.contactName }}>
@@ -82,36 +83,14 @@ const AuthEdit = ({ errors, values, touched, isAdd, handleBlur, handleChange, on
         </Grid>
         {!isAdd && (
           <Grid item xs={12} position='relative' justifyContent='start'>
-            <Typography variant='caption' color='primary' sx={{ position: 'absolute', top: '40%', left: '12%', fontSize: '10px' }}>Estatus</Typography>
-            <Box display='flex' alignItems='center' width='100%' justifyContent='center' mt={2} gap={2}>
-              <Typography
-                variant='caption'
-                sx={{
-                  color: (theme) => values.isEnabled ? theme.palette.grey[500] : theme.palette.grey[300],
-                  fontWeight: !values.isEnabled && '800',
-                  fontSize: !values.isEnabled && '13px',
-                  transition: 'color 0.3s ease-in-out, font-weight 0.3s ease-in-out, font-size 0.3s ease-in-out'
-                }}
-              >Inactivo
-              </Typography>
-              <Switch
-                color='primary'
-                size='small'
-                checked={values.isEnabled}
-                name='isEnabled'
-                onChange={handleChange}
-              />
-              <Typography
-                variant='caption'
-                sx={{
-                  color: (theme) => !values.isEnabled ? theme.palette.grey[500] : theme.palette.grey[300],
-                  fontWeight: values.isEnabled && '800',
-                  fontSize: values.isEnabled && '13px',
-                  transition: 'color 0.3s ease-in-out, font-weight 0.3s ease-in-out, font-size 0.3s ease-in-out'
-                }}
-              >Activo
-              </Typography>
-            </Box>
+            <CustomSwitch
+              value={!!values.isEnabled}
+              handleChange={handleChange}
+              name='isEnabled'
+              label='Estatus'
+              option1='Inactivo'
+              option2='Activo'
+            />
           </Grid>
         )}
         <Grid item xs={12}>

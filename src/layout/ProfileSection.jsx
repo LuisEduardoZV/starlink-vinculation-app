@@ -5,15 +5,21 @@ import BadgeIcon from '@mui/icons-material/Badge'
 import PersonIcon from '@mui/icons-material/Person'
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount'
 import {
-  Box, Chip,
+  Box,
+  Chip,
   ClickAwayListener,
   Divider,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
   List,
   ListItemButton,
   ListItemIcon,
   ListItemText,
   Paper,
   Popper,
+  Radio,
+  RadioGroup,
   Stack,
   Typography
 } from '@mui/material'
@@ -47,7 +53,7 @@ const getUserType = (isPower, isAdmin) => {
   }
   if (!isPower && !isAdmin) text = 'Usuario base'
   return (
-    <Typography component='div' variant='h6' sx={{ fontWeight: 400, color: (theme) => theme.palette.grey[500], display: 'flex', alignItems: 'center', gap: 1, justifyContent: 'flex-end', width: '100%' }}>
+    <Typography component='div' variant='h6' sx={{ fontWeight: 400, color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[500], display: 'flex', alignItems: 'center', gap: 1, justifyContent: 'flex-end', width: '100%' }}>
       <IconUser fontSize='small' sx={{ color: 'primary.light' }} />
       {text}
     </Typography>
@@ -58,7 +64,7 @@ const ProfileSection = () => {
   const { logoutProvider, user } = useAuth()
 
   const theme = useTheme()
-  const { borderRadius } = useConfig()
+  const { borderRadius, onChangeMenuType, navType } = useConfig()
 
   const [open, setOpen] = useState(false)
 
@@ -98,8 +104,8 @@ const ProfileSection = () => {
           borderRadius: '27px',
           paddingX: '10px',
           transition: 'color .2s ease-in-out, border-color .2s ease-in-out, background .2s ease-in-out',
-          borderColor: theme.palette.mode === 'dark' ? theme.palette.dark.main : theme.palette.primary.main,
-          backgroundColor: theme.palette.mode === 'dark' ? theme.palette.dark.main : theme.palette.background.paper,
+          borderColor: theme.palette.primary.main,
+          backgroundColor: theme.palette.background.paper,
           '&[aria-controls="menu-list-grow"], &:hover': {
             borderColor: theme.palette.primary.main,
             background: `${theme.palette.primary.main}!important`,
@@ -149,8 +155,8 @@ const ProfileSection = () => {
                   >
                     <Box sx={{ p: 2, pb: 0, gap: 1, display: 'flex', flexDirection: 'column' }}>
                       <Stack direction='column' spacing={0.5} alignItems='start'>
-                        <Typography variant='h1' sx={{ color: 'white' }}>Hola,</Typography>
-                        <Typography component='span' variant='h4' sx={{ fontWeight: 400, color: (theme) => theme.palette.grey[500] }}>
+                        <Typography variant='h1' sx={{ color: theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white }}>Hola,</Typography>
+                        <Typography component='span' variant='h4' sx={{ fontWeight: 400, color: theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[500] }}>
                           {user?.user.fullName ?? 'Usuario'}
                         </Typography>
                       </Stack>
@@ -158,6 +164,38 @@ const ProfileSection = () => {
                         {getUserType(user?.user.isPowerUser, user?.user.isAdmin)}
                       </Stack>
                       <Divider sx={{ borderColor: (theme) => theme.palette.primary.main }} />
+                    </Box>
+                    <Box p={2} display='flex' flexDirection='column' gap={1}>
+                      <FormControl component='fieldset'>
+                        <FormLabel component='legend'>Estilo</FormLabel>
+                        <RadioGroup
+                          row
+                          aria-label='layout'
+                          value={navType}
+                          onChange={(e) => onChangeMenuType(e.target.value)}
+                          name='row-radio-buttons-group'
+                        >
+                          <FormControlLabel
+                            value='light'
+                            control={<Radio size='small' />}
+                            label='Claro'
+                            sx={{
+                              '& .MuiSvgIcon-root': { fontSize: 25 },
+                              '& .MuiFormControlLabel-label': { color: theme.palette.grey[900] }
+                            }}
+                          />
+                          <FormControlLabel
+                            value='dark'
+                            control={<Radio size='small' />}
+                            label='Obscuro'
+                            sx={{
+                              '& .MuiSvgIcon-root': { fontSize: 25 },
+                              '& .MuiFormControlLabel-label': { color: theme.palette.grey[900] }
+                            }}
+                          />
+                        </RadioGroup>
+                      </FormControl>
+                      <Divider />
                     </Box>
                     <Box sx={{ p: 2, pt: 0 }}>
                       <List
@@ -191,7 +229,7 @@ const ProfileSection = () => {
                               transition: 'color 0.2s ease-out'
                             },
                             '&:hover .MuiListItemText-root': {
-                              color: 'white'
+                              color: theme.palette.mode === 'light' ? theme.palette.primary.main : theme.palette.common.white
                             }
                           }}
                         >
@@ -220,7 +258,7 @@ const ProfileSection = () => {
                               transition: 'color 0.2s ease-out'
                             },
                             '&:hover .MuiListItemText-root': {
-                              color: 'white'
+                              color: theme.palette.mode === 'light' ? theme.palette.primary.main : theme.palette.common.white
                             }
                           }}
                           onClick={handleLogOut}

@@ -11,7 +11,7 @@ const CustomSwitch = ({ value, handleChange, name, label, option1, option2, ...p
         <Typography
           variant='caption'
           sx={{
-            color: (theme) => value ? theme.palette.grey[500] : theme.palette.grey[300],
+            color: (theme) => value ? theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[500] : theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[300],
             fontWeight: !value && '800',
             fontSize: !value && '13px',
             transition: 'color 0.3s ease-in-out, font-weight 0.3s ease-in-out, font-size 0.3s ease-in-out'
@@ -28,7 +28,7 @@ const CustomSwitch = ({ value, handleChange, name, label, option1, option2, ...p
         <Typography
           variant='caption'
           sx={{
-            color: (theme) => !value ? theme.palette.grey[500] : theme.palette.grey[300],
+            color: (theme) => !value ? theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[500] : theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[300],
             fontWeight: value && '800',
             fontSize: value && '13px',
             transition: 'color 0.3s ease-in-out, font-weight 0.3s ease-in-out, font-size 0.3s ease-in-out'

@@ -190,6 +190,7 @@ const AuthContainer = ({ values, touched, errors, isSubmitting, handleBlur, hand
         <DefaultBtnsForms
           handleCancel={handleCancel}
           isSubmitting={isSubmitting}
+          okBtnLabel={isAdding && 'Finalizar'}
         />
       </Grid>
     </Grid>

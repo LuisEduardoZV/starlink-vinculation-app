@@ -13,7 +13,7 @@ const HeaderSearchBox = ({ handleOnAdd, handleSearch, Icon, title, open = true }
   return (
     <MainMirrorFade open={open} sx={{ minHeight: 'auto', display: 'flex', gap: 3, justifyContent: 'space-between', alignItems: 'center' }}>
       <Box flex={1}>
-        <Typography color='white' variant='h3'>{title}</Typography>
+        <Typography variant='h3' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.grey[200] }}>{title}</Typography>
       </Box>
       <Box flex={1}>
         <InputSearch handleSearch={handleSearch} />
