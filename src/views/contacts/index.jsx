@@ -11,6 +11,7 @@ import { Box, Grid } from '@mui/material'
 
 // project imports
 import useAuth from '../../hooks/useAuth'
+import { useDispatch, useSelector } from '../../store'
 import AsideBackButton from '../../ui-components/AsideBackButton'
 import HeaderSearchBox from '../../ui-components/HeaderSearchBox'
 import ModalDelete from '../../ui-components/ModalDelete'
@@ -19,24 +20,24 @@ import ContactEdit from './ContactEdit'
 import ContactListContainer from './components/ContactListContainer'
 
 // services
-import { apiCall } from '../../contexts/api'
+import { deleteContact, getContacts, resetErrorUsed } from '../../store/slices/contacts'
 
-import { BASE_URL_API } from '../../config'
+const toastId = toast()
 
 const Contacts = () => {
   const { user: userProfile } = useAuth()
 
   const { clientId } = useParams()
   const navigate = useNavigate()
+  const dispatch = useDispatch()
+
+  const { contacts: mainData, error, success, loading } = useSelector((state) => state.contacts)
 
   const [render, forceRender] = useState(false)
 
-  const [mainData, setMainData] = useState([])
   const [contacts, setContacts] = useState(mainData)
   const [user, setUser] = useState({})
   const [data, setData] = useState({})
-
-  const [loading, setLoading] = useState(true)
 
   const needRender = () => forceRender((prev) => !prev)
 
@@ -58,44 +59,25 @@ const Contacts = () => {
 
   const handleDelete = async (id) => {
     const idToast = toast.loading('Cargando...')
-    try {
-      const data = await apiCall({ url: `${BASE_URL_API}/Contacts/${id}`, method: 'DELETE' })
-      if (!data) throw new Error('No se pudo eliminar el contacto')
-      onCloseDetails()
+    dispatch(deleteContact(id, clientId))
+    if (success) {
+      toast.success('Contacto eliminado correctamente', { id: idToast })
       needRender()
       setOpen(false)
-      toast.success('Contacto eliminado correctamente', { id: idToast })
-    } catch (error) {
-      console.log(error)
-      toast.error('No se pudo eliminar el contacto', { id: idToast })
     }
   }
 
   useEffect(() => {
     if (!clientId) { navigate(-1) }
     (async () => {
-      try {
-        setLoading(true)
-        const res = await apiCall({ url: `${BASE_URL_API}/getClientContactos?id=${clientId}` })
-        res.sort((a, b) => {
-          const nameA = a.contactName.toUpperCase()
-          const nameB = b.contactName.toUpperCase()
-          if (nameA < nameB) return -1
-          if (nameA > nameB) return 1
-          return 0
-        })
-
-        setMainData(res)
-        setContacts(res)
-        setData(convertData(res))
-        setLoading(false)
-      } catch (error) {
-        console.log(error)
-      }
+      dispatch(getContacts(clientId))
     })()
-
-    return () => setLoading(true)
   }, [clientId, render])
+
+  useEffect(() => {
+    setContacts(mainData)
+    setData(convertData(mainData))
+  }, [mainData])
 
   useEffect(() => {
     setData(convertData(contacts))
@@ -195,6 +177,13 @@ const Contacts = () => {
       setContacts(newRows)
     }
   }
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error?.message, { id: toastId })
+      dispatch(resetErrorUsed())
+    }
+  }, [error])
 
   return (
     <>

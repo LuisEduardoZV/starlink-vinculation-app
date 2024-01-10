@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -12,47 +13,36 @@ import { Box, Grid } from '@mui/material'
 import useAuth from '../../hooks/useAuth'
 import HeaderSearchBox from '../../ui-components/HeaderSearchBox'
 import ModalDelete from '../../ui-components/ModalDelete'
-import ContactEdit from './ContactEdit'
 import PowerUserList from './PowerUserList'
+import UserEdit from './UserEdit'
 
 // services
-import { BASE_URL_API } from '../../config'
-import { apiCall } from '../../contexts/api'
+import { useDispatch, useSelector } from '../../store'
+import { deleteUser, getUsers, resetErrorUsed } from '../../store/slices/superUsers'
+
+const toastId = toast()
 
 const SuperUsers = () => {
   const { user: login } = useAuth()
   const navigate = useNavigate()
+  const dispatch = useDispatch()
 
-  const [render, setRender] = useState(false)
+  const { users, error, success, loading } = useSelector((state) => state.superUsers)
 
   const [mainData, setMainData] = useState([])
   const [powerUsers, setPowerUsers] = useState([])
   const [user, setUser] = useState({})
 
-  const [loading, setLoading] = useState(true)
-
   const handleDelete = (id) => {
-    const promise = () => new Promise((resolve, reject) => {
-      let data = null
-      try {
-        data = apiCall({ url: `${BASE_URL_API}/PowerUsers/${id}`, method: 'DELETE' })
-      } catch (error) {
-        return reject(new Error('No ha sido posible eliminar el super usuario'))
-      }
-      return resolve({ status: data ? 200 : 404, data })
-    })
+    const toastId = toast.loading('Cargando...')
+    dispatch(deleteUser(id))
 
-    toast.promise(promise, {
-      loading: 'Procesando...',
-      success: async () => {
-        await setRender((prev) => !prev)
-        setOpen(false)
-        return 'El Super Usuario ha sido eliminado correctamente'
-      },
-      error: (er) => {
-        return er.message
-      }
-    })
+    if (success) {
+      setOpen(false)
+      toast.success('El usuario ha sido eliminado correctamente', { id: toastId })
+    } else {
+      setOpen(false)
+    }
   }
 
   const handleSearch = (e, filters) => {
@@ -78,25 +68,24 @@ const SuperUsers = () => {
 
   useEffect(() => {
     if (!login || !login.user.isPowerUser) navigate('/terminals')
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [login])
 
   useEffect(() => {
-    (async () => {
-      try {
-        const res = await apiCall({ url: `${BASE_URL_API}/PowerUsers` })
-        setMainData(res)
-        setPowerUsers(res)
-        setLoading(false)
-      } catch (error) {
-        console.log(error)
-      }
-    })()
-
-    return () => {
-      setLoading(true)
+    setMainData(users)
+    setPowerUsers(users)
+  }, [users])
+  useEffect(() => {
+    if (error) {
+      toast.error(error?.message, { id: toastId })
+      dispatch(resetErrorUsed())
     }
-  }, [render])
+  }, [error])
+
+  useEffect(() => {
+    (async () => {
+      dispatch(getUsers())
+    })()
+  }, [])
 
   useEffect(() => {
     if (!isEmpty(user)) {
@@ -146,7 +135,6 @@ const SuperUsers = () => {
     if (u) setUser(u)
     setContactDetails(true)
     setContactEdit(false)
-    setRender((prev) => !prev)
   }
 
   const onCloseEdit = () => {
@@ -188,7 +176,7 @@ const SuperUsers = () => {
 
           {contactEdit && (
             <Grid item sx={{ width: 342, margin: { xs: '0 auto', md: 'initial' } }}>
-              <ContactEdit
+              <UserEdit
                 user={user}
                 isAdd={contactAdd}
                 onFinish={(u) => { onFinish(u) }}

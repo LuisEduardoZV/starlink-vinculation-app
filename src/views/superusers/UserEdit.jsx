@@ -11,16 +11,20 @@ import { useMediaQuery } from '@mui/material'
 import { createTheme } from '@mui/material/styles'
 
 // project imports
-import { BASE_URL_API } from '../../config'
-import { apiCallWithBody } from '../../contexts/api'
 import MainMirrorCard from '../../ui-components/MainMirrorCard'
 import { emailerrorText, requiredText } from '../../utils/labelsErrorsFormik'
 import FormAuth from './components/FormAuth'
 
+// services
+import { useDispatch, useSelector } from '../../store'
+import { addUser, modifyUser } from '../../store/slices/superUsers'
 
 // ==============================|| CONTACT CARD/LIST USER EDIT ||============================== //
 
 const ContactEdit = ({ user, isAdd, onFinish, onCloseEdit, onCloseAdd, ...others }) => {
+  const dispatch = useDispatch()
+  const { success } = useSelector((state) => state.superUsers)
+
   const [initVal, setInitVal] = useState({ ...user, isEnabled: user.isEnabled === 1 })
   const [showPass, setShowPass] = useState(false)
 
@@ -66,45 +70,30 @@ const ContactEdit = ({ user, isAdd, onFinish, onCloseEdit, onCloseAdd, ...others
           setSubmitting(true)
           delete values.submit
           values.isEnabled = values.isEnabled ? 1 : 0
-          const promise = () => new Promise((resolve, reject) => {
-            let data = null
-            try {
-              if (isAdd) {
-                data = apiCallWithBody({ url: `${BASE_URL_API}/PowerUsers`, method: 'POST', body: JSON.stringify(values) })
-                apiCallWithBody({
-                  url: `${BASE_URL_API}/AltaUserGraf?type=2`,
-                  body: JSON.stringify({
-                    name: values.fullName,
-                    email: values.email,
-                    login: values.email,
-                    password: values.password,
-                    OrgId: 1
-                  })
-                })
-              } else {
-                data = apiCallWithBody({ url: `${BASE_URL_API}/PowerUsers/${values.powerUser_Id}`, method: 'PUT', body: JSON.stringify(values) })
-              }
-            } catch (error) {
-              return reject(new Error(error))
-            }
-            if (data) {
-              setStatus({ success: true })
-              setSubmitting(false)
-            }
-            return resolve({ status: data ? 200 : 404, data })
-          })
+          const toastId = toast.loading('Cargando...')
+          if (isAdd) {
+            dispatch(addUser(values))
+            /* apiCallWithBody({
+              url: `${BASE_URL_API}/AltaUserGraf?type=2`,
+              body: JSON.stringify({
+                name: values.fullName,
+                email: values.email,
+                login: values.email,
+                password: values.password,
+                OrgId: 1
+              })
+            }) */
+          } else {
+            dispatch(modifyUser(values))
+          }
 
-          toast.promise(promise, {
-            loading: 'Cargando...',
-            success: () => {
-              onFinish(values)
-              if (isAdd) return `El Super Usuario ${values.fullName} se agregó correctamente`
-              return `El Super Usuario ${values.fullName} se editó correctamente`
-            },
-            error: (er) => {
-              return er.message
-            }
-          })
+          if (success) {
+            setStatus({ success: true })
+            setSubmitting(false)
+            onFinish(values)
+            if (isAdd) toast.success(`El Super Usuario ${values.fullName} se agregó correctamente`, { id: toastId })
+            else toast.success(`El Super Usuario ${values.fullName} se editó correctamente`, { id: toastId })
+          }
         }}
       >
         {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (

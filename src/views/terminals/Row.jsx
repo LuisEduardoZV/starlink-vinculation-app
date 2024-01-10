@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
 
 // mui imports
+import CancelTwoToneIcon from '@mui/icons-material/CancelTwoTone'
 import DriveFileRenameOutlineTwoToneIcon from '@mui/icons-material/DriveFileRenameOutlineTwoTone'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
@@ -16,7 +17,7 @@ const Row = ({ element, handleClick, isItemSelected, labelId, hasExtendedRow, ha
   const [rowExpanded, setRowExpanded] = useState(false)
   const [mode, setMode] = useState(0)
 
-  const [newData, setNewData] = useState({ ...element })
+  const [newData, setNewData] = useState({ })
 
   const handleChangeMode = () => {
     setMode((prev) => {
@@ -36,6 +37,16 @@ const Row = ({ element, handleClick, isItemSelected, labelId, hasExtendedRow, ha
   useEffect(() => {
     setRowExpanded(false)
   }, [page])
+
+  useEffect(() => {
+    if (mode) setRowExpanded(true)
+  }, [mode])
+
+  useEffect(() => {
+    setNewData({ ...element })
+
+    return () => setNewData({})
+  }, [element])
 
   return (
     <>
@@ -92,14 +103,26 @@ const Row = ({ element, handleClick, isItemSelected, labelId, hasExtendedRow, ha
                   </IconButton>
                 </>
               )}
-              <IconButton aria-label='expand row' size='small' onClick={() => setRowExpanded(!rowExpanded)}>
-                {rowExpanded ? <KeyboardArrowUpIcon sx={{ color: (theme) => theme.palette.mode === 'light' ? 'grey.700' : 'grey.300' }} /> : <KeyboardArrowDownIcon sx={{ color: (theme) => theme.palette.mode === 'light' ? 'grey.700' : 'grey.300' }} />}
-              </IconButton>
+              {mode
+                ? (
+                  <IconButton
+                    size='small' onClick={() => {
+                      setMode(0)
+                    }}
+                  >
+                    <CancelTwoToneIcon fontSize='small' sx={{ color: (theme) => mode ? theme.palette.mode === 'light' ? 'error.main' : 'error.dark' : theme.palette.mode === 'light' ? 'success.dark' : 'info.main' }} />
+                  </IconButton>
+                  )
+                : (
+                  <IconButton aria-label='expand row' size='small' onClick={() => setRowExpanded(!rowExpanded)}>
+                    {rowExpanded ? <KeyboardArrowUpIcon sx={{ color: (theme) => theme.palette.mode === 'light' ? 'grey.700' : 'grey.300' }} /> : <KeyboardArrowDownIcon sx={{ color: (theme) => theme.palette.mode === 'light' ? 'grey.700' : 'grey.300' }} />}
+                  </IconButton>
+                  )}
             </Box>
           </TableCell>
         )}
       </TableRow>
-      {hasExtendedRow && <RowTemplate rowExpanded={rowExpanded} element={element} />}
+      {hasExtendedRow && <RowTemplate rowExpanded={rowExpanded} element={element} mode={mode} data={newData} handleChange={handleChangeData} />}
     </>
   )
 }

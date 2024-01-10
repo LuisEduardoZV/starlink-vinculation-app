@@ -9,13 +9,16 @@ import { toast } from 'sonner'
 import * as Yup from 'yup'
 
 // project improts
-import { BASE_URL_API } from '../../config'
-import { apiCallWithBody } from '../../contexts/api'
+import { useDispatch, useSelector } from '../../store'
+import { addUser } from '../../store/slices/users'
 import AddAuth from './components/AddAuth'
 
 import { emailerrorText, requiredText } from '../../utils/labelsErrorsFormik'
 
 const Add = ({ handleReset, client, backBtn }) => {
+  const dispatch = useDispatch()
+
+  const { success } = useSelector((state) => state.users)
   return (
     <Box sx={{ display: 'flex', flex: 1, width: '100%', height: '100%', alignItems: 'flex-start', bgcolor: 'transparent', flexDirection: 'column', gap: 5, maxHeight: '70vh' }}>
       <Typography variant='h2' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white }}>Agregar nuevo usuario</Typography>
@@ -42,32 +45,14 @@ const Add = ({ handleReset, client, backBtn }) => {
           const dataForm = { ...values }
           dataForm.isAdmin = values.isAdmin ? 1 : 0
           dataForm.isEnabled = 1
-          // console.log(values)
           const idToast = toast.loading('Cargando...')
-          try {
-            const data = await apiCallWithBody({ url: `${BASE_URL_API}/Users`, method: 'POST', body: JSON.stringify(dataForm) })
-            let userGraf = null
-            if (data) {
-              userGraf = await apiCallWithBody({
-                url: `${BASE_URL_API}/AltaUserGraf?type=1`,
-                body: JSON.stringify({
-                  name: values.fullName,
-                  email: values.email,
-                  login: values.email,
-                  password: values.password,
-                  OrgId: 1
-                })
-              })
-            }
-            if (userGraf) {
-              setStatus({ success: true })
-              setSubmitting(false)
-              handleReset('', true)
-              resetForm()
-              toast.success(`El usuario ${values.fullName} se agregó correctamente`, { id: idToast })
-            }
-          } catch (error) {
-            toast.error('Error al crear el usuario', { id: idToast })
+          dispatch(addUser(dataForm))
+          if (success) {
+            setStatus({ success: true })
+            setSubmitting(false)
+            handleReset()
+            resetForm()
+            toast.success(`El usuario ${values.fullName} se agregó correctamente`, { id: idToast })
           }
         }}
       >

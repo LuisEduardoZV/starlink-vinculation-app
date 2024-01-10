@@ -6,7 +6,10 @@ import React from 'react'
 import { Box, Chip, Collapse, TableCell, TableRow, Typography } from '@mui/material'
 import { alpha } from '@mui/material/styles'
 
-const RowExpanded = ({ rowExpanded, element }) => {
+import InputBase from '../../ui-components/InputBase'
+// 19.2345 -93.7653
+
+const RowExpanded = ({ rowExpanded, element, mode, data, handleChange }) => {
   return (
     <TableRow
       sx={{
@@ -59,16 +62,49 @@ const RowExpanded = ({ rowExpanded, element }) => {
               }}
             >
               <Box display='flex' gap={1} alignItems='center'>
-                <Typography variant='subtitle1' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[800] : alpha(theme.palette.common.white, 0.8) }}>
-                  Latitud:
-                </Typography>
-                <Typography>{element.terminalLatitude}</Typography>
+                {mode
+                  ? (<InputBase
+                      name='terminalLatitude'
+                      value={data.terminalLatitude}
+                      label='Latitud'
+                      variant='filled'
+                      size='small'
+                      fullWidth
+                      color='primary'
+                      required
+                      onChange={handleChange}
+                     />)
+                  : (
+                    <>
+                      <Typography variant='subtitle1' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[800] : alpha(theme.palette.common.white, 0.8) }}>
+                        Latitud:
+                      </Typography>
+                      <Typography>{element.terminalLatitude}</Typography>
+                    </>
+                    )}
               </Box>
               <Box display='flex' gap={1} alignItems='center'>
-                <Typography variant='subtitle1' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[800] : alpha(theme.palette.common.white, 0.8) }}>
-                  Longitud:
-                </Typography>
-                <Typography>{element.terminalLongitude}</Typography>
+
+                {mode
+                  ? (<InputBase
+                      name='terminalLongitude'
+                      value={data.terminalLongitude}
+                      label='Longitud'
+                      variant='filled'
+                      size='small'
+                      fullWidth
+                      color='primary'
+                      required
+                      onChange={handleChange}
+                     />)
+                  : (
+                    <>
+                      <Typography variant='subtitle1' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[800] : alpha(theme.palette.common.white, 0.8) }}>
+                        Longitud:
+                      </Typography>
+                      <Typography>{element.terminalLongitude}</Typography>
+                    </>
+                    )}
               </Box>
               <Box display='flex' gap={1} alignItems='center'>
                 <Typography variant='subtitle1' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[800] : alpha(theme.palette.common.white, 0.8) }}>
@@ -92,7 +128,10 @@ const RowExpanded = ({ rowExpanded, element }) => {
 
 RowExpanded.propTypes = {
   rowExpanded: PropTypes.bool,
-  element: PropTypes.object
+  element: PropTypes.object,
+  data: PropTypes.object,
+  handleChange: PropTypes.func,
+  mode: PropTypes.number
 }
 
 export default RowExpanded

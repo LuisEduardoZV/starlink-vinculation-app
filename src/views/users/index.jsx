@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
@@ -9,6 +10,7 @@ import { Box } from '@mui/material'
 
 // project imports
 import useAuth from '../../hooks/useAuth'
+import { useDispatch, useSelector } from '../../store'
 import AsideBackButton from '../../ui-components/AsideBackButton'
 import HeaderSearchBox from '../../ui-components/HeaderSearchBox'
 import MainMirrorFade from '../../ui-components/MainMirrorFade'
@@ -18,12 +20,15 @@ import Edit from './Edit'
 import UserTable from './components/UserTable'
 
 // services
-import { apiCall, apiCallWithBody } from '../../contexts/api'
+import { deleteUser, getUsers, resetErrorUsed } from '../../store/slices/users'
 
-import { BASE_URL_API } from '../../config'
+const toastId = toast()
 
 const UserList = () => {
   const { user } = useAuth()
+  const dispatch = useDispatch()
+
+  const { users, error, success, loading } = useSelector((state) => state.users)
 
   const navigate = useNavigate()
   const { clientId } = useParams()
@@ -32,8 +37,6 @@ const UserList = () => {
   const [mainData, setMainData] = useState([])
   const [data, setData] = useState(mainData)
 
-  const [loading, setLoading] = useState(true)
-
   const [dataSelected, setDataSelected] = useState(null)
 
   const [view, setView] = useState(null)
@@ -41,16 +44,11 @@ const UserList = () => {
 
   const [open, setOpen] = useState(false)
 
-  const [forceRender, setForceRender] = useState(null)
-
-  const handleCancel = async (e, needRender) => {
+  const handleCancel = async (e) => {
     setView(null)
     setCollapsed(false)
     setDataSelected(null)
     setOpen(false)
-    if (needRender) {
-      await setForceRender(Math.random() * 9999)
-    }
   }
 
   const handleAdd = (row) => {
@@ -75,28 +73,15 @@ const UserList = () => {
   }
 
   const handleDelete = (id) => {
-    const promise = () => new Promise((resolve, reject) => {
-      let data = null
-      try {
-        data = apiCallWithBody({ url: `${BASE_URL_API}/Users/${id}`, method: 'DELETE' })
-      } catch (error) {
-        console.log(error)
-        return reject(new Error('No es posible eliminar el usuario ya que tiene una terminal vinculada'))
-      }
-      return resolve({ status: data ? 200 : 404, data })
-    })
+    const toastId = toast.loading('Cargando...')
+    dispatch(deleteUser(id, clientId))
 
-    toast.promise(promise, {
-      loading: 'Procesando...',
-      success: () => {
-        handleCancel('', true)
-        return 'El usuario ha sido eliminado correctamente'
-      },
-      error: (error) => {
-        handleCancel()
-        return error.message
-      }
-    })
+    if (success) {
+      handleCancel()
+      toast.success('El usuario ha sido eliminado correctamente', { id: toastId })
+    } else {
+      handleCancel()
+    }
   }
 
   const handleSearch = (e, filters) => {
@@ -120,30 +105,27 @@ const UserList = () => {
     }
   }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { if (!clientId) { navigate(-1) } }, [clientId])
 
   useEffect(() => {
+    setMainData(users)
+    setData(users)
+  }, [users])
+
+  useEffect(() => {
     (async () => {
-      try {
-        setLoading(true)
-        const res = await apiCall({ url: `${BASE_URL_API}/getClientUser?id=${clientId}` })
-        setMainData(res)
-        setData(res)
-        setLoading(false)
-      } catch (error) {
-        console.log(error)
-      }
+      dispatch(getUsers(clientId))
     })()
 
-    return () => {
-      setLoading(true)
-      setMainData([])
-      setData([])
-      setDataSelected(null)
+    return () => setDataSelected(null)
+  }, [])
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error?.message, { id: toastId })
+      dispatch(resetErrorUsed())
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [forceRender])
+  }, [error])
 
   const titleList = state.client ? `Usuarios de ${state.client}` : 'Lista de usuarios'
 

@@ -11,16 +11,22 @@ import { useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 
 // project imports
-import { BASE_URL_API } from '../../config'
-import { apiCallWithBody } from '../../contexts/api'
 import MainMirrorCard from '../../ui-components/MainMirrorCard'
 import AuthEdit from './components/AuthEdit'
+
+// services
+import { useDispatch, useSelector } from '../../store'
+import { addContact, modifyContact } from '../../store/slices/contacts'
 
 import { phonelenghtText, requiredText } from '../../utils/labelsErrorsFormik'
 
 const ContactEdit = ({ user, isAdd, onFinish, onCloseEdit, onCloseAdd, ...others }) => {
   const theme = useTheme()
   const matchDown2Xl = useMediaQuery(theme.breakpoints.down('2xl'))
+
+  const dispatch = useDispatch()
+
+  const { success } = useSelector((state) => state.contacts)
 
   const [initVal, setInitVal] = useState({ ...user, isEnabled: user.isEnabled === 1 })
 
@@ -54,33 +60,20 @@ const ContactEdit = ({ user, isAdd, onFinish, onCloseEdit, onCloseAdd, ...others
           setSubmitting(true)
           delete values.submit
           values.isEnabled = values.isEnabled ? 1 : 0
-          const promise = () => new Promise((resolve) => {
-            let data = null
-            try {
-              if (isAdd) {
-                data = apiCallWithBody({ url: `${BASE_URL_API}/Contacts`, method: 'POST', body: JSON.stringify(values) })
-              } else {
-                data = apiCallWithBody({ url: `${BASE_URL_API}/Contacts/${values.contactId}`, method: 'PUT', body: JSON.stringify(values) })
-              }
-            } catch (error) {
-              return resolve({ status: 500, data: null })
+          const toastId = toast.loading('Cargando...')
+          if (isAdd) {
+            dispatch(addContact(values))
+          } else {
+            dispatch(modifyContact(values))
+          }
+          if (success) {
+            onFinish(values)
+            if (isAdd) {
+              toast.success(`El contácto ${values.contactName} se agregó correctamente`, { id: toastId })
+            } else {
+              toast.success(`El contácto ${values.contactName} se editó correctamente`, { id: toastId })
             }
-            if (data) {
-              setStatus({ success: true })
-              setSubmitting(false)
-            }
-            return resolve({ status: data ? 200 : 404, data })
-          })
-
-          toast.promise(promise, {
-            loading: 'Cargando...',
-            success: () => {
-              onFinish(values)
-              if (isAdd) return `El contácto ${values.contactName} se agregó correctamente`
-              return `El contácto ${values.contactName} se editó correctamente`
-            },
-            error: isAdd ? 'Error al agregar el contácto' : 'Error al editar el contácto'
-          })
+          }
         }}
       >
         {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (

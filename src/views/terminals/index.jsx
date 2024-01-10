@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react'
 
 // third
@@ -16,21 +17,32 @@ import MainMirrorCard from '../../ui-components/MainMirrorCard'
 import TableTerminals from './components/TableTerminals'
 
 // services
-import { BASE_URL_API } from '../../config'
-import { apiCall, apiCallWithBody } from '../../contexts/api'
+import { useDispatch, useSelector } from '../../store'
+import { getAllTerminals, getTerminalsByClient, modifyTerminal, resetErrorUsed } from '../../store/slices/terminals'
+
+const toastId = toast()
 
 const Terminals = () => {
   const { user } = useAuth()
+  const dispatch = useDispatch()
+
+  const { terminals, error, loading, success } = useSelector((state) => state.terminals)
 
   const [mainData, setMainData] = useState([])
   const [data, setData] = useState(mainData)
 
-  const [loading, setLoading] = useState(true)
-
   const [selected, setSelected] = useState([])
   const [dataSelected, setDataSelected] = useState(null)
 
-  const [forceRender, setForceRender] = useState(false)
+  const getInfo = () => {
+    if (user) {
+      if (user.user.isPowerUser) {
+        dispatch(getAllTerminals())
+      } else {
+        dispatch(getTerminalsByClient(user?.user?.clientId))
+      }
+    }
+  }
 
   const handleSearch = (e, filters) => {
     if (filters.length === 0) {
@@ -70,40 +82,27 @@ const Terminals = () => {
 
   const handleSave = async (info) => {
     const id = toast.loading('Cargando...')
-    try {
-      const res = await apiCallWithBody({ url: `${BASE_URL_API}/Terminals/${info.terminalId}`, method: 'PUT', body: JSON.stringify(info) })
-      if (!res) throw new Error('Hubo un error al guardar los datos, inténtelo mas tarde')
-      else toast.success('Se ha actualizado la información', { id })
-    } catch (error) {
-      console.log(error)
-      toast.error(error.message, { id })
-    }
-    setForceRender((prev) => !prev)
+    dispatch(modifyTerminal(info, !(user.user.isPowerUser), user.user.clientId))
+    if (success) toast.success('Se ha actualizado la información', { id })
   }
 
   useEffect(() => {
+    setMainData(terminals)
+    setData(terminals)
+  }, [terminals])
+
+  useEffect(() => {
     (async () => {
-      try {
-        let res = []
-        if (user?.user?.isPowerUser) {
-          res = await apiCall({ url: `${BASE_URL_API}/Terminals` })
-        } else {
-          res = await apiCall({ url: `${BASE_URL_API}/getClientTerminales?id=${user?.user?.clientId}` })
-        }
-        setMainData(res)
-        setData(res)
-
-        setLoading(false)
-      } catch (error) {
-        console.log(error)
-        toast.error('Error al recibir la información, intente actualizar la página')
-      }
+      getInfo()
     })()
+  }, [user])
 
-    return () => {
-      setLoading(true)
+  useEffect(() => {
+    if (error) {
+      toast.error(error?.message, { id: toastId })
+      dispatch(resetErrorUsed())
     }
-  }, [forceRender, user])
+  }, [error])
 
   return (
     <>
@@ -113,7 +112,7 @@ const Terminals = () => {
         addIcon={LeakAddTwoToneIcon}
         handleSearch={handleSearch}
         btnsAvailable={false}
-        extraBtns={[<CustomTooltipBtns key='btnRefresh' type='secondary' title='Actualizar'><IconButton onClick={() => setForceRender((prev) => !prev)}><RefreshTwoToneIcon color='secondary' /></IconButton></CustomTooltipBtns>]}
+        extraBtns={[<CustomTooltipBtns key='btnRefresh' type='secondary' title='Actualizar'><IconButton onClick={() => getInfo()}><RefreshTwoToneIcon color='secondary' /></IconButton></CustomTooltipBtns>]}
       />
 
       <Box sx={{ display: 'flex', flex: 1, px: '10%' }}>

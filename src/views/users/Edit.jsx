@@ -9,13 +9,19 @@ import { toast } from 'sonner'
 import * as Yup from 'yup'
 
 // project improts
-import { BASE_URL_API } from '../../config'
-import { apiCallWithBody } from '../../contexts/api'
 import EditAuth from './components/EditAuth'
+
+// services
+import { useDispatch, useSelector } from '../../store'
+import { modifyUser } from '../../store/slices/users'
 
 import { emailerrorText, requiredText } from '../../utils/labelsErrorsFormik'
 
 const Edit = ({ handleReset, data, backBtn }) => {
+  const dispatch = useDispatch()
+
+  const { success } = useSelector((state) => state.users)
+
   if (!data) return
   return (
     <Box sx={{ display: 'flex', flex: 1, width: '100%', height: '100%', alignItems: 'flex-start', bgcolor: 'transparent', flexDirection: 'column', gap: 5, maxHeight: '70vh' }}>
@@ -40,29 +46,15 @@ const Edit = ({ handleReset, data, backBtn }) => {
           dataForm.isAdmin = values.isAdmin ? 1 : 0
           dataForm.isEnabled = 1
           // console.log(values)
-          const promise = () => new Promise((resolve) => {
-            let data = null
-            try {
-              data = apiCallWithBody({ url: `${BASE_URL_API}/Users/${values.userId}`, method: 'PUT', body: JSON.stringify(dataForm) })
-            } catch (error) {
-              return resolve({ status: 500, data: null })
-            }
-            if (data) {
-              setStatus({ success: true })
-              setSubmitting(false)
-            }
-            return resolve({ status: data ? 200 : 404, data })
-          })
-
-          toast.promise(promise, {
-            loading: 'Cargando...',
-            success: () => {
-              handleReset('', true)
-              resetForm()
-              return `El usuario ${values.fullName} se editó correctamente`
-            },
-            error: 'Error al editar el usuario'
-          })
+          const idToast = toast.loading('Cargando...')
+          dispatch(modifyUser(dataForm))
+          if (success) {
+            setStatus({ success: true })
+            setSubmitting(false)
+            handleReset()
+            resetForm()
+            toast.success(`El usuario ${values.fullName} se editó correctamente`, { id: idToast })
+          }
         }}
       >
         {({ values, touched, errors, isSubmitting, handleSubmit, handleBlur, handleChange }) => (
