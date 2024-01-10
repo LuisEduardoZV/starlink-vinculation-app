@@ -20,7 +20,7 @@ const GuestGuard = ({ children }) => {
   useEffect(() => {
     if (isLoggedIn) {
       const path = user.user.isPowerUser ? DASHBOARD_PATH : DASHBOARD_PATH_NOADMIN
-      navigate(path, { replace: true })
+      navigate(path, { replace: true, state: { ...!user.user.isPowerUser && { view: 2 } } })
     }
   }, [isLoggedIn, navigate, user])
 
