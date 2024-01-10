@@ -1,63 +1,23 @@
+/* eslint-disable react/jsx-handler-names */
 import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
 
 // mui imports
-
+import ArrowBackIosNewTwoToneIcon from '@mui/icons-material/ArrowBackIosNewTwoTone'
+import ArrowForwardIosTwoToneIcon from '@mui/icons-material/ArrowForwardIosTwoTone'
+import { Box, IconButton, MenuItem, Select } from '@mui/material'
 import { alpha, useTheme } from '@mui/material/styles'
 import { Column } from 'primereact/column'
 import { TreeTable } from 'primereact/treetable'
 
 // project imports
-import NoInfoOverlay from '../../../ui-components/NoInfoOverlay'
-import Pagination from './Pagination'
-
-// services
-import { gridExample } from '../../../utils/allColumnsTables'
+import ChevronRightTwoToneIcon from '@mui/icons-material/ChevronRightTwoTone'
+import ExpandMoreTwoToneIcon from '@mui/icons-material/ExpandMoreTwoTone'
 
 const TableTerminals = ({ loading, data, selected, handleClick, handleSave }) => {
   const theme = useTheme()
 
-  const [page, setPage] = useState(0)
-  const [rowsPerPage, setRowsPerPage] = useState(10)
-
-  const [rows, setRows] = useState(
-    [{
-      key: '0',
-      data: {
-        name: 'Applications',
-        size: '100kb',
-        type: 'Folder'
-      },
-      children: [
-        {
-          key: '0-1',
-          data: {
-            name: 'editor.app',
-            size: '25kb',
-            type: 'Application'
-          }
-        },
-        {
-          key: '0-2',
-          data: {
-            name: 'settings.app',
-            size: '50kb',
-            type: 'Application'
-          }
-        }
-      ]
-    }
-    ]
-  )
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage)
-  }
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10))
-    setPage(0)
-  }
+  const [rows, setRows] = useState([])
 
   useEffect(() => {
     if (Array.isArray(data) && data.length > 0) {
@@ -103,27 +63,94 @@ const TableTerminals = ({ loading, data, selected, handleClick, handleSave }) =>
     }
   }, [data])
 
+  const togglerTemplate = (node, options) => {
+    if (!node) {
+      return
+    }
+
+    const expanded = options.expanded
+
+    return options.props.level === 0
+      ? (
+        <IconButton className='p-treetable-toggler p-link' size='small' onClick={options.onClick}>
+          {expanded ? <ExpandMoreTwoToneIcon fontSize='small' color={theme.palette.mode === 'light' ? 'primary' : 'white'} /> : <ChevronRightTwoToneIcon fontSize='small' color={theme.palette.mode === 'light' ? 'primary' : 'white'} />}
+        </IconButton>
+        )
+      : <Box ml={5} />
+  }
+
   if (!rows) return
   return (
     <>
       {rows && (
         <TreeTable
-          value={rows} rowHover loading={loading} pageLinkSize={page} paginator id='tabla' rows={rowsPerPage} rowsPerPageOptions={[5, 10, 25]} tableStyle={{
-            minWidth: '50rem',
-            '.p-paginator-bottom .p-paginator .p-component': {
-              backgroundColor: 'blue',
-              color: 'blue'
+          value={rows} rowHover loading={loading} paginator id='tabla' rows={10} tableStyle={{
+            minWidth: '50rem'
+          }}
+          togglerTemplate={togglerTemplate}
+          paginatorTemplate={{
+            layout: 'RowsPerPageDropdown CurrentPageReport PrevPageLink NextPageLink',
+            RowsPerPageDropdown: (options) => {
+              const dropdownOptions = [
+                { value: 5 },
+                { value: 10 },
+                { value: 25 }
+              ]
+
+              return (
+                <>
+                  <Box component='span' sx={{ color: 'var(--text-color)', userSelect: 'none', py: 3, px: 2 }}>
+                    Filas por página:
+                  </Box>
+                  <Select
+                    value={options.value}
+                    onChange={(e) => options.onChange(e.target)}
+                    size='small'
+                    sx={{
+                      border: 'none',
+                      outline: 'none',
+                      borderColor: theme.palette.background.paper,
+                      outlineColor: theme.palette.background.paper,
+                      '& .MuiSelect-select': {
+                        bgcolor: theme.palette.background.paper,
+                        color: theme.palette.primary.main
+                      },
+                      '& .MuiSelect-icon': {
+                        color: theme.palette.primary.main
+                      }
+                    }}
+                  >
+                    {dropdownOptions.map(({ value }) => (
+                      <MenuItem key={value} value={value}>{value}</MenuItem>
+                    ))}
+                  </Select>
+                </>
+              )
+            },
+            CurrentPageReport: (options) => {
+              return (
+                <Box component='span' sx={{ color: 'var(--text-color)', userSelect: 'none', width: '120px', textAlign: 'center' }}>
+                  {options.first} - {options.last} de {options.totalRecords}
+                </Box>
+              )
+            },
+            PrevPageLink: (options) => {
+              return (
+                <Box mx={1}>
+                  <ArrowBackIosNewTwoToneIcon sx={{ fontSize: '1em', color: theme.palette.mode === 'light' ? 'primary.dark' : 'primary.main' }} />
+                </Box>
+              )
+            },
+            NextPageLink: (options) => {
+              return (
+                <Box mx={1}>
+                  <ArrowForwardIosTwoToneIcon sx={{ fontSize: '1em', color: theme.palette.mode === 'light' ? 'primary.dark' : 'primary.main' }} />
+                </Box>
+              )
             }
           }}
-          style={{
-            '.p-paginator-bottom .p-paginator .p-component': {
-              backgroundColor: 'blue',
-              color: 'blue'
-            }
-          }}// .p-paginator-bottom .p-paginator .p-component. Did you mean .pPaginatorBottom .pPaginator .pComponent?
-          paginatorTemplate='RowsPerPageDropdown PrevPageLink CurrentPageReport NextPageLink'
           currentPageReportTemplate='{first} - {last} de {totalRecords}'
-          paginatorLeft
+          paginatorLeft resizableColumns showGridlines columnResizeMode='expand'
         >
           <Column
             field='fullName' header='Nombre' expander
@@ -157,58 +184,3 @@ TableTerminals.propTypes = {
 }
 
 export default TableTerminals
-
-/*
-<DataGrid
-          loading={loading}
-          columns={gridExample}
-          rows={data}
-          getRowId={(row) => (row.fullName + row.terminalSiteName + row.dashboardName)}
-          autoHeight
-          pagination
-          pageSizeOptions={rowsPerPage}
-          page={page}
-          disableRowSelectionOnClick
-          sx={{
-            border: 0,
-            borderColor: 'primary.light',
-            height: '100%',
-            outline: 'none',
-            '& .MuiDataGrid-cell:focus, & .MuiDataGrid-columnHeader:focus': {
-              outline: 'none'
-            },
-            '& .MuiDataGrid-cell': {
-              color: (theme) => theme.palette.grey[500]
-            },
-            '& .MuiDataGrid-cell:hover': {
-              color: (theme) => theme.palette.grey[300]
-            },
-            '& .MuiDataGrid-columnHeaderTitle': {
-              color: 'whitesmoke'
-            },
-            '& .MuiIconButton-root': {
-              color: (theme) => theme.palette.grey[500],
-              outline: 'none'
-            },
-            '& .MuiDataGrid-columnSeparator': {
-              color: 'transparent'
-            },
-            '& .MuiDataGrid-withBorderColor': {
-              borderColor: (theme) => (theme.palette.grey[800]),
-              borderWidth: '1px'
-            }
-          }}
-          disableColumnMenu
-          rowHeight={55}
-          slots={{
-            pagination: Pagination,
-            noRowsOverlay: NoInfoOverlay
-          }}
-          slotProps={{
-            pagination: { rowsPerPage, handleChangePage, handleChangeRowsPerPage }
-          }}
-          initialState={{
-            pagination: { paginationModel: { pageSize: rowsPerPage } }
-          }}
-        />
-*/
