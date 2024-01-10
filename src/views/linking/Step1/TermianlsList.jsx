@@ -2,8 +2,9 @@ import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
 
 // mui imports
+import { ExpandMoreTwoTone } from '@mui/icons-material'
 import LooksTwoTwoToneIcon from '@mui/icons-material/LooksTwoTwoTone'
-import { Box, Divider, List, ListItemText, Skeleton, Slide, Typography, useMediaQuery } from '@mui/material'
+import { Accordion, AccordionDetails, AccordionSummary, Box, List, ListItemText, Skeleton, Slide, Typography, useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 
 // third
@@ -135,53 +136,69 @@ const TermianlsList = ({ values, handleChange, inView }) => {
         </Box>
         <PerfectScrollbar style={{ height: 'fit-content', maxHeight: matchDown2Xl ? '55vh' : '60vh', paddingLeft: 10, paddingRight: 15 }}>
           <List component={Box} display='flex' flexWrap='wrap' columnGap={1} rowGap={2}>
-            {selected.length !== 0 && <Typography variant='h4' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[800] : theme.palette.grey[400] }} width='100%'>Terminal(es) Seleccionada(s):</Typography>}
-            {selected.length !== 0 && selected.map(({ terminalId, terminalKitNumber, serviceLineNumber, terminalSiteName }) => (
-              <CustomListItemButton
-                key={terminalId}
-                onClick={(e) => handleClick(e, terminalId, terminalSiteName)}
-                selected
-                sx={{ maxWidth: '31%', width: '100%' }}
-              >
-                <ListItemText
-                  primary={terminalKitNumber} secondary={serviceLineNumber} color='info' sx={{
-                    '& .MuiTypography-root': {
-                      color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.grey[400]
-                    },
-                    '& .MuiListItemText-secondary': {
-                      color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.grey[700],
-                      fontWeight: 300
-                    }
-                  }}
-                />
-              </CustomListItemButton>
-            )
+            {selected.length !== 0 && (
+              <Accordion sx={{ backgroundColor: 'transparent', width: '100%' }}>
+                <AccordionSummary expandIcon={<ExpandMoreTwoTone />}>
+                  <Typography variant='h4' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[800] : theme.palette.grey[400] }} width='100%'>Terminal(es) Seleccionada(s):</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Box display='flex' flexWrap='wrap' columnGap={1} rowGap={2} width='100%'>
+                    {selected.map(({ terminalId, terminalKitNumber, serviceLineNumber, terminalSiteName }) => (
+                      <CustomListItemButton
+                        key={terminalId}
+                        onClick={(e) => handleClick(e, terminalId, terminalSiteName)}
+                        selected
+                        sx={{ maxWidth: '31%', width: '100%', minWidth: '31%' }}
+                      >
+                        <ListItemText
+                          primary={terminalKitNumber} secondary={serviceLineNumber} color='info' sx={{
+                            '& .MuiTypography-root': {
+                              color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.grey[400]
+                            },
+                            '& .MuiListItemText-secondary': {
+                              color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.grey[700],
+                              fontWeight: 300
+                            }
+                          }}
+                        />
+                      </CustomListItemButton>
+                    ))}
+                  </Box>
+                </AccordionDetails>
+              </Accordion>
             )}
-            {selected.length !== 0 && <Divider sx={{ borderColor: 'grey.800', my: 0.5, width: '100%' }} />}
-            <Typography variant='h4' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[800] : theme.palette.grey[400] }} width='100%'>Terminales Disponibles:</Typography>
-            {loading
-              ? skeltonsLoaders.map((op) => (<Skeleton key={op} height={70} />))
-              : (allTerminal.map(({ terminalId, serviceLineNumber, terminalSiteName, terminalKitNumber }) => (
-                <CustomListItemButton
-                  key={terminalId}
-                  onClick={(e) => handleClick(e, terminalId, terminalSiteName)}
-                  sx={{ maxWidth: '31%', width: '100%' }}
-                >
-                  <ListItemText
-                    primary={`${terminalKitNumber}`} secondary={serviceLineNumber} color='info' sx={{
-                      '& .MuiTypography-root': {
-                        color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.grey[400],
-                        fontWeight: 800
-                      },
-                      '& .MuiListItemText-secondary': {
-                        color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[500] : theme.palette.grey[700],
-                        fontWeight: 400
-                      }
-                    }}
-                  />
-                </CustomListItemButton>
-                )
-                ))}
+            <Accordion defaultExpanded sx={{ backgroundColor: 'transparent', height: 'fit-content', maxHeight: matchDown2Xl ? '55vh' : '60vh', width: '100%' }}>
+              <AccordionSummary expandIcon={<ExpandMoreTwoTone />}>
+                <Typography variant='h4' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[800] : theme.palette.grey[400] }} width='100%'>Terminales Disponibles:</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Box display='flex' flexWrap='wrap' columnGap={1} rowGap={2} sx={{ height: 'fit-content', maxHeight: matchDown2Xl ? '55vh' : '60vh' }}>
+                  {loading
+                    ? skeltonsLoaders.map((op) => (<Skeleton key={op} height={70} />))
+                    : (allTerminal.map(({ terminalId, serviceLineNumber, terminalSiteName, terminalKitNumber }) => (
+                      <CustomListItemButton
+                        key={terminalId}
+                        onClick={(e) => handleClick(e, terminalId, terminalSiteName)}
+                        sx={{ maxWidth: '31%', width: '100%' }}
+                      >
+                        <ListItemText
+                          primary={`${terminalKitNumber}`} secondary={serviceLineNumber} color='info' sx={{
+                            '& .MuiTypography-root': {
+                              color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.grey[400],
+                              fontWeight: 800
+                            },
+                            '& .MuiListItemText-secondary': {
+                              color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[500] : theme.palette.grey[700],
+                              fontWeight: 400
+                            }
+                          }}
+                        />
+                      </CustomListItemButton>
+                      )
+                      ))}
+                </Box>
+              </AccordionDetails>
+            </Accordion>
           </List>
         </PerfectScrollbar>
       </Box>

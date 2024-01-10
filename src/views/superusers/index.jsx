@@ -35,7 +35,7 @@ const SuperUsers = () => {
 
   const handleDelete = (id) => {
     const toastId = toast.loading('Cargando...')
-    dispatch(deleteUser(id))
+    dispatch(deleteUser(id, user.email))
 
     if (success) {
       setOpen(false)

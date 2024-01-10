@@ -99,7 +99,7 @@ const TableTerminals = ({ loading, data, selected, handleClick, handleSave }) =>
 
               return (
                 <>
-                  <Box component='span' sx={{ color: 'var(--text-color)', userSelect: 'none', py: 3, px: 2 }}>
+                  <Box component='span' sx={{ color: theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white, userSelect: 'none', py: 3, px: 2 }}>
                     Filas por página:
                   </Box>
                   <Select
@@ -129,12 +129,12 @@ const TableTerminals = ({ loading, data, selected, handleClick, handleSave }) =>
             },
             CurrentPageReport: (options) => {
               return (
-                <Box component='span' sx={{ color: 'var(--text-color)', userSelect: 'none', width: '120px', textAlign: 'center' }}>
+                <Box component='span' sx={{ color: theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white, userSelect: 'none', width: '120px', textAlign: 'center' }}>
                   {options.first} - {options.last} de {options.totalRecords}
                 </Box>
               )
             },
-            PrevPageLink: (options) => {
+            PrevPageLink: () => {
               return (
                 <Box mx={1}>
                   <ArrowBackIosNewTwoToneIcon sx={{ fontSize: '1em', color: theme.palette.mode === 'light' ? 'primary.dark' : 'primary.main' }} />

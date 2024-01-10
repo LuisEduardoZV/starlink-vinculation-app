@@ -47,6 +47,9 @@ const ContactEdit = ({ user, isAdd, onFinish, onCloseEdit, onCloseAdd, ...others
 
   const matchDown2Xl = useMediaQuery(theme.breakpoints.down('2xl'))
 
+  const lastPassword = user?.password
+  const lastEmail = user?.email
+
   return (
     <MainMirrorCard sx={{
       width: '100%',
@@ -73,18 +76,8 @@ const ContactEdit = ({ user, isAdd, onFinish, onCloseEdit, onCloseAdd, ...others
           const toastId = toast.loading('Cargando...')
           if (isAdd) {
             dispatch(addUser(values))
-            /* apiCallWithBody({
-              url: `${BASE_URL_API}/AltaUserGraf?type=2`,
-              body: JSON.stringify({
-                name: values.fullName,
-                email: values.email,
-                login: values.email,
-                password: values.password,
-                OrgId: 1
-              })
-            }) */
           } else {
-            dispatch(modifyUser(values))
+            dispatch(modifyUser({ ...values, hasNewPassword: lastPassword !== values.password, lastEmail }))
           }
 
           if (success) {

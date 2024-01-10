@@ -2,8 +2,9 @@ import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
 
 // mui imports
+import { ExpandMoreTwoTone } from '@mui/icons-material'
 import LooksOneTwoToneIcon from '@mui/icons-material/LooksOneTwoTone'
-import { Box, Divider, List, ListItemText, Skeleton, Slide, Typography, useMediaQuery } from '@mui/material'
+import { Accordion, AccordionDetails, AccordionSummary, Box, List, ListItemText, Skeleton, Slide, Typography, useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 
 // third
@@ -110,40 +111,57 @@ const ClientList = ({ handleChange, inView }) => {
         <PerfectScrollbar style={{ height: 'fit-content', maxHeight: matchDown2Xl ? '55vh' : '67vh', paddingLeft: 10, paddingRight: 15 }}>
           <List component={Box}>
             {selected && (
-              <Box width='100%' display='flex' flexDirection='column' gap={1}>
-                <Typography variant='h4' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[800] : theme.palette.grey[400] }}>Cliente Seleccionado:</Typography>
-                <CustomListItemButton
-                  key='client-selected'
-                  selected
+              <Accordion sx={{ backgroundColor: 'transparent', width: '100%' }}>
+                <AccordionSummary
+                  expandIcon={<ExpandMoreTwoTone />}
                 >
-                  <ListItemText
-                    primary={selected?.clientName} secondary={selected?.clientEmail} sx={{
-                      '& .MuiListItemText-primary': {
-                        color: (theme) => theme.palette.grey[400]
-                      }
-                    }}
-                  />
-                </CustomListItemButton>
-                <Divider sx={{ borderColor: 'grey.800', my: 2 }} />
-              </Box>
+                  <Typography variant='h4' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[800] : theme.palette.grey[400] }}>Cliente Seleccionado:</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <CustomListItemButton
+                    key='client-selected'
+                    selected
+                  >
+                    <ListItemText
+                      primary={selected?.clientName} secondary={selected?.clientEmail} sx={{
+                        '& .MuiListItemText-primary': {
+                          color: (theme) => theme.palette.grey[400]
+                        }
+                      }}
+                    />
+                  </CustomListItemButton>
+                </AccordionDetails>
+              </Accordion>
             )}
-            <Typography variant='h4' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[800] : theme.palette.grey[400] }}>Clientes Disponibles:</Typography>
-            {loading
-              ? skeltonsLoaders.map((op) => (<Skeleton key={op} height={70} />))
-              : clients.map(({ clientId, clientName, clientEmail }, index) => (
-                <CustomListItemButton
-                  key={clientId}
-                  onClick={() => handleChangeSelected(clientId)}
-                >
-                  <ListItemText
-                    primary={clientName} secondary={clientEmail} sx={{
-                      '& .MuiListItemText-primary': {
-                        color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[600] : theme.palette.grey[400]
-                      }
-                    }}
-                  />
-                </CustomListItemButton>
-              ))}
+            <Accordion
+              defaultExpanded
+              sx={{ backgroundColor: 'transparent', width: '100%' }}
+            >
+              <AccordionSummary
+                expandIcon={<ExpandMoreTwoTone />}
+                aria-controls='panel1-content'
+              >
+                <Typography variant='h4' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[800] : theme.palette.grey[400] }}>Clientes Disponibles:</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                {loading
+                  ? skeltonsLoaders.map((op) => (<Skeleton key={op} height={70} />))
+                  : clients.map(({ clientId, clientName, clientEmail }, index) => (
+                    <CustomListItemButton
+                      key={clientId}
+                      onClick={() => handleChangeSelected(clientId)}
+                    >
+                      <ListItemText
+                        primary={clientName} secondary={clientEmail} sx={{
+                          '& .MuiListItemText-primary': {
+                            color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[600] : theme.palette.grey[400]
+                          }
+                        }}
+                      />
+                    </CustomListItemButton>
+                  ))}
+              </AccordionDetails>
+            </Accordion>
           </List>
         </PerfectScrollbar>
       </Box>

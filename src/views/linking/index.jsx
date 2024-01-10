@@ -47,12 +47,24 @@ const Linking = () => {
             for (let i = 0; i < values.userVinculationInfo.length; i++) {
               const user = values.userVinculationInfo[i]
               if (user.userId) {
+                const userInfo = user.userId
+                const userGrafana = await apiCallWithBody({
+                  url: `${BASE_URL_API}/AltaUserGraf?type=1`,
+                  body: JSON.stringify({
+                    name: userInfo.fullName,
+                    email: userInfo.email,
+                    login: userInfo.email,
+                    password: userInfo.password,
+                    OrgId: 1
+                  })
+                })
+                if (!userGrafana) throw new Error('Hubo un error al crear el usuario en Grafana para el usuario existente, contacte con el administrador')
                 usersInfo.push({ terminals: user.terminals, dashboards: user.dashboards, userId: user.userId.userId })
               } else {
                 user.userId = 0
                 const newUserInfo = { terminals: user.terminals, dashboards: user.dashboards, userId: null }
                 const newUser = await apiCallWithBody({ url: `${BASE_URL_API}/Users`, method: 'POST', body: JSON.stringify({ ...user, fullname: `NewUser-For-${'T_' + user.terminals.map(({ terminalId }, index) => (index === user.terminals.length - 1) ? (`${terminalId}`) : (`${terminalId}-`)).join('T_')}` }) })
-                if (!newUser) throw new Error('Hubo un error al crear el nuveo usuario')
+                if (!newUser) throw new Error('Hubo un error al crear el nuveo usuario en Tan-Graph')
                 const userGrafana = await apiCallWithBody({
                   url: `${BASE_URL_API}/AltaUserGraf?type=1`,
                   body: JSON.stringify({
