@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 // mui imports
@@ -12,6 +12,7 @@ import * as Yup from 'yup'
 // project imports
 import { BASE_URL_API } from '../../config'
 import { apiCallWithBody } from '../../contexts/api'
+import useAuth from '../../hooks/useAuth'
 import FirstContainer from './FirstContainer'
 import SecondContainer from './SecondContainer'
 
@@ -19,21 +20,29 @@ import { requiredText } from '../../utils/labelsErrorsFormik'
 
 const Linking = () => {
   const navigate = useNavigate()
+  const { user } = useAuth()
 
   const [view, setView] = useState(1)
+  const [viewType, setViewType] = useState(false)
+
+  const initVal = useMemo(() => ({
+    assignId: 0,
+    client: user.user.isPowerUser ? null : user.user.clientId,
+    terminals: [],
+    userVinculationInfo: [],
+    submit: null
+  }), [user])
 
   const handleContinue = () => setView((prev) => prev + 1)
+
+  useEffect(() => {
+    if (user && user.user && user.user.isPowerUser) setViewType(true)
+  }, [user])
 
   return (
     <Box>
       <Formik
-        initialValues={{
-          assignId: 0,
-          client: null,
-          terminals: [],
-          userVinculationInfo: [],
-          submit: null
-        }}
+        initialValues={initVal}
         validationSchema={Yup.object().shape({
           client: Yup.string().required(requiredText),
           terminals: Yup.array().min(1, 'Debe seleccionar por lo menos una terminal').required(requiredText)
@@ -107,12 +116,13 @@ const Linking = () => {
       >
         {({ values, errors, touched, handleSubmit, setFieldValue, handleBlur }) => (
           <form noValidate onSubmit={handleSubmit}>
-            <Box sx={{ display: 'flex', px: '4%', gap: 5, height: '100%', width: '100%' }}>
+            <Box sx={{ display: 'flex', px: '4%', gap: 5, height: '100%', width: '100%', justifyContent: 'center' }}>
               <FirstContainer
                 values={values}
                 inView={view}
                 handleChange={setFieldValue}
                 handleContinue={handleContinue}
+                viewType={viewType}
               />
               <SecondContainer
                 inView={view}
@@ -121,6 +131,7 @@ const Linking = () => {
                 touched={touched}
                 handleChange={setFieldValue}
                 handleBlur={handleBlur}
+                viewType={viewType}
               />
             </Box>
           </form>

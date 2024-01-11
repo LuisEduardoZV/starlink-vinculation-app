@@ -26,7 +26,6 @@ const toastId = toast()
 
 const UserList = () => {
   const { user } = useAuth()
-  console.log(user)
   const dispatch = useDispatch()
 
   const { users, error, success, loading } = useSelector((state) => state.users)

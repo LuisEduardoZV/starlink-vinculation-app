@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 // third
 import { toast } from 'sonner'
@@ -33,6 +33,8 @@ const Terminals = () => {
 
   const [selected, setSelected] = useState([])
   const [dataSelected, setDataSelected] = useState(null)
+
+  const isSuperUser = useMemo(() => ((user && user.user) ? user.user.isPowerUser === 1 : false), [user])
 
   const getInfo = () => {
     if (user) {
@@ -123,6 +125,7 @@ const Terminals = () => {
             selected={selected}
             handleClick={handleClick}
             handleSave={handleSave}
+            isSuperUser={isSuperUser}
           />
         </MainMirrorCard>
       </Box>

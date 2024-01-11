@@ -10,20 +10,21 @@ import { useTheme } from '@mui/material/styles'
 import ClientList from './Step1/ClientList'
 import TermianlsList from './Step1/TermianlsList'
 
-const FirstContainer = ({ values, inView, handleChange, handleContinue }) => {
+const FirstContainer = ({ values, inView, handleChange, handleContinue, viewType }) => {
   const theme = useTheme()
   const btnActive = useMemo(() => ((values.client !== null && values.terminals.length > 0 && inView === 1)), [values, inView])
 
   const matchDown2Xl = useMediaQuery(theme.breakpoints.down('2xl'))
   return (
     <>
-      <ClientList inView={inView} handleChange={handleChange} />
+      {viewType && <ClientList inView={inView} handleChange={handleChange} />}
       <TermianlsList
         inView={inView}
         values={values}
         handleChange={handleChange}
+        viewType={viewType}
       />
-      <Box position='absolute' right='5%' bottom={matchDown2Xl ? '7%' : '3%'} zIndex={btnActive ? 5 : -1}>
+      <Box position='absolute' right={viewType ? '5%' : '10%'} bottom={matchDown2Xl ? '7%' : '3%'} zIndex={btnActive ? 5 : -1}>
         <Fade in={btnActive}>
           <Button variant='outlined' endIcon={<TrendingFlatTwoToneIcon />} onClick={handleContinue}>Continuar</Button>
         </Fade>
@@ -35,6 +36,7 @@ const FirstContainer = ({ values, inView, handleChange, handleContinue }) => {
 FirstContainer.propTypes = {
   values: PropTypes.object,
   inView: PropTypes.number,
+  viewType: PropTypes.bool,
   handleChange: PropTypes.func,
   handleContinue: PropTypes.func
 }

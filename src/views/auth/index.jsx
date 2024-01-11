@@ -9,11 +9,13 @@ import { toast } from 'sonner'
 import * as Yup from 'yup'
 
 // project imports
+import { alpha } from '@mui/material/styles'
 import useAuth from '../../hooks/useAuth'
 import MainMirrorCard from '../../ui-components/MainMirrorCard'
 import AuthLogin from './AuthLogin'
 
 // assets
+import bgLight from '../../assets/image/fondo-light.webp'
 import bg from '../../assets/image/opcion.jpg'
 import tangerine from '../../assets/image/tangerine.svg'
 
@@ -40,7 +42,7 @@ const Auth = () => {
       alignItems: 'center',
       justifyContent: 'center',
       flex: 1,
-      backgroundImage: `url(${bg})`,
+      backgroundImage: (theme) => theme.palette.mode === 'light' ? `url(${bgLight})` : `url(${bg})`,
       backgroundRepeat: 'no-repeat',
       backgroundSize: 'cover',
       backgroundOrigin: 'border-box',
@@ -48,12 +50,12 @@ const Auth = () => {
     }}
     >
       <Box sx={{ position: 'relative', minWidth: 450, width: 'max-content', borderRadius: 2, zIndex: 5, animation: 'floating 3s ease-in-out infinite' }}>
-        <MainMirrorCard sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1, py: 4 }}>
+        <MainMirrorCard sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1, py: 4, boxShadow: (theme) => theme.palette.mode === 'light' && '7px 7px 20px 1px #c8c8c8, -7px -7px 20px 1px #ffffff' }}>
           <img src={tangerine} alt='Tangerine icon' style={{ width: 90, height: 80 }} />
-          <Typography variant='h1' color='white' textAlign='center' mt={1} sx={{ textShadow: (theme) => `1px 2px 1px ${theme.palette.primary[800]}`, letterSpacing: '0.1rem' }}>Tan-Graph</Typography>
+          <Typography variant='h1' textAlign='center' mt={1} sx={{ textShadow: (theme) => theme.palette.mode === 'light' ? `2px 2px 1px ${theme.palette.grey[400]}` : `1px 2px 1px ${theme.palette.primary[800]}`, letterSpacing: '0.1rem', color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white }}>Tan-Graph</Typography>
           <Box sx={{
             width: '100%',
-            borderImage: (theme) => (`linear-gradient(to right, ${theme.palette.background.paper}, ${theme.palette.primary[800]}, ${theme.palette.background.paper}) 30`),
+            borderImage: (theme) => (`linear-gradient(to right, ${alpha(theme.palette.background.paper, 0.7)}, ${theme.palette.primary.dark}, ${alpha(theme.palette.background.paper, 0.7)}) 30`),
             borderWidth: '0.06em',
             borderStyle: 'solid',
             mb: 3

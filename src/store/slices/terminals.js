@@ -73,7 +73,6 @@ export function getTerminalsByClient (id) {
 export function modifyTerminal (data, haveClient, client) {
   return async () => {
     try {
-      console.log(data, haveClient, client)
       dispatch(slice.actions.setLoader(true))
       const res = await apiCallWithBody({ url: `${BASE_URL_API}/Terminals/${data.terminalId}`, method: 'PUT', body: JSON.stringify(data) })
       if (res) haveClient ? await getTerminalsByClient(client)() : await getAllTerminals()()

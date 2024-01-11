@@ -44,11 +44,11 @@ const getUserType = (isPower, isAdmin) => {
   let text = ''
   let IconUser = PersonIcon
   if (isPower) {
-    text = 'SuperAdministrador'
+    text = 'Super Usuario'
     IconUser = SupervisorAccountIcon
   }
   if (!isPower && isAdmin) {
-    text = 'Administrador'
+    text = 'Cliente Administrador'
     IconUser = BadgeIcon
   }
   if (!isPower && !isAdmin) text = 'Usuario base'
@@ -215,35 +215,6 @@ const ProfileSection = () => {
                           }
                         }}
                       >
-                        <ListItemButton
-                          sx={{
-                            borderRadius: `${borderRadius}px`,
-                            border: '1px solid',
-                            transition: 'all 0.2s ease-out',
-                            borderColor: (theme) => theme.palette.background.paper,
-                            '&:hover': {
-                              borderColor: (theme) => theme.palette.primary[800],
-                              bgcolor: (theme) => theme.palette.background.paper
-                            },
-                            '.MuiListItemText-root': {
-                              transition: 'color 0.2s ease-out'
-                            },
-                            '&:hover .MuiListItemText-root': {
-                              color: theme.palette.mode === 'light' ? theme.palette.primary.main : theme.palette.common.white
-                            }
-                          }}
-                        >
-                          <ListItemIcon>
-                            <SettingsTwoToneIcon fontSize='small' sx={{ color: theme.palette.primary.main }} />
-                          </ListItemIcon>
-                          <ListItemText
-                            primary={
-                              <Typography variant='body2' color='inherit'>
-                                Ajustes de la Cuenta
-                              </Typography>
-                              }
-                          />
-                        </ListItemButton>
                         <ListItemButton
                           sx={{
                             borderRadius: `${borderRadius}px`,

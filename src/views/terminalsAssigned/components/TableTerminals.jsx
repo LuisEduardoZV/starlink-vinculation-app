@@ -1,10 +1,10 @@
 /* eslint-disable react/jsx-handler-names */
 import PropTypes from 'prop-types'
-import { useEffect, useState } from 'react'
 
 // mui imports
 import ArrowBackIosNewTwoToneIcon from '@mui/icons-material/ArrowBackIosNewTwoTone'
 import ArrowForwardIosTwoToneIcon from '@mui/icons-material/ArrowForwardIosTwoTone'
+import DeleteForeverTwoToneIcon from '@mui/icons-material/DeleteForeverTwoTone'
 import { Box, IconButton, MenuItem, Select } from '@mui/material'
 import { alpha, useTheme } from '@mui/material/styles'
 import { Column } from 'primereact/column'
@@ -14,54 +14,18 @@ import { TreeTable } from 'primereact/treetable'
 import ChevronRightTwoToneIcon from '@mui/icons-material/ChevronRightTwoTone'
 import ExpandMoreTwoToneIcon from '@mui/icons-material/ExpandMoreTwoTone'
 
-const TableTerminals = ({ loading, data, selected, handleClick, handleSave }) => {
+const TableTerminals = ({ loading, data, handleDelete }) => {
   const theme = useTheme()
 
-  const [rows, setRows] = useState([])
-
-  useEffect(() => {
-    if (Array.isArray(data) && data.length > 0) {
-      let lastUser = null
-      let index = 1
-      const newRows = []
-      let info = {}
-      for (let i = 0; i < data.length; i++) {
-        const { assignId, dashboardName, fullName, terminalSiteName } = data[i]
-        if (lastUser === fullName) {
-          info.children.push({
-            key: assignId,
-            data: {
-              fullName: index++,
-              terminalSiteName,
-              dashboardName
-            }
-          })
-        } else {
-          if (lastUser) newRows.push(info)
-          info = {}
-          index = 1
-          lastUser = fullName
-          info.children = []
-          info.key = assignId
-          info.data = {
-            fullName,
-            terminalSiteName: '',
-            dashboardName: ''
-          }
-          info.children.push({
-            key: assignId,
-            data: {
-              fullName: index++,
-              terminalSiteName,
-              dashboardName
-            }
-          })
-        }
-      }
-      newRows.push(info)
-      setRows(newRows)
-    }
-  }, [data])
+  const actionTemplate = (options) => {
+    return (options && !options.children && (
+      <Box>
+        <IconButton size='small' color='error' onClick={() => handleDelete(options.key, options.data)}>
+          <DeleteForeverTwoToneIcon fontSize='small' />
+        </IconButton>
+      </Box>
+    ))
+  }
 
   const togglerTemplate = (node, options) => {
     if (!node) {
@@ -79,13 +43,14 @@ const TableTerminals = ({ loading, data, selected, handleClick, handleSave }) =>
       : <Box ml={5} />
   }
 
-  if (!rows) return
+  if (!data) return
   return (
     <>
-      {rows && (
+      {data && (
         <TreeTable
-          value={rows} rowHover loading={loading} paginator id='tabla' rows={10} tableStyle={{
-            minWidth: '50rem'
+          value={data} rowHover loading={loading} paginator id='tabla' rows={10} tableStyle={{
+            minWidth: '50rem',
+            width: '100%'
           }}
           togglerTemplate={togglerTemplate}
           paginatorTemplate={{
@@ -141,7 +106,7 @@ const TableTerminals = ({ loading, data, selected, handleClick, handleSave }) =>
                 </Box>
               )
             },
-            NextPageLink: (options) => {
+            NextPageLink: () => {
               return (
                 <Box mx={1}>
                   <ArrowForwardIosTwoToneIcon sx={{ fontSize: '1em', color: theme.palette.mode === 'light' ? 'primary.dark' : 'primary.main' }} />
@@ -155,10 +120,15 @@ const TableTerminals = ({ loading, data, selected, handleClick, handleSave }) =>
           <Column
             field='fullName' header='Nombre' expander
             headerStyle={{ color: theme.palette.mode === 'light' ? 'black' : 'white', textAlign: 'start', padding: 16, borderBottom: `1px solid ${theme.palette.mode === 'light' ? 'black' : alpha(theme.palette.grey[800], 0.5)}` }}
-            bodyStyle={{ color: theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[400], fontSize: '0.875rem', padding: 16, borderBottom: `1px solid ${theme.palette.mode === 'light' ? 'black' : alpha(theme.palette.grey[800], 0.5)}`, display: 'flex', gap: 10 }}
+            bodyStyle={{ color: theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[400], fontSize: '0.875rem', padding: 16, borderBottom: `1px solid ${theme.palette.mode === 'light' ? 'black' : alpha(theme.palette.grey[800], 0.5)}`, display: 'flex', gap: 10, alignItems: 'center' }}
           />
           <Column
             field='terminalSiteName' header='Nombre del sitio'
+            headerStyle={{ color: theme.palette.mode === 'light' ? 'black' : 'white', textAlign: 'start', borderBottom: `1px solid ${theme.palette.mode === 'light' ? 'black' : alpha(theme.palette.grey[800], 0.5)}` }}
+            bodyStyle={{ color: theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[400], fontSize: '0.875rem', padding: 16, borderBottom: `1px solid ${theme.palette.mode === 'light' ? 'black' : alpha(theme.palette.grey[800], 0.5)}` }}
+          />
+          <Column
+            field='terminalFriendlyName' header='Nombre personalizado'
             headerStyle={{ color: theme.palette.mode === 'light' ? 'black' : 'white', textAlign: 'start', borderBottom: `1px solid ${theme.palette.mode === 'light' ? 'black' : alpha(theme.palette.grey[800], 0.5)}` }}
             bodyStyle={{ color: theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[400], fontSize: '0.875rem', padding: 16, borderBottom: `1px solid ${theme.palette.mode === 'light' ? 'black' : alpha(theme.palette.grey[800], 0.5)}` }}
           />
@@ -167,6 +137,7 @@ const TableTerminals = ({ loading, data, selected, handleClick, handleSave }) =>
             headerStyle={{ color: theme.palette.mode === 'light' ? 'black' : 'white', textAlign: 'start', borderBottom: `1px solid ${theme.palette.mode === 'light' ? 'black' : alpha(theme.palette.grey[800], 0.5)}` }}
             bodyStyle={{ color: theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[400], fontSize: '0.875rem', padding: 16, borderBottom: `1px solid ${theme.palette.mode === 'light' ? 'black' : alpha(theme.palette.grey[800], 0.5)}` }}
           />
+          <Column field='assignId' header='Acciones' headerStyle={{ color: theme.palette.mode === 'light' ? 'black' : 'white', textAlign: 'start', borderBottom: `1px solid ${theme.palette.mode === 'light' ? 'black' : alpha(theme.palette.grey[800], 0.5)}`, minWidth: 100, width: 100 }} bodyStyle={{ borderBottom: `1px solid ${theme.palette.mode === 'light' ? 'black' : alpha(theme.palette.grey[800], 0.5)}` }} body={actionTemplate} />
         </TreeTable>
       )}
     </>
@@ -178,9 +149,7 @@ TableTerminals.displayName = 'TableTerminals'
 TableTerminals.propTypes = {
   loading: PropTypes.bool,
   data: PropTypes.array,
-  selected: PropTypes.array,
-  handleClick: PropTypes.func,
-  handleSave: PropTypes.func
+  handleDelete: PropTypes.func
 }
 
 export default TableTerminals

@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 
 // mui imports
 import { ExpandMoreTwoTone } from '@mui/icons-material'
+import LooksOneTwoTone from '@mui/icons-material/LooksOneTwoTone'
 import LooksTwoTwoToneIcon from '@mui/icons-material/LooksTwoTwoTone'
 import { Accordion, AccordionDetails, AccordionSummary, Box, List, ListItemText, Skeleton, Slide, Typography, useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
@@ -21,7 +22,7 @@ import 'react-perfect-scrollbar/dist/css/styles.css'
 
 const skeltonsLoaders = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
-const TermianlsList = ({ values, handleChange, inView }) => {
+const TermianlsList = ({ values, handleChange, inView, viewType }) => {
   const { terminals } = values
   const theme = useTheme()
 
@@ -32,6 +33,8 @@ const TermianlsList = ({ values, handleChange, inView }) => {
   const [loading, setLoading] = useState(true)
 
   const [selected, setSelected] = useState([])
+
+  const Icon = viewType ? LooksTwoTwoToneIcon : LooksOneTwoTone
 
   const handleClick = (event, terminalId, terminalSiteName) => {
     const selectedIndex = terminals.findIndex((op) => (op.terminalId === terminalId))
@@ -94,17 +97,21 @@ const TermianlsList = ({ values, handleChange, inView }) => {
   useEffect(() => {
     (async () => {
       try {
-        const res = await apiCall({ url: `${BASE_URL_API}/TerminalNotAsigment` })
-        setData(res)
+        let res = null
+        if (viewType) res = await apiCall({ url: `${BASE_URL_API}/TerminalNotAsigment` })
+        else res = await apiCall({ url: `${BASE_URL_API}/getClientTerminales?id=${values.client}` })
+        if (res) setData(res)
+        else throw new Error('Error al obtener las terminales')
 
         setLoading(false)
       } catch (error) {
         console.log(error)
+        setLoading(false)
       }
     })()
 
     return () => setLoading(true)
-  }, [])
+  }, [viewType, values.client])
 
   useEffect(() => {
     setAllTerminals(data.sort((a, b) => {
@@ -122,14 +129,14 @@ const TermianlsList = ({ values, handleChange, inView }) => {
         maxHeight: matchDown2Xl ? '75vh' : '85vh',
         height: '100%',
         position: 'relative',
-        maxWidth: '70%',
-        minWidth: '65%',
+        maxWidth: viewType ? '70%' : '90%',
+        minWidth: viewType ? '65%' : '90%',
         width: '100%'
       }}
     >
       <Box display='flex' flexDirection='column' rowGap={3} position='relative'>
         <Typography component='div' variant='h2' display='flex' gap={1} alignItems='flex-start' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white }}>
-          <LooksTwoTwoToneIcon sx={{ color: theme.palette.mode === 'light' ? 'success.dark' : 'info.main' }} /> Selección de 1 o más terminales a vincular *
+          <Icon sx={{ color: theme.palette.mode === 'light' ? 'success.dark' : 'info.main' }} /> Selección de 1 o más terminales a vincular *
         </Typography>
         <Box>
           <InputSearch handleSearch={handleSearch} />
@@ -208,6 +215,7 @@ const TermianlsList = ({ values, handleChange, inView }) => {
 
 TermianlsList.propTypes = {
   values: PropTypes.object,
+  viewType: PropTypes.bool,
   handleChange: PropTypes.func,
   inView: PropTypes.number
 }

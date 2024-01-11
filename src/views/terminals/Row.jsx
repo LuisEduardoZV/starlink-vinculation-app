@@ -130,7 +130,7 @@ const Row = ({ element, handleClick, isItemSelected, labelId, hasExtendedRow, ha
 Row.propTypes = {
   element: PropTypes.object.isRequired,
   handleClick: PropTypes.func.isRequired,
-  handleSave: PropTypes.func.isRequired,
+  handleSave: PropTypes.func,
   changeMode: PropTypes.func,
   isItemSelected: PropTypes.bool.isRequired,
   labelId: PropTypes.string.isRequired,

@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react'
 
 // mui imports
 import Looks3TwoToneIcon from '@mui/icons-material/Looks3TwoTone'
+import LooksTwoTwoTone from '@mui/icons-material/LooksTwoTwoTone'
 import { Box, Slide, Tab, Tabs, Typography, useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 
@@ -37,7 +38,7 @@ const defaultUserInfo = {
   dashboards: []
 }
 
-const SecondContainer = ({ inView, values, errors, touched, handleBlur, handleChange }) => {
+const SecondContainer = ({ inView, values, errors, touched, handleBlur, handleChange, viewType }) => {
   const theme = useTheme()
   const { terminals, userVinculationInfo, client } = values
 
@@ -46,6 +47,8 @@ const SecondContainer = ({ inView, values, errors, touched, handleBlur, handleCh
 
   const [users, setUsers] = useState([])
   const [dash, setDash] = useState([])
+
+  const Icon = viewType ? Looks3TwoToneIcon : LooksTwoTwoTone
 
   const setTerminalsUser = (ter) => {
     setUserInfo({ ...userInfo, terminals: ter })
@@ -146,7 +149,7 @@ const SecondContainer = ({ inView, values, errors, touched, handleBlur, handleCh
       <Box display='flex' flexDirection='row' columnGap={3} position='relative'>
         <Box display='flex' flexDirection='column' width='65%'>
           <Typography component='div' variant='h2' color={theme.palette.mode === 'light' ? 'black' : 'white'} display='flex' gap={1} alignItems='flex-start'>
-            <Looks3TwoToneIcon color='info' /> Vinculación de usuarios con las terminales
+            <Icon color='info' /> Vinculación de usuarios con las terminales
           </Typography>
           <TransferList terminals={terminals} termSelected={terminalsAsigned} setNewTerms={setTerminalsUser} disabled={terminalsAsigned.length > 0} />
         </Box>
@@ -213,6 +216,7 @@ const SecondContainer = ({ inView, values, errors, touched, handleBlur, handleCh
 
 SecondContainer.propTypes = {
   inView: PropTypes.number,
+  viewType: PropTypes.bool,
   values: PropTypes.object,
   errors: PropTypes.object,
   touched: PropTypes.object,
@@ -221,21 +225,3 @@ SecondContainer.propTypes = {
 }
 
 export default SecondContainer
-/**
- {
-    "userId": 19,
-    "fullName": "vbnbvnvbn dfgfdg",
-    "email": "vbnvbn@bvnbvn-com",
-    "password": "fghfghfghfgh",
-    "isEnabled": 1,
-    "isAdmin": 0,
-    "terminals": [
-        {
-            "terminalId": 1,
-            "terminalSiteName": "La Angostura Nueva"
-        }
-    ],
-    "dashboards": [],
-    "clientId": 5
-}
- */

@@ -95,7 +95,7 @@ const EditAuth = ({ errors, values, touched, handleBlur, handleChange, backBtn, 
       <DefaultBtnsForms
         handleCancel={handleReset}
         isSubmitting={isSubmitting}
-        noCancel
+        noCancel={!backBtn}
       />
     </>
   )

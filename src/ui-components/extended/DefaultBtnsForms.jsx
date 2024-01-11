@@ -5,7 +5,7 @@ import { Box, Button } from '@mui/material'
 
 const DefaultBtnsForms = ({ okBtnLabel = 'Guardar', cancelBtnLabel = 'Cancelar', handleCancel, isSubmitting, noCancel = false, ...props }) => {
   return (
-    <Box width='100%' display='flex' justifyContent={noCancel ? 'flex-end' : 'space-evenly'} height='100%' {...noCancel && { mt: 4 }} {...props}>
+    <Box width='100%' display='flex' justifyContent={noCancel ? 'flex-end' : 'space-evenly'} height='100%' mt={4} {...props}>
       {!noCancel && (
         <Button color='error' variant='outlined' onClick={handleCancel} sx={{ alignSelf: 'flex-start' }}>{cancelBtnLabel}</Button>
       )}

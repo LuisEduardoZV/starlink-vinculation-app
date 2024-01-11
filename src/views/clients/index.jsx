@@ -28,12 +28,10 @@ const Clients = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
-  const { list, error, success } = useSelector((state) => state.clients)
+  const { list, error, success, loading } = useSelector((state) => state.clients)
 
   const [mainData, setMainData] = useState(list)
   const [data, setData] = useState(mainData)
-
-  const [loading, setLoading] = useState(true)
 
   const [selected, setSelected] = useState([])
   const [dataSelected, setDataSelected] = useState(null)
@@ -105,14 +103,8 @@ const Clients = () => {
 
   useEffect(() => {
     (async () => {
-      setLoading(true)
       dispatch(getAllClients())
-      setLoading(false)
     })()
-
-    return () => {
-      setLoading(true)
-    }
   }, [])
 
   useEffect(() => {

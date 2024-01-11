@@ -59,7 +59,7 @@ export const terminalsTableHeadders = [
   },
   {
     id: 'terminalLineOfService',
-    label: 'Línea de servicio'
+    label: 'Terminal Id'
   },
   {
     id: 'terminalKitNumber',

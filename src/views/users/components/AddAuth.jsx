@@ -82,7 +82,7 @@ const AddAuth = ({ errors, values, touched, handleBlur, handleChange, backBtn, h
       <DefaultBtnsForms
         handleCancel={handleReset}
         isSubmitting={isSubmitting}
-        noCancel
+        noCancel={!backBtn}
       />
     </>
   )
