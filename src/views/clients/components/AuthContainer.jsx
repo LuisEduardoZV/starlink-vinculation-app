@@ -103,13 +103,13 @@ const AuthContainer = ({ values, touched, errors, isSubmitting, handleBlur, hand
         <Tooltip arrow followCursor disableInteractive {...errors.clientPhone && { title: errors.clientPhone }}>
           <Box>
             <PatternFormat
-              format='+1 (###) ###-####'
+              format='+52 (###) ###-####'
               mask='_'
               type='tel'
               customInput={InputBase}
               value={values.clientPhone}
               name='clientPhone'
-              label='Teléfono movil'
+              label='Teléfono móvil'
               onBlur={handleBlur}
               onChange={handleChange}
               variant='filled'

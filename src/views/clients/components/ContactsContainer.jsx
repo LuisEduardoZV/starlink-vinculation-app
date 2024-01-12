@@ -49,13 +49,13 @@ const ContactsContainer = ({ loading, contacts, contact, handleAddNewContact, ha
             </Grid>
             <Grid item xs={12} md={2}>
               <PatternFormat
-                format='+1 (###) ###-####'
+                format='+52 (###) ###-####'
                 mask='_'
                 type='tel'
                 customInput={InputBase}
                 value={contact.contactPhone}
                 name='contactPhone'
-                label='Teléfono movil'
+                label='Teléfono móvil'
                 onChange={handleChangeContact}
                 variant='filled'
                 size='small'

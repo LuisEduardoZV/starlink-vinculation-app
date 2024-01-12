@@ -38,12 +38,12 @@ const NewContactRow = ({ contactName, contactPosition, contactPhone, publicNote,
       </Grid>
       <Grid item xs={12} md={2}>
         <PatternFormat
-          format='+1 (###) ###-####'
+          format='+52 (###) ###-####'
           mask='_'
           type='tel'
           customInput={InputBase}
           value={contactPhone}
-          label='Teléfono movil'
+          label='Teléfono móvil'
           variant='filled'
           size='small'
           fullWidth

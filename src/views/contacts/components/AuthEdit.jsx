@@ -62,13 +62,13 @@ const AuthEdit = ({ errors, values, touched, isAdd, handleBlur, handleChange, on
           <Tooltip arrow followCursor disableInteractive {...errors.contactPhone && { title: errors.contactPhone }}>
             <Box>
               <PatternFormat
-                format='+1 (###) ###-####'
+                format='+52 (###) ###-####'
                 mask='_'
                 type='tel'
                 customInput={InputBase}
                 value={values.contactPhone}
                 name='contactPhone'
-                label='Teléfono movil'
+                label='Teléfono móvil'
                 onBlur={handleBlur}
                 onChange={handleChange}
                 variant='filled'

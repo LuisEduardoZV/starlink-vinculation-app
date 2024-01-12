@@ -13,9 +13,9 @@ import * as Yup from 'yup'
 // project imports
 import { useDispatch, useSelector } from '../../store'
 import { addNewClient } from '../../store/slices/clients'
-import AuthContainer from './components/AuthContainer'
-
+import { REGEX_VALID_RFC } from '../../utils/constants'
 import { emailerrorText, phonelenghtText, requiredText, ziplenghtText } from '../../utils/labelsErrorsFormik'
+import AuthContainer from './components/AuthContainer'
 
 import 'react-perfect-scrollbar/dist/css/styles.css'
 
@@ -77,7 +77,7 @@ const Add = ({ handleCancel, toastId }) => {
               .typeError(requiredText),
             clientZip: Yup.string().min(5, ziplenghtText).required(requiredText),
             clientEmail: Yup.string().email(emailerrorText).max(255).required(requiredText).required(requiredText),
-            clientTaxId: Yup.string().max(20, 'La longitud debe ser menor a 20 caracteres').required(requiredText),
+            clientTaxId: Yup.string().max(20, 'La longitud debe ser menor a 20 caracteres').matches(REGEX_VALID_RFC, 'Debe ser un RFC válido').required(requiredText),
             isEnabled: Yup.number(),
             publicNote: Yup.string().max(4000, 'La longitud debe ser menor a 4000 caracteres')
           })}
