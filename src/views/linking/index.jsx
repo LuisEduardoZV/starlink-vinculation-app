@@ -27,7 +27,7 @@ const Linking = () => {
 
   const initVal = useMemo(() => ({
     assignId: 0,
-    client: user.user.isPowerUser ? null : user.user.clientId,
+    client: user?.user?.isPowerUser ? null : user?.user?.clientId,
     terminals: [],
     userVinculationInfo: [],
     submit: null
@@ -72,7 +72,7 @@ const Linking = () => {
               } else {
                 user.userId = 0
                 const newUserInfo = { terminals: user.terminals, dashboards: user.dashboards, userId: null }
-                const newUser = await apiCallWithBody({ url: `${BASE_URL_API}/Users`, method: 'POST', body: JSON.stringify({ ...user, fullname: `NewUser-For-${'T_' + user.terminals.map(({ terminalId }, index) => (index === user.terminals.length - 1) ? (`${terminalId}`) : (`${terminalId}-`)).join('T_')}` }) })
+                const newUser = await apiCallWithBody({ url: `${BASE_URL_API}/Users`, method: 'POST', body: JSON.stringify({ ...user, fullname: user.fullName, isAdmin: user.isAdmin ? 1 : 0 }) })
                 if (!newUser) throw new Error('Hubo un error al crear el nuveo usuario en Tan-Graph')
                 const userGrafana = await apiCallWithBody({
                   url: `${BASE_URL_API}/AltaUserGraf?type=1`,

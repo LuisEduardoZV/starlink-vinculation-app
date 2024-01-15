@@ -36,7 +36,7 @@ const TermianlsList = ({ values, handleChange, inView, viewType }) => {
 
   const Icon = viewType ? LooksTwoTwoToneIcon : LooksOneTwoTone
 
-  const handleClick = (event, terminalId, terminalSiteName) => {
+  const handleClick = (event, terminalId, terminalSiteName, terminalLineOfService, terminalKitNumber) => {
     const selectedIndex = terminals.findIndex((op) => (op.terminalId === terminalId))
     const selectedInfoIndex = selected.findIndex((op) => (op.terminalId === terminalId))
     let newSelected = []
@@ -44,7 +44,7 @@ const TermianlsList = ({ values, handleChange, inView, viewType }) => {
     const dataAvailable = [...data]
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(terminals, { terminalId, terminalSiteName })
+      newSelected = newSelected.concat(terminals, { terminalId, terminalSiteName, terminalLineOfService, terminalKitNumber })
       const info = dataAvailable.splice(dataAvailable.findIndex((op) => (op.terminalId === terminalId)), 1)
       allInfoSelected = allInfoSelected.concat(selected, info)
     } else if (selectedIndex === 0) {
@@ -150,10 +150,10 @@ const TermianlsList = ({ values, handleChange, inView, viewType }) => {
                 </AccordionSummary>
                 <AccordionDetails>
                   <Box display='flex' flexWrap='wrap' columnGap={1} rowGap={2} width='100%'>
-                    {selected.map(({ terminalId, terminalKitNumber, serviceLineNumber, terminalSiteName }) => (
+                    {selected.map(({ terminalId, terminalKitNumber, serviceLineNumber, terminalSiteName, terminalLineOfService }) => (
                       <CustomListItemButton
                         key={terminalId}
-                        onClick={(e) => handleClick(e, terminalId, terminalSiteName)}
+                        onClick={(e) => handleClick(e, terminalId, terminalSiteName, terminalLineOfService, terminalKitNumber)}
                         selected
                         sx={{ maxWidth: '31%', width: '100%', minWidth: '31%' }}
                       >
@@ -182,10 +182,10 @@ const TermianlsList = ({ values, handleChange, inView, viewType }) => {
                 <Box display='flex' flexWrap='wrap' columnGap={1} rowGap={2} sx={{ height: 'fit-content', maxHeight: matchDown2Xl ? '55vh' : '60vh' }}>
                   {loading
                     ? skeltonsLoaders.map((op) => (<Skeleton key={op} height={70} />))
-                    : (allTerminal.map(({ terminalId, serviceLineNumber, terminalSiteName, terminalKitNumber }) => (
+                    : (allTerminal.map(({ terminalId, serviceLineNumber, terminalSiteName, terminalKitNumber, terminalLineOfService }) => (
                       <CustomListItemButton
                         key={terminalId}
-                        onClick={(e) => handleClick(e, terminalId, terminalSiteName)}
+                        onClick={(e) => handleClick(e, terminalId, terminalSiteName, terminalLineOfService, terminalKitNumber)}
                         sx={{ maxWidth: '31%', width: '100%' }}
                       >
                         <ListItemText

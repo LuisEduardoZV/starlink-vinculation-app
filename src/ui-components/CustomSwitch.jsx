@@ -3,10 +3,10 @@ import PropTypes from 'prop-types'
 // mui imports
 import { Box, Switch, Typography } from '@mui/material'
 
-const CustomSwitch = ({ value, handleChange, name, label, option1, option2, ...props }) =>
+const CustomSwitch = ({ value, handleChange, name, label, option1, option2, sxLabel, ...props }) =>
   (
     <>
-      <Typography variant='caption' color='primary' sx={{ position: 'absolute', top: '30%', left: '19%', fontSize: '10px' }}>{label}</Typography>
+      <Typography variant='caption' color='primary' sx={{ position: 'absolute', top: '30%', left: '19%', fontSize: '10px', ...sxLabel }}>{label}</Typography>
       <Box display='flex' alignItems='center' width='100%' justifyContent='center' mt={2} gap={2}>
         <Typography
           variant='caption'
@@ -45,7 +45,8 @@ CustomSwitch.propTypes = {
   name: PropTypes.string,
   label: PropTypes.string,
   option1: PropTypes.string,
-  option2: PropTypes.string
+  option2: PropTypes.string,
+  sxLabel: PropTypes.object
 }
 
 export default CustomSwitch

@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react'
 import dayjs from 'dayjs'
 
 // mui imports
-import { Autocomplete, Box, Button, Collapse, Divider, TextField, Typography } from '@mui/material'
+import TableChartTwoToneIcon from '@mui/icons-material/TableChartTwoTone'
+import { Autocomplete, Box, Button, Collapse, Divider, IconButton, TextField, Typography, createFilterOptions } from '@mui/material'
 import { alpha, useTheme } from '@mui/material/styles'
 import { BarChart, axisClasses, barElementClasses } from '@mui/x-charts'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
@@ -12,11 +13,11 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 
 // project imports
 import LeaderboardTwoToneIcon from '@mui/icons-material/LeaderboardTwoTone'
-import MainMirrorCard from '../../ui-components/MainMirrorCard'
-import NoInfoOverlay from '../../ui-components/NoInfoOverlay'
-
 import { BASE_URL_API } from '../../config'
 import { apiCall } from '../../contexts/api'
+import CustomTooltipBtns from '../../ui-components/CustomTooltipBtns'
+import MainMirrorCard from '../../ui-components/MainMirrorCard'
+import NoInfoOverlay from '../../ui-components/NoInfoOverlay'
 
 const Reportes = () => {
   const theme = useTheme()
@@ -29,9 +30,20 @@ const Reportes = () => {
   const [secondDate, setSecondDate] = useState(dayjs(new Date()))
 
   const [data, setData] = useState(null)
+  const [mainData, setMainData] = useState(null)
 
   const handleSetTypeReport = (id) => () => {
     setTypeReport(id)
+  }
+
+  const filterOptions = createFilterOptions({
+    matchFrom: 'any',
+    stringify: (option) => (option.terminalLineOfService || option.terminalKitNumber)
+  })
+
+  async function exportMultipleChartsToPdf () {
+    const elements = document.getElementsByClassName('custom-chart')
+    console.log(elements)
   }
 
   const requestData = async () => {
@@ -39,13 +51,16 @@ const Reportes = () => {
       const res = await apiCall({ url: `${BASE_URL_API}/getGrafic?terminal=${terminalSelected?.terminalLineOfService}&fecha1=${dayjs(firstDate).format('YYYY-MM-DD')}&fecha2=${dayjs(secondDate).format('YYYY-MM-DD')}` })
       const labels = []
       const data = []
+      const general = []
       for (let i = 0; i < res.length; i++) {
         const item = res[i]
         labels.push(item.substring(item.indexOf(':') + 1, item.indexOf(',')))
         data.push(Number(item.substring(item.lastIndexOf(':') + 1, item.indexOf('}'))))
+        general.push({ Fecha: item.substring(item.indexOf(':') + 1, item.indexOf(',')), valor: Number(item.substring(item.lastIndexOf(':') + 1, item.indexOf('}'))) })
       }
-
       setData({ labels, data })
+      console.log({ labels, data })
+      setMainData(general)
     } catch (error) {
       console.log(error)
     }
@@ -94,6 +109,7 @@ const Reportes = () => {
           <Autocomplete
             disablePortal
             fullWidth
+            filterOptions={filterOptions}
             size='small'
             id='auto-combo-users'
             options={terminals}
@@ -101,6 +117,12 @@ const Reportes = () => {
             onChange={(e, nue) => setTerminalSelected(nue)}
             getOptionLabel={(option) => option.terminalKitNumber}
             isOptionEqualToValue={(a, b) => (a.terminalId === b.terminalId)}
+            renderOption={(props, option) => (
+              <Box key={option.terminalLineOfService} component='li' sx={{ width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'start' }} {...props}>
+                <Typography variant='body2' textAlign='start' width='100%' sx={{ color: (theme) => theme.palette.mode === 'light' ? 'grey.800' : 'grey.400' }}>{option.terminalKitNumber}</Typography>
+                <Typography variant='subtitle2' textAlign='start' width='100%' sx={{ color: (theme) => theme.palette.mode === 'light' ? 'primary.dark' : 'grey.700' }}>{option.terminalLineOfService}</Typography>
+              </Box>
+            )}
             renderInput={(params) => <TextField
               {...params}
               label='Seleccione una terminal'
@@ -177,10 +199,23 @@ const Reportes = () => {
             {(data && (data.labels.length === 0 || data.data.length === 0)) && (
               <NoInfoOverlay />
             )}
-            {(data && data.labels.length > 0 && data.data.length > 0) && (
-              <><Typography variant='h2' alignSelf='start'>Consumo de datos de la terminal: {terminalSelected?.terminalSiteName}</Typography>
+            {(data && (data.labels.length !== 0 || data.data.length !== 0)) && (
+              <>
+                <Box sx={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}>
+                  <Box maxWidth='50%'>
+                    <Typography variant='h2' alignSelf='start'>Consumo de datos de la terminal: {terminalSelected?.terminalKitNumber}</Typography>
+                  </Box>
+                  <Box display='flex'>
+                    <CustomTooltipBtns type='primary' title='Exportar a PNG'>
+                      <IconButton size='small' type='submit' onClick={exportMultipleChartsToPdf}>
+                        <TableChartTwoToneIcon color='primary' />
+                      </IconButton>
+                    </CustomTooltipBtns>
+                  </Box>
+                </Box>
                 <Box width='98%' display='flex' justifyContent='flex-end' justifySelf='self-end' zIndex={1}>
                   <BarChart
+                    className='custom-chart'
                     xAxis={[{ scaleType: 'band', data: data.labels }]}
                     series={[{ data: data.data, valueFormatter: (value) => `${value} GB` }]}
                     height={380}

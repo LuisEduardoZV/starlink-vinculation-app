@@ -109,7 +109,7 @@ export default function TransferList ({ terminals, termSelected, setNewTerms, di
         role='list'
       >
         {items.map((op) => {
-          const { terminalId, terminalSiteName } = op
+          const { terminalId, terminalLineOfService, terminalKitNumber } = op
           const labelId = `transfer-list-all-item-${terminalId}-label`
 
           return (
@@ -133,7 +133,7 @@ export default function TransferList ({ terminals, termSelected, setNewTerms, di
                     }}
                   />
                 </ListItemIcon>
-                <ListItemText id={labelId} primary={<Typography variant='body1'>{terminalSiteName}</Typography>} sx={{ color: (theme) => theme.palette.mode === 'light' ? 'grey.800' : 'white' }} />
+                <ListItemText id={labelId} primary={<Typography variant='body1'>{terminalKitNumber}</Typography>} secondary={<Typography variant='subtitle2'>{terminalLineOfService}</Typography>} sx={{ color: (theme) => theme.palette.mode === 'light' ? 'grey.800' : 'white' }} />
               </ListItem>
             </Fragment>
           )

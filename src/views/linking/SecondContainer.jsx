@@ -8,6 +8,7 @@ import { Box, Slide, Tab, Tabs, Typography, useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 
 // project imports
+import LoadingInfo from '../../ui-components/LoadingInfo'
 import MainMirrorFade from '../../ui-components/MainMirrorFade'
 import TransferList from '../../ui-components/TransferList'
 import CustomTabPanel from '../../ui-components/extended/CustomTabPanel'
@@ -27,26 +28,30 @@ async function not (a, b) {
   return await a.filter(({ userId }) => b.userId !== userId)
 }
 
-const defaultUserInfo = {
-  userId: null,
-  fullName: 'NewUser-Terminal-',
-  email: '',
-  password: '',
-  isEnabled: 1,
-  isAdmin: 0,
-  terminals: null,
-  dashboards: []
-}
+
 
 const SecondContainer = ({ inView, values, errors, touched, handleBlur, handleChange, viewType }) => {
   const theme = useTheme()
   const { terminals, userVinculationInfo, client } = values
 
-  const [viewTab, setViewTab] = useState(0)
-  const [userInfo, setUserInfo] = useState(defaultUserInfo)
-
   const [users, setUsers] = useState([])
   const [dash, setDash] = useState([])
+
+  const [loading, setLoading] = useState(true)
+
+  const defaultUserInfo = useMemo(() => ({
+    userId: null,
+    fullName: 'NewUser-Terminal-',
+    email: '',
+    password: '',
+    isEnabled: 1,
+    isAdmin: 0,
+    terminals: null,
+    dashboards: dash.length !== 0 ? [dash[0]] : []
+  }), [dash])
+
+  const [viewTab, setViewTab] = useState(0)
+  const [userInfo, setUserInfo] = useState(defaultUserInfo)
 
   const Icon = viewType ? Looks3TwoToneIcon : LooksTwoTwoTone
 
@@ -60,6 +65,10 @@ const SecondContainer = ({ inView, values, errors, touched, handleBlur, handleCh
 
   const handleChangeUserInfo = (e) => {
     setUserInfo({ ...userInfo, [e.target.name]: e.target.value })
+  }
+
+  const handleChangeUserType = (e, a) => {
+    setUserInfo({ ...userInfo, [e.target.name]: a })
   }
 
   const handleChangeTab = (event, newValue) => {
@@ -114,14 +123,18 @@ const SecondContainer = ({ inView, values, errors, touched, handleBlur, handleCh
 
           const resDash = await apiCall({ url: `${BASE_URL_API}/Dashboards` })
           setDash(resDash)
+          if (resDash.length !== 0) setUserInfo((prev) => ({ ...prev, dashboards: resDash.length !== 0 ? [resDash[0]] : [] }))
         }
+        setLoading(false)
       } catch (error) {
         console.log(error)
+        setLoading(false)
       }
     })()
 
     return () => {
       setUsers([])
+      setLoading(true)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inView])
@@ -186,6 +199,7 @@ const SecondContainer = ({ inView, values, errors, touched, handleBlur, handleCh
                 users={users}
                 dash={dash}
                 handleChange={handleChangeUserInfo}
+                handleChangeUserType={handleChangeUserType}
                 handleChangeAutocompleteInfo={handleChangeAutocompleteInfo}
                 handleBlur={handleBlur}
                 cancelBtn
@@ -195,18 +209,22 @@ const SecondContainer = ({ inView, values, errors, touched, handleBlur, handleCh
             </CustomTabPanel>
           ))}
           <CustomTabPanel value={viewTab} index={userVinculationInfo.length}>
-            <DashUserSelection
-              client={values.client}
-              values={userInfo}
-              errors={errors}
-              touched={touched}
-              users={users}
-              dash={dash}
-              handleChange={handleChangeUserInfo}
-              handleChangeAutocompleteInfo={handleChangeAutocompleteInfo}
-              handleBlur={handleBlur}
-              handleAddUser={handleAddUser}
-            />
+            {loading
+              ? <LoadingInfo />
+              : (<DashUserSelection
+                  client={values.client}
+                  loading={loading}
+                  values={userInfo}
+                  errors={errors}
+                  touched={touched}
+                  users={users}
+                  dash={dash}
+                  handleChange={handleChangeUserInfo}
+                  handleChangeUserType={handleChangeUserType}
+                  handleChangeAutocompleteInfo={handleChangeAutocompleteInfo}
+                  handleBlur={handleBlur}
+                  handleAddUser={handleAddUser}
+                 />)}
           </CustomTabPanel>
         </Box>
       </Box>

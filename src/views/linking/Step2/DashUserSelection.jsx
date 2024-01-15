@@ -8,14 +8,16 @@ import { Autocomplete, Box, Button, Chip, Collapse, Divider, Fade, IconButton, I
 import { alpha, useTheme } from '@mui/material/styles'
 
 // project imports
+import CustomSwitch from '../../../ui-components/CustomSwitch'
 import InputBase from '../../../ui-components/InputBase'
 
 import 'react-perfect-scrollbar/dist/css/styles.css'
 
-const DashUserSelection = React.forwardRef(({ values, errors, touched, handleBlur, handleChange, handleChangeAutocompleteInfo, handleAddUser, disabledBtns, cancelBtn, handleDeleteUser, finishBtn, users, dash, loading }, ref) => {
+const DashUserSelection = React.forwardRef(({ values, errors, touched, handleBlur, handleChange, handleChangeAutocompleteInfo, handleAddUser, disabledBtns, cancelBtn, handleDeleteUser, finishBtn, users, dash, loading, handleChangeUserType }, ref) => {
   const theme = useTheme()
 
   const { userId, dashboards, email, password, terminals } = values
+  console.log(values)
   const [showPass, setShowPass] = useState(false)
 
   const isUserNewComplete = useMemo(() => (email?.trim() !== '' && password?.trim() !== ''), [email, password])
@@ -26,7 +28,7 @@ const DashUserSelection = React.forwardRef(({ values, errors, touched, handleBlu
   return (
     <Box ref={ref} display='flex' flexDirection='column' rowGap={3} position='relative' mt={3}>
       <Box width='100%'>
-        <Autocomplete
+        {!loading && <Autocomplete
           disablePortal
           fullWidth
           size='small'
@@ -72,7 +74,7 @@ const DashUserSelection = React.forwardRef(({ values, errors, touched, handleBlu
               color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white
             }
           }}
-        />
+                     />}
       </Box>
       <Divider sx={{ borderColor: 'grey.700' }} />
       <Collapse in={!isUserNewComplete}>
@@ -140,6 +142,22 @@ const DashUserSelection = React.forwardRef(({ values, errors, touched, handleBlu
         <Box display='flex' flexDirection='column' rowGap={3}>
           <Typography variant='h4' sx={{ color: (theme) => theme.palette.mode === 'light' ? 'grey.800' : 'grey.400' }}>Cree un nuevo usuario para el cliente</Typography>
           <InputBase
+            value={values.fullName}
+            name='fullName'
+            label='Nombre'
+            onBlur={handleBlur}
+            onChange={handleChange}
+            variant='filled'
+            fullWidth
+            size='small'
+            color='primary'
+            error={Boolean(touched.fullName && errors.fullName)}
+            disabled={isUserSelected}
+            InputProps={{
+              autoComplete: 'new-password'
+            }}
+          />
+          <InputBase
             value={values.email}
             name='email'
             label='Usuario'
@@ -155,33 +173,49 @@ const DashUserSelection = React.forwardRef(({ values, errors, touched, handleBlu
               autoComplete: 'new-password'
             }}
           />
-          <InputBase
-            value={values.password}
-            name='password'
-            label='Contraseña'
-            type={showPass ? 'text' : 'password'}
-            onBlur={handleBlur}
-            onChange={handleChange}
-            variant='filled'
-            fullWidth
-            size='small'
-            color='primary'
-            error={Boolean(touched.password && errors.password)}
-            disabled={isUserSelected}
-            InputProps={{
-              autoComplete: 'new-password',
-              endAdornment: (
-                <InputAdornment position='end'>
-                  <IconButton
-                    edge='end'
-                    onClick={() => setShowPass((show) => !show)}
-                    onMouseDown={(e) => e.preventDefault()}
-                    sx={{ color: (theme) => theme.palette.grey[400] }}
-                  >{showPass ? <VisibilityOffTwoToneIcon /> : <VisibilityTwoToneIcon />}
-                  </IconButton>
-                </InputAdornment>)
-            }}
-          />
+          <Box display='flex' gap={5}>
+            <InputBase
+              value={values.password}
+              name='password'
+              label='Contraseña'
+              type={showPass ? 'text' : 'password'}
+              onBlur={handleBlur}
+              onChange={handleChange}
+              variant='filled'
+              fullWidth
+              size='small'
+              color='primary'
+              error={Boolean(touched.password && errors.password)}
+              disabled={isUserSelected}
+              InputProps={{
+                autoComplete: 'new-password',
+                endAdornment: (
+                  <InputAdornment position='end'>
+                    <IconButton
+                      edge='end'
+                      onClick={() => setShowPass((show) => !show)}
+                      onMouseDown={(e) => e.preventDefault()}
+                      sx={{ color: (theme) => theme.palette.grey[400] }}
+                    >{showPass ? <VisibilityOffTwoToneIcon /> : <VisibilityTwoToneIcon />}
+                    </IconButton>
+                  </InputAdornment>)
+              }}
+            />
+            <Box position='relative'>
+              <CustomSwitch
+                value={!!values.isAdmin}
+                handleChange={handleChangeUserType}
+                name='isAdmin'
+                label='Tipo de usuario'
+                option1='Normal'
+                option2='Administrador'
+                sxLabel={{
+                  left: '0%',
+                  top: -5
+                }}
+              />
+            </Box>
+          </Box>
         </Box>
       </Collapse>
       <Box mt={2} display='flex' justifyContent='space-between'>
@@ -215,7 +249,8 @@ DashUserSelection.propTypes = {
   handleChangeAutocompleteInfo: PropTypes.func,
   handleBlur: PropTypes.func,
   handleAddUser: PropTypes.func,
-  handleDeleteUser: PropTypes.func
+  handleDeleteUser: PropTypes.func,
+  handleChangeUserType: PropTypes.func
 }
 
 export default DashUserSelection
