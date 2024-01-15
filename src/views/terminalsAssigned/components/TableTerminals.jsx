@@ -13,18 +13,23 @@ import { TreeTable } from 'primereact/treetable'
 // project imports
 import ChevronRightTwoToneIcon from '@mui/icons-material/ChevronRightTwoTone'
 import ExpandMoreTwoToneIcon from '@mui/icons-material/ExpandMoreTwoTone'
+import CustomTooltipBtns from '../../../ui-components/CustomTooltipBtns'
 
 const TableTerminals = ({ loading, data, handleDelete }) => {
   const theme = useTheme()
 
   const actionTemplate = (options) => {
-    return (options && !options.children && (
-      <Box>
-        <IconButton size='small' color='error' onClick={() => handleDelete(options.key, options.data)}>
-          <DeleteForeverTwoToneIcon fontSize='small' />
-        </IconButton>
-      </Box>
-    ))
+    return (options && !options.children
+      ? (
+        <Box>
+          <CustomTooltipBtns type='error' title='Eliminar vinculación'>
+            <IconButton size='small' color='error' onClick={() => handleDelete(options.key, options.data)}>
+              <DeleteForeverTwoToneIcon fontSize='small' />
+            </IconButton>
+          </CustomTooltipBtns>
+        </Box>
+        )
+      : <Box minWidth={10} />)
   }
 
   const togglerTemplate = (node, options) => {
@@ -34,13 +39,13 @@ const TableTerminals = ({ loading, data, handleDelete }) => {
 
     const expanded = options.expanded
 
-    return options.props.level === 0
+    return options.props.level === 0 || (options.props.level === 1 && node.children)
       ? (
-        <IconButton className='p-treetable-toggler p-link' size='small' onClick={options.onClick}>
+        <IconButton className='p-treetable-toggler p-link' size='small' sx={{ position: options.props.level === 1 && 'absolute', right: options.props.level === 1 && -10, top: options.props.level === 1 && '50%', bottom: options.props.level === 1 && '50%' }} onClick={options.onClick}>
           {expanded ? <ExpandMoreTwoToneIcon fontSize='small' color={theme.palette.mode === 'light' ? 'primary' : 'white'} /> : <ChevronRightTwoToneIcon fontSize='small' color={theme.palette.mode === 'light' ? 'primary' : 'white'} />}
         </IconButton>
         )
-      : <Box ml={5} />
+      : <Box ml={5} mt={5} />
   }
 
   if (!data) return
@@ -118,26 +123,31 @@ const TableTerminals = ({ loading, data, handleDelete }) => {
           paginatorLeft resizableColumns showGridlines columnResizeMode='expand'
         >
           <Column
-            field='fullName' header='Nombre' expander
-            headerStyle={{ color: theme.palette.mode === 'light' ? 'black' : 'white', textAlign: 'start', padding: 16, borderBottom: `1px solid ${theme.palette.mode === 'light' ? 'black' : alpha(theme.palette.grey[800], 0.5)}` }}
-            bodyStyle={{ color: theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[400], fontSize: '0.875rem', padding: 16, borderBottom: `1px solid ${theme.palette.mode === 'light' ? 'black' : alpha(theme.palette.grey[800], 0.5)}`, display: 'flex', gap: 10, alignItems: 'center' }}
+            field='clientName' header='Cliente' expander
+            headerStyle={{ color: theme.palette.mode === 'light' ? 'black' : 'white', textAlign: 'start', padding: 16, borderBottom: `1px solid ${alpha(theme.palette.grey[800], 0.7)}` }}
+            bodyStyle={{ color: theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[400], fontSize: '0.875rem', padding: 16, alignItems: 'center', borderBottom: `1px solid ${alpha(theme.palette.grey[800], 0.5)}`, position: 'relative' }}
+          />
+          <Column
+            field='fullName' header='Nombre'
+            headerStyle={{ color: theme.palette.mode === 'light' ? 'black' : 'white', textAlign: 'start', padding: 16, borderBottom: `1px solid ${alpha(theme.palette.grey[800], 0.7)}` }}
+            bodyStyle={{ color: theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[400], fontSize: '0.875rem', padding: 16, alignItems: 'center', borderBottom: `1px solid ${alpha(theme.palette.grey[800], 0.5)}` }}
           />
           <Column
             field='terminalSiteName' header='Nombre del sitio'
-            headerStyle={{ color: theme.palette.mode === 'light' ? 'black' : 'white', textAlign: 'start', borderBottom: `1px solid ${theme.palette.mode === 'light' ? 'black' : alpha(theme.palette.grey[800], 0.5)}` }}
-            bodyStyle={{ color: theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[400], fontSize: '0.875rem', padding: 16, borderBottom: `1px solid ${theme.palette.mode === 'light' ? 'black' : alpha(theme.palette.grey[800], 0.5)}` }}
+            headerStyle={{ color: theme.palette.mode === 'light' ? 'black' : 'white', textAlign: 'start', padding: 16, borderBottom: `1px solid ${alpha(theme.palette.grey[800], 0.7)}` }}
+            bodyStyle={{ color: theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[400], fontSize: '0.875rem', padding: 16, alignItems: 'center', borderBottom: `1px solid ${alpha(theme.palette.grey[800], 0.5)}` }}
           />
           <Column
             field='terminalFriendlyName' header='Nombre personalizado'
-            headerStyle={{ color: theme.palette.mode === 'light' ? 'black' : 'white', textAlign: 'start', borderBottom: `1px solid ${theme.palette.mode === 'light' ? 'black' : alpha(theme.palette.grey[800], 0.5)}` }}
-            bodyStyle={{ color: theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[400], fontSize: '0.875rem', padding: 16, borderBottom: `1px solid ${theme.palette.mode === 'light' ? 'black' : alpha(theme.palette.grey[800], 0.5)}` }}
+            headerStyle={{ color: theme.palette.mode === 'light' ? 'black' : 'white', textAlign: 'start', padding: 16, borderBottom: `1px solid ${alpha(theme.palette.grey[800], 0.7)}` }}
+            bodyStyle={{ color: theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[400], fontSize: '0.875rem', padding: 16, alignItems: 'center', borderBottom: `1px solid ${alpha(theme.palette.grey[800], 0.5)}` }}
           />
           <Column
             field='dashboardName' header='Nombre del dashboard'
-            headerStyle={{ color: theme.palette.mode === 'light' ? 'black' : 'white', textAlign: 'start', borderBottom: `1px solid ${theme.palette.mode === 'light' ? 'black' : alpha(theme.palette.grey[800], 0.5)}` }}
-            bodyStyle={{ color: theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[400], fontSize: '0.875rem', padding: 16, borderBottom: `1px solid ${theme.palette.mode === 'light' ? 'black' : alpha(theme.palette.grey[800], 0.5)}` }}
+            headerStyle={{ color: theme.palette.mode === 'light' ? 'black' : 'white', textAlign: 'start', padding: 16, borderBottom: `1px solid ${alpha(theme.palette.grey[800], 0.7)}` }}
+            bodyStyle={{ color: theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[400], fontSize: '0.875rem', padding: 16, alignItems: 'center', borderBottom: `1px solid ${alpha(theme.palette.grey[800], 0.5)}` }}
           />
-          <Column field='assignId' header='Acciones' headerStyle={{ color: theme.palette.mode === 'light' ? 'black' : 'white', textAlign: 'start', borderBottom: `1px solid ${theme.palette.mode === 'light' ? 'black' : alpha(theme.palette.grey[800], 0.5)}`, minWidth: 100, width: 100 }} bodyStyle={{ borderBottom: `1px solid ${theme.palette.mode === 'light' ? 'black' : alpha(theme.palette.grey[800], 0.5)}` }} body={actionTemplate} />
+          <Column field='assignId' header='Acciones' headerStyle={{ color: theme.palette.mode === 'light' ? 'black' : 'white', textAlign: 'start', borderBottom: `1px solid ${alpha(theme.palette.grey[800], 0.7)}`, minWidth: 100, width: 100 }} bodyStyle={{ borderBottom: `1px solid ${alpha(theme.palette.grey[800], 0.5)}` }} body={actionTemplate} />
         </TreeTable>
       )}
     </>

@@ -2,6 +2,10 @@
 import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
 
+// third imports
+import { toast } from 'sonner'
+import * as Yup from 'yup'
+
 // mui imports
 import CancelTwoToneIcon from '@mui/icons-material/CancelTwoTone'
 import DriveFileRenameOutlineTwoToneIcon from '@mui/icons-material/DriveFileRenameOutlineTwoTone'
@@ -19,13 +23,28 @@ const Row = ({ element, handleClick, isItemSelected, labelId, hasExtendedRow, ha
 
   const [newData, setNewData] = useState({ })
 
-  const handleChangeMode = () => {
-    setMode((prev) => {
-      if (prev === 1) {
+  const validInfo = async () => {
+    try {
+      await Yup.string().required('El nombre del sitio  es un campo requerido').validate(newData.terminalSiteName)
+      await Yup.string().required('El nombre personalizado es un campo requerido').validate(newData.terminalFriendlyName)
+      await Yup.number().required('La latitud es un campo requerido').typeError('La latitud es un campo requerido').validate(newData.terminalLatitude)
+      await Yup.number().required('La logitud es un campo requerido').typeError('La logitud es un campo requerido').validate(newData.terminalLongitude)
+      return true
+    } catch (error) {
+      toast.error(error.message)
+    }
+  }
+
+  const handleChangeMode = async () => {
+    if (mode) {
+      const valid = await validInfo()
+      if (valid) {
         handleSave(newData)
-        return 0
-      } else return 1
-    })
+        setMode(0)
+      }
+    } else {
+      setMode(1)
+    }
   }
 
   const handleChangeData = (e) => {

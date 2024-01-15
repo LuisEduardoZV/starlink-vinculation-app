@@ -108,15 +108,15 @@ const HeaderSection = () => {
               />
               )}
           <LinkTab label='Terminales' href='/terminals' icon={<SatelliteAltTwoToneIcon fontSize='small' sx={{ color: tab === 2 ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />} />
+          <LinkTab
+            label='Vincular' href='/linking' icon={<InsertLinkIcon fontSize='small' sx={{ color: tab === (3) ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />}
+          />
+          <LinkTab
+            label='Reportes' href='/reports' icon={<SummarizeTwoToneIcon fontSize='small' sx={{ color: tab === (4) ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />} sx={{ borderLeft: `solid 1px ${theme.palette.mode === 'light' ? theme.palette.grey[400] : theme.palette.grey[400]}` }}
+          />
           {user?.user?.isPowerUser && <LinkTab
-            label={<Typography whiteSpace='break-spaces' display='flex'>Terminales Asignadas</Typography>} href='/terminalsAssigned' icon={<CloudDoneTwoToneIcon fontSize='small' sx={{ color: tab === 3 ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />}
+            label={<Typography whiteSpace='break-spaces' display='flex'>Terminales Asignadas</Typography>} href='/terminalsAssigned' icon={<CloudDoneTwoToneIcon fontSize='small' sx={{ color: tab === 5 ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />}
                                       />}
-          <LinkTab
-            label='Vincular' href='/linking' icon={<InsertLinkIcon fontSize='small' sx={{ color: tab === (user?.user?.isPowerUser ? 4 : 3) ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />}
-          />
-          <LinkTab
-            label='Reportes' href='/reports' icon={<SummarizeTwoToneIcon fontSize='small' sx={{ color: tab === (user?.user?.isPowerUser ? 5 : 4) ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />} sx={{ borderLeft: `solid 1px ${theme.palette.mode === 'light' ? theme.palette.grey[400] : theme.palette.grey[400]}` }}
-          />
         </Tabs>
       </Box>
       <Box flex={1} sx={{ display: 'flex', justifyContent: 'flex-end' }}>

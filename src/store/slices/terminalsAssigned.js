@@ -39,49 +39,66 @@ const slice = createSlice({
 
 export default slice.reducer
 
+function convertToTreeViewData (jsonArray) {
+  // Organizar el arreglo por clientId y fullName
+  jsonArray.sort((a, b) => {
+    if (a.clientId !== b.clientId) {
+      return a.clientId.toString().localeCompare(b.clientId.toString())
+    } else {
+      return a.fullName.localeCompare(b.fullName)
+    }
+  })
+
+  const result = []
+
+  let currentUser = null
+  let currentClientId = null
+  let clientGroup = null
+  let userGroup = null
+  let childrenGroup = null
+
+  jsonArray.forEach(({ fullName, dashboardName, terminalSiteName, clientId, assignId, clientName, terminalId, terminalFriendlyName }, index) => {
+    if (clientId !== currentClientId && currentClientId !== null) result.push(clientGroup)
+    if (clientId !== currentClientId) {
+      currentClientId = clientId
+
+      clientGroup = {
+        key: currentClientId,
+        data: { fullName: '', dashboardName: '', terminalSiteName: '', clientId: '', assignId: '', clientName, terminalId: '', terminalFriendlyName: '' },
+        children: []
+      }
+    }
+
+    if (fullName !== currentUser) {
+      currentUser = fullName
+      childrenGroup = [{
+        key: fullName + assignId + terminalId + clientId,
+        data: { fullName: '', dashboardName, terminalSiteName, clientId, assignId, clientName: '', terminalId, terminalFriendlyName }
+      }]
+      userGroup = {
+        key: fullName + assignId + terminalId,
+        data: { fullName, dashboardName, terminalSiteName, clientId, assignId, clientName: '', terminalId, terminalFriendlyName }
+      }
+      clientGroup.children.push(userGroup)
+    } else {
+      userGroup.data = { fullName }
+      userGroup.children = childrenGroup
+      userGroup.children.push({
+        key: fullName + assignId + terminalId + clientId,
+        data: { fullName: '', dashboardName, terminalSiteName, clientId, assignId, clientName: '', terminalId, terminalFriendlyName }
+      })
+    }
+  })
+  result.push(clientGroup)
+
+  return result
+}
+
 export function parseObject (data) {
   return async () => {
     if (Array.isArray(data) && data.length > 0) {
-      let lastUser = null
-      const newRows = []
-      let info = {}
-      for (let i = 0; i < data.length; i++) {
-        const { assignId, dashboardName, fullName, terminalSiteName, terminalFriendlyName } = data[i]
-        if (lastUser === fullName) {
-          info.children.push({
-            key: assignId,
-            data: {
-              fullName: assignId,
-              terminalSiteName,
-              dashboardName,
-              terminalFriendlyName
-            }
-          })
-        } else {
-          if (lastUser) newRows.push(info)
-          info = {}
-          lastUser = fullName
-          info.children = []
-          info.key = assignId
-          info.data = {
-            fullName,
-            terminalSiteName: '',
-            dashboardName: '',
-            terminalFriendlyName: ''
-          }
-          info.children.push({
-            key: assignId,
-            data: {
-              fullName: assignId,
-              terminalSiteName,
-              dashboardName,
-              terminalFriendlyName
-            }
-          })
-        }
-      }
-      newRows.push(info)
-      dispatch(slice.actions.setTerminalsInfoSuccess(newRows))
+      const info = convertToTreeViewData(data)
+      dispatch(slice.actions.setTerminalsInfoSuccess(info))
       dispatch(slice.actions.setLoader(false))
       dispatch(slice.actions.setSuccess(true))
     }

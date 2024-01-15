@@ -17,29 +17,7 @@ import Row from './Row'
 
 // services
 import { getComparator, stableSort } from '../../services/tableServices'
-
-const headCells = [
-  {
-    id: 'powerUser_Id',
-    label: '#'
-  },
-  {
-    id: 'fullName',
-    label: 'Nombre'
-  },
-  {
-    id: 'email',
-    label: 'E-mail'
-  },
-  {
-    id: 'isEnabled',
-    label: 'Estatus'
-  },
-  {
-    id: 'actions',
-    label: 'Acciones'
-  }
-]
+import { superUsersTableHeadders as headCells } from '../../utils/allColumnsTables'
 
 const PowerUserList = ({ data, mainData, loading, onEdit, onDelete }) => {
   const [order, setOrder] = useState('asc')

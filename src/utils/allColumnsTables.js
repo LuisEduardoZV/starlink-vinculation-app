@@ -86,6 +86,25 @@ export const terminalsAssignedTableHeadders = [
   }
 ]
 
+export const superUsersTableHeadders = [
+  {
+    id: 'fullName',
+    label: 'Nombre'
+  },
+  {
+    id: 'email',
+    label: 'E-mail'
+  },
+  {
+    id: 'isEnabled',
+    label: 'Estatus'
+  },
+  {
+    id: 'actions',
+    label: 'Acciones'
+  }
+]
+
 export const gridExample = [
   {
     field: 'fullName',
