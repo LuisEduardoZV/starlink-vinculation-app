@@ -131,14 +131,14 @@ const Clients = () => {
         addIcon={GroupAddTwoToneIcon}
         handleSearch={handleSearch}
         extraBtns={[
-          <CustomTooltipBtns key='usersbtn' type='rose' title='Usuarios'>
+          <CustomTooltipBtns key='usersbtn' type='primary' title='Usuarios'>
             <IconButton onClick={() => { navigate(`/clients/${selected[0]}/users`, { state: { client: dataSelected?.clientName } }) }}>
-              <AccountCircleTwoToneIcon color='rose' />
+              <AccountCircleTwoToneIcon color='primary' />
             </IconButton>
           </CustomTooltipBtns>,
-          <CustomTooltipBtns key='contactbtn' type='secondary' title='Contactos'>
+          <CustomTooltipBtns key='contactbtn' type='white' title='Contactos'>
             <IconButton onClick={() => { navigate(`/clients/${selected[0]}/contacts`) }}>
-              <ContactPhoneTwoToneIcon color='secondary' />
+              <ContactPhoneTwoToneIcon sx={{ color: 'grey.700' }} />
             </IconButton>
           </CustomTooltipBtns>]}
       />

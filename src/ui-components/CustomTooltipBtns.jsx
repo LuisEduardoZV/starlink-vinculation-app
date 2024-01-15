@@ -13,6 +13,7 @@ function getColor (type, theme) {
     case 'success': return theme.palette.success.main
     case 'rose': return theme.palette.rose.main
     case 'orange': return theme.palette.orange.main
+    case 'white': return theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.grey[400]
     case 'info': default: return theme.palette.info.main
   }
 }
@@ -36,7 +37,7 @@ const CustomTooltipBtns = ({ className, children, type, ...props }) => {
               color
             },
             backgroundColor: color,
-            color: theme.palette[type].contrastText
+            color: type === 'white' ? theme.palette.mode === 'light' ? theme.palette.common.white : theme.palette.common.black : theme.palette[type].contrastText
           }
         }
       }}

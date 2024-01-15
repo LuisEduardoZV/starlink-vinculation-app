@@ -22,7 +22,7 @@ const ModalDelete = ({ open, id, handleClose, handleDelete, title, subtitle }) =
       </DialogContent>
       <DialogActions sx={{ display: 'flex', flex: 1, justifyContent: 'space-between' }}>
         <Button onClick={handleClose} variant='outlined' color='error' autoFocus>Cancelar</Button>
-        <Button onClick={() => handleDelete(id)} variant='outlined' color='info'>
+        <Button onClick={() => handleDelete(id)} variant='outlined' color='primary'>
           Aceptar y Eliminar
         </Button>
       </DialogActions>

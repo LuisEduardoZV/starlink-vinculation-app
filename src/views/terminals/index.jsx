@@ -114,7 +114,7 @@ const Terminals = () => {
         addIcon={LeakAddTwoToneIcon}
         handleSearch={handleSearch}
         btnsAvailable={false}
-        extraBtns={[<CustomTooltipBtns key='btnRefresh' type='secondary' title='Actualizar'><IconButton onClick={() => getInfo()}><RefreshTwoToneIcon color='secondary' /></IconButton></CustomTooltipBtns>]}
+        extraBtns={[<CustomTooltipBtns key='btnRefresh' type='secondary' title='Actualizar'><IconButton onClick={() => getInfo()}><RefreshTwoToneIcon sx={{ color: 'primary.dark' }} /></IconButton></CustomTooltipBtns>]}
       />
 
       <Box sx={{ display: 'flex', flex: 1, px: '10%' }}>

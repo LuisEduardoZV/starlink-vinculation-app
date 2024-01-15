@@ -21,7 +21,7 @@ const HeaderSearchBox = ({ handleOnAdd, handleSearch, Icon, title, open = true }
       <Box flex={1} justifyContent='end' display='flex'>
         <Button
           variant='contained'
-          color='info'
+          color='primary'
           size='small'
           startIcon={<CustomIcon fontSize='small' />}
           onClick={handleOnAdd}

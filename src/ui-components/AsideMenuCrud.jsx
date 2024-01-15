@@ -80,9 +80,9 @@ const AsideMenuCrud = ({ inFade, view, dataSelected, handleAdd, handleEdit, hand
                 </CustomTooltipBtns>
                 <Collapse in={!!dataSelected && !inFade && view !== 1}>
                   <Stack direction='column'>
-                    <CustomTooltipBtns key='editbtn' type={theme.palette.mode === 'light' ? 'success' : 'info'} title='Editar'>
+                    <CustomTooltipBtns key='editbtn' type='white' title='Editar'>
                       <IconButton onClick={handleEdit}>
-                        <ModeEditOutlineTwoToneIcon color={theme.palette.mode === 'light' ? 'success' : 'info'} />
+                        <ModeEditOutlineTwoToneIcon sx={{ color: 'grey.700' }} />
                       </IconButton>
                     </CustomTooltipBtns>
                     {extraBtns && (aditionalBtns)}

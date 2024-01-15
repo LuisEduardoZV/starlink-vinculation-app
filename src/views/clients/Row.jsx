@@ -41,7 +41,7 @@ const Row = ({ element, handleClick, isItemSelected, labelId, hasExtendedRow, Ro
         <TableCell align='left' sx={{ color: theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[400] }}>{element.clientEmail}</TableCell>
         <TableCell align='left' sx={{ color: theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[400] }}>{element.clientPhone}</TableCell>
         <TableCell align='left' sx={{ color: theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[400] }}>
-          <Chip label={active ? 'Activo' : 'Inactivo'} size='small' variant='outlined' clickable sx={{ color: active ? mode ? theme.palette.success.dark : theme.palette.info.main : theme.palette.error.main, borderColor: active ? mode ? theme.palette.success.dark : theme.palette.info.main : theme.palette.error.main }} />
+          <Chip label={active ? 'Activo' : 'Inactivo'} size='small' variant='outlined' clickable sx={{ color: active ? mode ? theme.palette.primary[800] : theme.palette.success.dark : theme.palette.error.main, borderColor: active ? mode ? theme.palette.primary[800] : theme.palette.success.dark : theme.palette.error.main }} />
         </TableCell>
         {hasExtendedRow && (
           <TableCell>

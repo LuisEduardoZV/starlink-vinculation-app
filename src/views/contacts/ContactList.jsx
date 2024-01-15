@@ -1,13 +1,16 @@
 import PropTypes from 'prop-types'
 
 // material-ui
-import { Avatar, Button, Grid, Tooltip, Typography } from '@mui/material'
+import { Avatar, Button, Grid, Typography } from '@mui/material'
 import { alpha, styled, useTheme } from '@mui/material/styles'
 
 // assets
 import EditNoteTwoToneIcon from '@mui/icons-material/EditNoteTwoTone'
 import PermContactCalendarTwoToneIcon from '@mui/icons-material/PermContactCalendarTwoTone'
 import PersonRemoveTwoToneIcon from '@mui/icons-material/PersonRemoveTwoTone'
+
+// project imports
+import CustomTooltipBtns from '../../ui-components/CustomTooltipBtns'
 
 // styles
 const ListWrapper = styled('div')(({ theme }) => ({
@@ -51,25 +54,25 @@ const ContactList = ({ avatar, phone, name, role, onActive, onEditClick, onDelet
             sx={{ justifyContent: 'flex-end', [theme.breakpoints.down('md')]: { justifyContent: 'flex-start' } }}
           >
             <Grid item>
-              <Tooltip placement='top' title='Mostrar'>
-                <Button variant='outlined' color='secondary' sx={{ minWidth: 32, height: 32, p: 0 }} onClick={() => onActive && onActive()}>
+              <CustomTooltipBtns title='Mostrar' type='white' placement='top'>
+                <Button variant='outlined' sx={{ minWidth: 32, height: 32, p: 0, color: 'grey.700', borderColor: 'grey.700', '&:hover': { color: 'grey.700', borderColor: 'grey.700' } }} onClick={() => onActive && onActive()}>
                   <PermContactCalendarTwoToneIcon fontSize='small' />
                 </Button>
-              </Tooltip>
+              </CustomTooltipBtns>
             </Grid>
             <Grid item>
-              <Tooltip placement='top' title='Editar'>
-                <Button variant='outlined' sx={{ minWidth: 32, height: 32, p: 0, color: theme.palette.mode === 'light' ? 'success.dark' : 'info.main', borderColor: theme.palette.mode === 'light' ? 'success.dark' : 'info.main' }} onClick={() => onEditClick && onEditClick()}>
+              <CustomTooltipBtns title='Editar' type='primary' placement='top'>
+                <Button variant='outlined' sx={{ minWidth: 32, height: 32, p: 0, color: theme.palette.mode === 'light' ? 'primary.main' : 'primary.main', borderColor: theme.palette.mode === 'light' ? 'primary.main' : 'primary.main' }} onClick={() => onEditClick && onEditClick()}>
                   <EditNoteTwoToneIcon fontSize='small' />
                 </Button>
-              </Tooltip>
+              </CustomTooltipBtns>
             </Grid>
             <Grid item>
-              <Tooltip placement='top' title='Eliminar'>
+              <CustomTooltipBtns title='Eliminar' type='error' placement='top'>
                 <Button variant='outlined' color='error' sx={{ minWidth: 32, height: 32, p: 0 }} onClick={() => onDeleteClick && onDeleteClick()}>
                   <PersonRemoveTwoToneIcon fontSize='small' />
                 </Button>
-              </Tooltip>
+              </CustomTooltipBtns>
             </Grid>
           </Grid>
         </Grid>

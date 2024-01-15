@@ -162,7 +162,7 @@ const SecondContainer = ({ inView, values, errors, touched, handleBlur, handleCh
       <Box display='flex' flexDirection='row' columnGap={3} position='relative'>
         <Box display='flex' flexDirection='column' width='65%'>
           <Typography component='div' variant='h2' color={theme.palette.mode === 'light' ? 'black' : 'white'} display='flex' gap={1} alignItems='flex-start'>
-            <Icon color='info' /> Vinculación de usuarios con las terminales
+            <Icon color='primary' /> Vinculación de usuarios con las terminales
           </Typography>
           <TransferList terminals={terminals} termSelected={terminalsAsigned} setNewTerms={setTerminalsUser} disabled={terminalsAsigned.length > 0} />
         </Box>

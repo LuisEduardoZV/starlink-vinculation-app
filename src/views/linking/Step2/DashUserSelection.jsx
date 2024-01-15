@@ -5,7 +5,7 @@ import React, { useMemo, useState } from 'react'
 import VisibilityOffTwoToneIcon from '@mui/icons-material/VisibilityOffTwoTone'
 import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone'
 import { Autocomplete, Box, Button, Chip, Collapse, Divider, Fade, IconButton, InputAdornment, TextField, Typography } from '@mui/material'
-import { alpha, useTheme } from '@mui/material/styles'
+import { alpha } from '@mui/material/styles'
 
 // project imports
 import CustomSwitch from '../../../ui-components/CustomSwitch'
@@ -14,10 +14,7 @@ import InputBase from '../../../ui-components/InputBase'
 import 'react-perfect-scrollbar/dist/css/styles.css'
 
 const DashUserSelection = React.forwardRef(({ values, errors, touched, handleBlur, handleChange, handleChangeAutocompleteInfo, handleAddUser, disabledBtns, cancelBtn, handleDeleteUser, finishBtn, users, dash, loading, handleChangeUserType }, ref) => {
-  const theme = useTheme()
-
   const { userId, dashboards, email, password, terminals } = values
-  console.log(values)
   const [showPass, setShowPass] = useState(false)
 
   const isUserNewComplete = useMemo(() => (email?.trim() !== '' && password?.trim() !== ''), [email, password])
@@ -223,8 +220,8 @@ const DashUserSelection = React.forwardRef(({ values, errors, touched, handleBlu
           <>
             {cancelBtn
               ? <Button variant='outlined' color='error' onClick={handleDeleteUser}>Eliminar</Button>
-              : <Button variant='outlined' color={theme.palette.mode === 'light' ? 'primary' : 'secondary'} disabled={!validFinish} onClick={handleAddUser}>Guardar usuario</Button>}
-            {finishBtn && <Button variant='outlined' color='info' type='submit' disabled={!validFinish}>Terminar & Vincular</Button>}
+              : <Button variant='outlined' color='primary' disabled={!validFinish} onClick={handleAddUser}>Guardar usuario</Button>}
+            {finishBtn && <Button variant='outlined' color='primary' type='submit' disabled={!validFinish}>Terminar & Vincular</Button>}
           </>
         )}
       </Box>

@@ -116,7 +116,7 @@ const RowExpanded = ({ rowExpanded, element, mode, data, handleChange }) => {
                 <Typography variant='subtitle1' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[800] : alpha(theme.palette.common.white, 0.8) }}>
                   Histórico:
                 </Typography>
-                <Chip label={element.dataHistoric ? 'Activado' : 'Desactivado'} color={element.dataHistoric ? 'primary' : 'error'} clickable size='small' variant='outlined' />
+                <Chip label={element.dataHistoric ? 'Activado' : 'Desactivado'} sx={{ color: (theme) => (element.dataHistoric ? theme.palette.mode === 'light' ? theme.palette.primary[800] : theme.palette.success.dark : theme.palette.error.main), borderColor: (theme) => (element.dataHistoric ? theme.palette.mode === 'light' ? theme.palette.primary[800] : theme.palette.success.dark : theme.palette.error.main) }} clickable size='small' variant='outlined' />
               </Box>
             </Box>
           </Box>

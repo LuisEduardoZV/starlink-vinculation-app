@@ -47,14 +47,14 @@ const CustomListItemButtonInfo = styled(ListItemButton)(({ theme }) => ({
   textAlign: 'left',
   transition: 'all 0.3s ease-in-out',
   '&:hover': {
-    backgroundColor: theme.palette.mode === 'light' ? alpha(theme.palette.success.light, 0.01) : alpha(theme.palette.info.light, 0.01)
+    backgroundColor: theme.palette.mode === 'light' ? alpha(theme.palette.common.black, 0.05) : alpha(theme.palette.common.white, 0.05)
   },
   '&:hover .MuiListItemText-primary': {
-    color: theme.palette.mode === 'light' ? theme.palette.success.dark : theme.palette.info.main
+    color: theme.palette.grey[600]
   },
   '&.Mui-selected': {
-    backgroundColor: theme.palette.mode === 'light' ? alpha(theme.palette.success.dark, 0.2) : alpha(theme.palette.info.dark, 0.2),
-    borderColor: theme.palette.mode === 'light' ? theme.palette.success.dark : theme.palette.info.main,
+    backgroundColor: alpha(theme.palette.grey[800], 0.3),
+    borderColor: theme.palette.grey[700],
     backdropFilter: 'blur(60px)'
   },
   '&.Mui-selected .MuiListItemText-primary': {
@@ -66,7 +66,8 @@ const CustomListItemButtonInfo = styled(ListItemButton)(({ theme }) => ({
     textAlign: 'right'
   },
   '&.Mui-selected:hover': {
-    backgroundColor: theme.palette.mode === 'light' ? alpha(theme.palette.success.main, 0.2) : alpha(theme.palette.info.main, 0.06)
+    backgroundColor: alpha(theme.palette.common.black, 0.06),
+    borderColor: theme.palette.grey[800]
   }
 }))
 

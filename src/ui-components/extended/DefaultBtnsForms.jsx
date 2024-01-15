@@ -9,7 +9,7 @@ const DefaultBtnsForms = ({ okBtnLabel = 'Guardar', cancelBtnLabel = 'Cancelar',
       {!noCancel && (
         <Button color='error' variant='outlined' onClick={handleCancel} sx={{ alignSelf: 'flex-start' }}>{cancelBtnLabel}</Button>
       )}
-      <Button color='info' variant='outlined' type='submit' disabled={isSubmitting} sx={{ alignSelf: 'flex-start' }}>
+      <Button color='primary' variant='outlined' type='submit' disabled={isSubmitting} sx={{ alignSelf: 'flex-start' }}>
         {okBtnLabel}
       </Button>
     </Box>

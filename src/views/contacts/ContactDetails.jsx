@@ -51,8 +51,8 @@ const ContactDetails = ({ user, onClose, onEditClick, onDelete, ...others }) => 
                     variant='outlined'
                     clickable
                     sx={{
-                      color: theme.palette.mode === 'light' ? theme.palette.info.main : theme.palette.primary.main,
-                      borderColor: theme.palette.mode === 'light' ? theme.palette.info.main : theme.palette.primary.main
+                      color: theme.palette.mode === 'light' ? theme.palette.info.main : theme.palette.primary.dark,
+                      borderColor: theme.palette.mode === 'light' ? theme.palette.info.main : theme.palette.primary.dark
                     }}
                   />
                 </Grid>
@@ -68,7 +68,7 @@ const ContactDetails = ({ user, onClose, onEditClick, onDelete, ...others }) => 
         <Grid item xs={12}>
           <Grid container spacing={1}>
             <Grid item xs={6}>
-              <Button variant='outlined' fullWidth startIcon={<EditNoteTwoToneIcon />} onClick={onEditClick} sx={{ color: theme.palette.mode === 'light' ? 'success.dark' : 'info.main', borderColor: theme.palette.mode === 'light' ? 'success.dark' : 'info.main' }}>
+              <Button variant='outlined' fullWidth startIcon={<EditNoteTwoToneIcon />} onClick={onEditClick} sx={{ color: 'primary.main', borderColor: 'primary.main' }}>
                 Editar
               </Button>
             </Grid>
@@ -85,7 +85,7 @@ const ContactDetails = ({ user, onClose, onEditClick, onDelete, ...others }) => 
         <Grid item xs={12}>
           <Grid container spacing={1}>
             <Grid item>
-              <BadgeTwoToneIcon sx={{ verticalAlign: 'sub', fontSize: '1.125rem', mr: 0.625 }} color={theme.palette.mode === 'light' ? 'secondary' : 'white'} />
+              <BadgeTwoToneIcon sx={{ verticalAlign: 'sub', fontSize: '1.125rem', mr: 0.625, color: theme.palette.mode === 'light' ? 'primary.dark' : 'white' }} />
             </Grid>
             <Grid item xs zeroMinWidth>
               <Typography variant='body2' color={theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[500]}>{user.contactName}</Typography>
@@ -95,7 +95,7 @@ const ContactDetails = ({ user, onClose, onEditClick, onDelete, ...others }) => 
         <Grid item xs={12}>
           <Grid container spacing={1}>
             <Grid item>
-              <WorkTwoToneIcon sx={{ verticalAlign: 'sub', fontSize: '1.125rem', mr: 0.625 }} color={theme.palette.mode === 'light' ? 'secondary' : 'white'} />
+              <WorkTwoToneIcon sx={{ verticalAlign: 'sub', fontSize: '1.125rem', mr: 0.625, color: theme.palette.mode === 'light' ? 'primary.dark' : 'white' }} />
             </Grid>
             <Grid item xs zeroMinWidth>
               <Typography variant='body2' color={theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[500]}>{user.contactPosition}</Typography>
@@ -105,7 +105,7 @@ const ContactDetails = ({ user, onClose, onEditClick, onDelete, ...others }) => 
         <Grid item xs={12}>
           <Grid container spacing={1}>
             <Grid item>
-              <CallTwoToneIcon sx={{ verticalAlign: 'sub', fontSize: '1.125rem', mr: 0.625 }} color={theme.palette.mode === 'light' ? 'secondary' : 'white'} />
+              <CallTwoToneIcon sx={{ verticalAlign: 'sub', fontSize: '1.125rem', mr: 0.625, color: theme.palette.mode === 'light' ? 'primary.dark' : 'white' }} />
             </Grid>
             <Grid item xs zeroMinWidth>
               <Typography variant='body2' color={theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[500]} sx={{ mb: 0.625 }}>
@@ -120,7 +120,7 @@ const ContactDetails = ({ user, onClose, onEditClick, onDelete, ...others }) => 
         <Grid item xs={12}>
           <Grid container spacing={1}>
             <Grid item>
-              <InfoTwoToneIcon sx={{ verticalAlign: 'sub', fontSize: '1.125rem', mr: 0.625 }} color={theme.palette.mode === 'light' ? 'secondary' : 'white'} />
+              <InfoTwoToneIcon sx={{ verticalAlign: 'sub', fontSize: '1.125rem', mr: 0.625, color: theme.palette.mode === 'light' ? 'primary.dark' : 'white' }} />
             </Grid>
             <Grid item xs zeroMinWidth>
               <Typography variant='body2' color={theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[500]} sx={{ mb: 0.625 }}>

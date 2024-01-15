@@ -136,7 +136,7 @@ const TermianlsList = ({ values, handleChange, inView, viewType }) => {
     >
       <Box display='flex' flexDirection='column' rowGap={3} position='relative'>
         <Typography component='div' variant='h2' display='flex' gap={1} alignItems='flex-start' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white }}>
-          <Icon sx={{ color: theme.palette.mode === 'light' ? 'success.dark' : 'info.main' }} /> Selección de 1 o más terminales a vincular *
+          <Icon sx={{ color: 'grey.700' }} /> Selección de 1 o más terminales a vincular *
         </Typography>
         <Box>
           <InputSearch handleSearch={handleSearch} />
@@ -158,7 +158,7 @@ const TermianlsList = ({ values, handleChange, inView, viewType }) => {
                         sx={{ maxWidth: '31%', width: '100%', minWidth: '31%' }}
                       >
                         <ListItemText
-                          primary={terminalKitNumber} secondary={serviceLineNumber} color='info' sx={{
+                          primary={terminalKitNumber} secondary={serviceLineNumber} color='secondary' sx={{
                             '& .MuiTypography-root': {
                               color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.grey[400]
                             },

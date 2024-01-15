@@ -23,9 +23,9 @@ const AsideBackButton = ({ inFade, handleBack }) => {
       <Box position='relative' width='auto'>
         <Box sx={{ position: 'fixed', color: 'white', left: '4%', bgcolor: (theme) => alpha(theme.palette.background.paper, 0.7), p: 1, backdropFilter: 'blur(10px)', ...extraTheme }}>
           <Stack direction='column'>
-            <CustomTooltipBtns key='backbtn' type={handleBack ? 'error' : 'info'} title='Regresar'>
+            <CustomTooltipBtns key='backbtn' type={handleBack ? 'error' : 'primary'} title='Regresar'>
               <IconButton onClick={() => { handleBack ? handleBack() : navigate(-1) }}>
-                <ReplyAllTwoToneIcon color={handleBack ? 'error' : 'info'} />
+                <ReplyAllTwoToneIcon color={handleBack ? 'error' : 'primary'} />
               </IconButton>
             </CustomTooltipBtns>
 

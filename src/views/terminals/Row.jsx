@@ -118,7 +118,7 @@ const Row = ({ element, handleClick, isItemSelected, labelId, hasExtendedRow, ha
                       handleClick(e, element.terminalId)
                     }}
                   >
-                    <Icon fontSize='small' sx={{ color: (theme) => mode ? theme.palette.mode === 'light' ? 'primary.main' : 'primary.dark' : theme.palette.mode === 'light' ? 'success.dark' : 'info.main' }} />
+                    <Icon fontSize='small' sx={{ color: (theme) => mode ? theme.palette.mode === 'light' ? 'primary.dark' : 'primary.800' : 'primary.main' }} />
                   </IconButton>
                 </>
               )}
@@ -129,7 +129,7 @@ const Row = ({ element, handleClick, isItemSelected, labelId, hasExtendedRow, ha
                       setMode(0)
                     }}
                   >
-                    <CancelTwoToneIcon fontSize='small' sx={{ color: (theme) => mode ? theme.palette.mode === 'light' ? 'error.main' : 'error.dark' : theme.palette.mode === 'light' ? 'success.dark' : 'info.main' }} />
+                    <CancelTwoToneIcon fontSize='small' sx={{ color: (theme) => mode ? theme.palette.mode === 'light' ? 'error.main' : 'error.dark' : 'primary.main' }} />
                   </IconButton>
                   )
                 : (
