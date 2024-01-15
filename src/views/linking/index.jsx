@@ -73,11 +73,12 @@ const Linking = () => {
                 user.userId = 0
                 const newUserInfo = { terminals: user.terminals, dashboards: user.dashboards, userId: null }
                 const newUser = await apiCallWithBody({ url: `${BASE_URL_API}/Users`, method: 'POST', body: JSON.stringify({ ...user, fullname: user.fullName, isAdmin: user.isAdmin ? 1 : 0 }) })
+                console.log(newUser)
                 if (!newUser) throw new Error('Hubo un error al crear el nuveo usuario en Tan-Graph')
                 const userGrafana = await apiCallWithBody({
                   url: `${BASE_URL_API}/AltaUserGraf?type=1`,
                   body: JSON.stringify({
-                    name: `NewUser-For-${'T_' + user.terminals.map(({ terminalId }, index) => (index === user.terminals.length - 1) ? (`${terminalId}`) : (`${terminalId}-`)).join('T_')}`,
+                    name: user.fullName,
                     email: user.email,
                     login: user.email,
                     password: user.password,
@@ -85,10 +86,17 @@ const Linking = () => {
                   })
                 })
                 if (!userGrafana) throw new Error('Hubo un error al crear el usuario en Grafana, contacte con el administrador')
-                newUserInfo.userId = newUser.userId
-                usersInfo.push(newUserInfo)
+                const newUserId = await newUser.find(({ email, userId }) => (user.email === email && userId))
+                if (newUserId && newUserId.userId) {
+                  newUserInfo.userId = newUserId.userId
+                  usersInfo.push(newUserInfo)
+                } else {
+                  throw new Error('Error al crear el usuario')
+                }
               }
             }
+
+            console.log(usersInfo)
 
             const globalData = []
             for (let i = 0; i < usersInfo.length; i++) {
