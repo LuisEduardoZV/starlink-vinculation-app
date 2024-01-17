@@ -6,10 +6,10 @@ import React from 'react'
 import { Box, Chip, Collapse, TableCell, TableRow, Typography } from '@mui/material'
 import { alpha } from '@mui/material/styles'
 
+import CustomSwitch from '../../ui-components/CustomSwitch'
 import InputBase from '../../ui-components/InputBase'
-// 19.2345 -93.7653
 
-const RowExpanded = ({ rowExpanded, element, mode, data, handleChange }) => {
+const RowExpanded = ({ rowExpanded, element, mode, data, handleChange, handleChangeSwitch }) => {
   return (
     <TableRow
       sx={{
@@ -61,8 +61,8 @@ const RowExpanded = ({ rowExpanded, element, mode, data, handleChange }) => {
                 justifyContent: 'space-around'
               }}
             >
-              <Box display='flex' gap={1} alignItems='center'>
-                {mode
+              <Box display='flex' flex={1} gap={1} alignItems='center'>
+                {mode && data.isMobile
                   ? (<InputBase
                       name='terminalLatitude'
                       value={data.terminalLatitude}
@@ -83,9 +83,9 @@ const RowExpanded = ({ rowExpanded, element, mode, data, handleChange }) => {
                     </>
                     )}
               </Box>
-              <Box display='flex' gap={1} alignItems='center'>
+              <Box display='flex' flex={1} gap={1} alignItems='center'>
 
-                {mode
+                {mode && data.isMobile
                   ? (<InputBase
                       name='terminalLongitude'
                       value={data.terminalLongitude}
@@ -106,17 +106,39 @@ const RowExpanded = ({ rowExpanded, element, mode, data, handleChange }) => {
                     </>
                     )}
               </Box>
-              <Box display='flex' gap={1} alignItems='center'>
+              <Box display='flex' flex={2} gap={1} alignItems='center'>
                 <Typography variant='subtitle1' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[800] : alpha(theme.palette.common.white, 0.8) }}>
                   Número de la línea de servicio:
                 </Typography>
                 <Typography>{element.serviceLineNumber}</Typography>
               </Box>
-              <Box display='flex' gap={1} alignItems='center'>
-                <Typography variant='subtitle1' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[800] : alpha(theme.palette.common.white, 0.8) }}>
-                  Histórico:
-                </Typography>
-                <Chip label={element.dataHistoric ? 'Activado' : 'Desactivado'} sx={{ color: (theme) => (element.dataHistoric ? theme.palette.mode === 'light' ? theme.palette.primary[800] : theme.palette.success.dark : theme.palette.error.main), borderColor: (theme) => (element.dataHistoric ? theme.palette.mode === 'light' ? theme.palette.primary[800] : theme.palette.success.dark : theme.palette.error.main) }} clickable size='small' variant='outlined' />
+              {!mode && (
+                <Box display='flex' flex={1} gap={1} alignItems='center'>
+                  <Typography variant='subtitle1' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[800] : alpha(theme.palette.common.white, 0.8) }}>
+                    Histórico:
+                  </Typography>
+                  <Chip label={element.dataHistoric ? 'Activado' : 'Desactivado'} sx={{ color: (theme) => (element.dataHistoric ? theme.palette.mode === 'light' ? theme.palette.primary[800] : theme.palette.success.dark : theme.palette.error.main), borderColor: (theme) => (element.dataHistoric ? theme.palette.mode === 'light' ? theme.palette.primary[800] : theme.palette.success.dark : theme.palette.error.main) }} clickable size='small' variant='outlined' />
+                </Box>
+              )}
+              <Box display='flex' flex={1} gap={1} alignItems='center' position='relative' height='max-content'>
+                {mode
+                  ? (<CustomSwitch
+                      value={Boolean(data.isMobile)}
+                      handleChange={handleChangeSwitch}
+                      name='isMobile'
+                      label='Terminal movible'
+                      option1='Desactivado'
+                      option2='Activado'
+                      sxLabel={{ top: 0, left: 0 }}
+                     />)
+                  : (
+                    <>
+                      <Typography variant='subtitle1' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[800] : alpha(theme.palette.common.white, 0.8) }}>
+                        Móvil:
+                      </Typography>
+                      <Chip label={element.isMobile ? 'Activado' : 'Desactivado'} sx={{ color: (theme) => (element.isMobile ? theme.palette.mode === 'light' ? theme.palette.primary[800] : theme.palette.success.dark : theme.palette.error.main), borderColor: (theme) => (element.isMobile ? theme.palette.mode === 'light' ? theme.palette.primary[800] : theme.palette.success.dark : theme.palette.error.main) }} clickable size='small' variant='outlined' />
+                    </>
+                    )}
               </Box>
             </Box>
           </Box>
@@ -131,6 +153,7 @@ RowExpanded.propTypes = {
   element: PropTypes.object,
   data: PropTypes.object,
   handleChange: PropTypes.func,
+  handleChangeSwitch: PropTypes.func,
   mode: PropTypes.number
 }
 

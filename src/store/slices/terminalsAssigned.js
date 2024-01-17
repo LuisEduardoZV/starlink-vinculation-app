@@ -57,14 +57,14 @@ function convertToTreeViewData (jsonArray) {
   let userGroup = null
   let childrenGroup = null
 
-  jsonArray.forEach(({ fullName, dashboardName, terminalSiteName, clientId, assignId, clientName, terminalId, terminalFriendlyName }, index) => {
+  jsonArray.forEach(({ fullName, dashboardName, terminalSiteName, clientId, assignId, clientName, terminalId, terminalFriendlyName, email, terminalLineOfService }, index) => {
     if (clientId !== currentClientId && currentClientId !== null) result.push(clientGroup)
     if (clientId !== currentClientId) {
       currentClientId = clientId
 
       clientGroup = {
         key: currentClientId,
-        data: { fullName: '', dashboardName: '', terminalSiteName: '', clientId: '', assignId: '', clientName, terminalId: '', terminalFriendlyName: '' },
+        data: { fullName: '', dashboardName: '', terminalSiteName: '', clientId: '', assignId: '', clientName, terminalId: '', terminalFriendlyName: '', terminalLineOfService: '' },
         children: []
       }
     }
@@ -73,19 +73,19 @@ function convertToTreeViewData (jsonArray) {
       currentUser = fullName
       childrenGroup = [{
         key: fullName + assignId + terminalId + clientId,
-        data: { fullName: '', dashboardName, terminalSiteName, clientId, assignId, clientName: '', terminalId, terminalFriendlyName }
+        data: { fullName: '', dashboardName, terminalSiteName, clientId, assignId, clientName: '', terminalId, terminalFriendlyName, terminalLineOfService }
       }]
       userGroup = {
         key: fullName + assignId + terminalId,
-        data: { fullName, dashboardName, terminalSiteName, clientId, assignId, clientName: '', terminalId, terminalFriendlyName }
+        data: { fullName: `${fullName} (${email})`, dashboardName, terminalSiteName, clientId, assignId, clientName: '', terminalId, terminalFriendlyName, terminalLineOfService }
       }
       clientGroup.children.push(userGroup)
     } else {
-      userGroup.data = { fullName }
+      userGroup.data = { fullName: `${fullName} (${email})` }
       userGroup.children = childrenGroup
       userGroup.children.push({
         key: fullName + assignId + terminalId + clientId,
-        data: { fullName: '', dashboardName, terminalSiteName, clientId, assignId, clientName: '', terminalId, terminalFriendlyName }
+        data: { fullName: '', dashboardName, terminalSiteName, clientId, assignId, clientName: '', terminalId, terminalFriendlyName, terminalLineOfService }
       })
     }
   })

@@ -69,7 +69,7 @@ const HeaderSection = () => {
       ...extraTheme
     }}
     >
-      <Typography flex={1} variant='h2' sx={{ textShadow: theme.palette.mode === 'light' ? `2px 2px 1px ${theme.palette.grey[400]}` : `1px 2px 1px ${theme.palette.primary[800]}`, color: theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white }}>Tan-Graph</Typography>
+      <Typography flex={2} variant='h3' sx={{ textShadow: theme.palette.mode === 'light' ? `2px 2px 1px ${theme.palette.grey[400]}` : `1px 2px 1px ${theme.palette.primary[800]}`, color: theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white, width: '100%' }}>BackOffice Tangerine Metrics</Typography>
       <Box flex={5} display='flex' justifyContent='center'>
         <Tabs
           value={tab}
@@ -111,12 +111,12 @@ const HeaderSection = () => {
           <LinkTab
             label='Vincular' href='/linking' icon={<InsertLinkIcon fontSize='small' sx={{ color: tab === (3) ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />}
           />
-          <LinkTab
-            label='Reportes' href='/reports' icon={<SummarizeTwoToneIcon fontSize='small' sx={{ color: tab === (4) ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />} sx={{ borderLeft: `solid 1px ${theme.palette.mode === 'light' ? theme.palette.grey[400] : theme.palette.grey[400]}` }}
-          />
           {user?.user?.isPowerUser && <LinkTab
-            label={<Typography whiteSpace='break-spaces' display='flex'>Terminales Asignadas</Typography>} href='/terminalsAssigned' icon={<CloudDoneTwoToneIcon fontSize='small' sx={{ color: tab === 5 ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />}
+            label='Terminales Asignadas' href='/terminalsAssigned' icon={<CloudDoneTwoToneIcon fontSize='small' sx={{ color: tab === 4 ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />} sx={{ borderLeft: `solid 1px ${theme.palette.mode === 'light' ? theme.palette.grey[400] : theme.palette.grey[400]}` }}
                                       />}
+          <LinkTab
+            label='Reportes' href='/reports' icon={<SummarizeTwoToneIcon fontSize='small' sx={{ color: tab === (user?.user?.isPowerUser ? 5 : 4) ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />}
+          />
         </Tabs>
       </Box>
       <Box flex={1} sx={{ display: 'flex', justifyContent: 'flex-end' }}>

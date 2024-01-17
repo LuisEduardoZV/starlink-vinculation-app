@@ -32,6 +32,7 @@ const TerminalsAssigned = () => {
 
   const { terminals, error, loading } = useSelector((state) => state.terminalsAssigned)
 
+  const [render, setRender] = useState(false)
   const [data, setData] = useState(terminals)
 
   const [open, setOpen] = useState(false)
@@ -74,6 +75,7 @@ const TerminalsAssigned = () => {
     const toastId = toast.loading('Cargando...')
     try {
       const data = await apiCall({ url: `${BASE_URL_API}/Assigns/${selected[0]}`, method: 'DELETE' })
+      setRender((prev) => !prev)
       if (data) toast.success('Exito al eliminar la vinculación', { id: toastId })
     } catch (error) {
       console.log(error)
@@ -94,7 +96,7 @@ const TerminalsAssigned = () => {
         dispatch(getAllTerminalsAssigned())
       }
     })()
-  }, [state])
+  }, [state, render])
 
   useEffect(() => {
     if (error) {
@@ -111,13 +113,15 @@ const TerminalsAssigned = () => {
         addIcon={LeakAddTwoToneIcon}
         handleSearch={handleSearch}
         btnsAvailable={false}
-        extraBtns={[
-          <CustomTooltipBtns key='backbtn' type='error' title='Regresar'>
-            <IconButton onClick={() => { navigate(-1) }}>
-              <ReplyAllTwoToneIcon color='error' />
-            </IconButton>
-          </CustomTooltipBtns>
-        ]}
+        {...(state && state.userId) && {
+          extraBtns: [
+            <CustomTooltipBtns key='backbtn' type='error' title='Regresar'>
+              <IconButton onClick={() => { navigate(-1) }}>
+                <ReplyAllTwoToneIcon color='error' />
+              </IconButton>
+            </CustomTooltipBtns>
+          ]
+        }}
       />
 
       <Box sx={{ display: 'flex', flex: 1, px: '10%' }}>

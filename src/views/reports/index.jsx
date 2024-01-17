@@ -1,3 +1,4 @@
+/* eslint-disable new-cap */
 import { useEffect, useState } from 'react'
 
 // third imports
@@ -5,32 +6,64 @@ import dayjs from 'dayjs'
 
 // mui imports
 import TableChartTwoToneIcon from '@mui/icons-material/TableChartTwoTone'
-import { Autocomplete, Box, Button, Collapse, Divider, IconButton, TextField, Typography, createFilterOptions } from '@mui/material'
+import { Autocomplete, Box, Button, Collapse, Divider, IconButton, Tab, Tabs, TextField, Typography, createFilterOptions } from '@mui/material'
 import { alpha, useTheme } from '@mui/material/styles'
 import { BarChart, axisClasses, barElementClasses } from '@mui/x-charts'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { BarElement, CategoryScale, Chart, LinearScale } from 'chart.js'
+import html2canvas from 'html2canvas'
+import { jsPDF } from 'jspdf'
+import { Bar } from 'react-chartjs-2'
 
 // project imports
 import LeaderboardTwoToneIcon from '@mui/icons-material/LeaderboardTwoTone'
 import { BASE_URL_API } from '../../config'
 import { apiCall } from '../../contexts/api'
+import useAuth from '../../hooks/useAuth'
 import CustomTooltipBtns from '../../ui-components/CustomTooltipBtns'
+import LoadingInfo from '../../ui-components/LoadingInfo'
 import MainMirrorCard from '../../ui-components/MainMirrorCard'
 import NoInfoOverlay from '../../ui-components/NoInfoOverlay'
+import CustomTabPanel from '../../ui-components/extended/CustomTabPanel'
+
+// services
+import { useDispatch, useSelector } from '../../store'
+import { getAllClients } from '../../store/slices/clients'
+import { getAllTerminals, getTerminalsByClient } from '../../store/slices/terminals'
+
+function a11yProps (index) {
+  return {
+    id: `simple-tab-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`
+  }
+}
+
+Chart.register(CategoryScale, LinearScale, BarElement)
 
 const Reportes = () => {
+  const { user } = useAuth()
   const theme = useTheme()
+  const dispatch = useDispatch()
+
+  const { list: clients } = useSelector((state) => state.clients)
+  const { terminals, loading } = useSelector((state) => state.terminals)
 
   const [typeReport, setTypeReport] = useState(0)
-  const [terminals, setTerminals] = useState([])
   const [terminalSelected, setTerminalSelected] = useState(null)
+  const [clientSelected, setClientSelected] = useState(null)
 
   const [firstDate, setFirstDate] = useState(dayjs(new Date()))
   const [secondDate, setSecondDate] = useState(dayjs(new Date()))
 
   const [data, setData] = useState(null)
   const [mainData, setMainData] = useState(null)
+
+  const [tab, setTab] = useState(1)
+
+  const handleChangeTab = (event, newValue) => {
+    setTab(newValue)
+  }
 
   const handleSetTypeReport = (id) => () => {
     setTypeReport(id)
@@ -41,9 +74,33 @@ const Reportes = () => {
     stringify: (option) => (option.terminalLineOfService || option.terminalKitNumber)
   })
 
-  async function exportMultipleChartsToPdf () {
-    const elements = document.getElementsByClassName('custom-chart')
-    console.log(elements)
+  const filterOptionsClients = createFilterOptions({
+    matchFrom: 'any',
+    stringify: (option) => (option.clienName || option.clientEmail)
+  })
+
+  const div2PDF = (e) => {
+    const but = e.target
+    but.style.display = 'none'
+    const input = window.document.getElementsByClassName('div2PDF')[0]
+    input.style.opacity = 1
+
+    html2canvas(input).then(canvas => {
+      const img = canvas.toDataURL('image/png')
+      input.style.opacity = 0
+      const pdf = new jsPDF('l', 'pt')
+      pdf.text(`Consumo de datos de la terminal: ${terminalSelected?.terminalKitNumber}`, 20, 20)
+      pdf.addImage(
+        img,
+        'png',
+        0,
+        30,
+        842,
+        500
+      )
+      pdf.save(`ConsumoDatos_${terminalSelected?.terminalKitNumber}.pdf`)
+      but.style.display = 'block'
+    })
   }
 
   const requestData = async () => {
@@ -51,16 +108,22 @@ const Reportes = () => {
       const res = await apiCall({ url: `${BASE_URL_API}/getGrafic?terminal=${terminalSelected?.terminalLineOfService}&fecha1=${dayjs(firstDate).format('YYYY-MM-DD')}&fecha2=${dayjs(secondDate).format('YYYY-MM-DD')}` })
       const labels = []
       const data = []
-      const general = []
       for (let i = 0; i < res.length; i++) {
         const item = res[i]
         labels.push(item.substring(item.indexOf(':') + 1, item.indexOf(',')))
         data.push(Number(item.substring(item.lastIndexOf(':') + 1, item.indexOf('}'))))
-        general.push({ Fecha: item.substring(item.indexOf(':') + 1, item.indexOf(',')), valor: Number(item.substring(item.lastIndexOf(':') + 1, item.indexOf('}'))) })
       }
       setData({ labels, data })
-      console.log({ labels, data })
-      setMainData(general)
+      setMainData({
+        labels,
+        datasets: [
+          {
+            label: 'Terminal ID',
+            data,
+            backgroundColor: alpha(theme.palette.primary.main, 0.4)
+          }
+        ]
+      })
     } catch (error) {
       console.log(error)
     }
@@ -68,14 +131,21 @@ const Reportes = () => {
 
   useEffect(() => {
     (async () => {
-      try {
-        const res = await apiCall({ url: `${BASE_URL_API}/Terminals` })
-        setTerminals(res)
-      } catch (error) {
-        console.log(error)
-      }
+      dispatch(getAllClients())
     })()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    (async () => {
+      if ((clientSelected && clientSelected.clientId) || (user && user.user && !(user.user.isPowerUser))) {
+        const id = !(user.user.isPowerUser) ? user.user.clientId : clientSelected.clientId
+        dispatch(getTerminalsByClient(id))
+        setTerminalSelected(null)
+      } else dispatch(getAllTerminals())
+    })()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [clientSelected, user])
 
   return (
     <Box width='100%' px={8} display='flex' maxHeight='100vh' height='75vh' position='relative' gap={7}>
@@ -105,141 +175,300 @@ const Reportes = () => {
         </Box>
       </MainMirrorCard>
       <MainMirrorCard sx={{ height: '100%', display: 'flex', flexDirection: 'column', gap: 2 }}>
-        <Box width='100%' display='flex' justifyContent='space-between' alignItems='center' gap={2}>
-          <Autocomplete
-            disablePortal
-            fullWidth
-            filterOptions={filterOptions}
-            size='small'
-            id='auto-combo-users'
-            options={terminals}
-            value={terminalSelected}
-            onChange={(e, nue) => setTerminalSelected(nue)}
-            getOptionLabel={(option) => option.terminalKitNumber}
-            isOptionEqualToValue={(a, b) => (a.terminalId === b.terminalId)}
-            renderOption={(props, option) => (
-              <Box key={option.terminalLineOfService} component='li' sx={{ width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'start' }} {...props}>
-                <Typography variant='body2' textAlign='start' width='100%' sx={{ color: (theme) => theme.palette.mode === 'light' ? 'grey.800' : 'grey.400' }}>{option.terminalKitNumber}</Typography>
-                <Typography variant='subtitle2' textAlign='start' width='100%' sx={{ color: (theme) => theme.palette.mode === 'light' ? 'primary.dark' : 'grey.700' }}>{option.terminalLineOfService}</Typography>
+        {loading
+          ? <LoadingInfo />
+          : (
+            <>
+              <Box width='100%' display='flex' justifyContent='space-between' alignItems='center' gap={2}>
+                {user?.user?.isPowerUser
+                  ? (
+                    <Box flex={1}>
+                      <Tabs value={tab} onChange={handleChangeTab}>
+                        <Tab label='Seleccionar cliente' {...a11yProps(0)} />
+                        <Tab label='Seleccionar terminal' {...a11yProps(1)} />
+                      </Tabs>
+                      <CustomTabPanel value={tab} index={0} style={{ width: '100%', marginTop: 15 }}>
+                        <Autocomplete
+                          disablePortal
+                          fullWidth
+                          filterOptions={filterOptionsClients}
+                          size='small'
+                          id='auto-combo-users'
+                          options={clients}
+                          value={clientSelected}
+                          onChange={(e, nue) => setClientSelected(nue)}
+                          getOptionLabel={(option) => option.clientName}
+                          isOptionEqualToValue={(a, b) => (a.clientId === b.clientId)}
+                          renderOption={(props, option) => (
+                            <Box key={option.clientId} component='li' sx={{ width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'start' }} {...props}>
+                              <Typography variant='body2' textAlign='start' width='100%' sx={{ color: (theme) => theme.palette.mode === 'light' ? 'grey.800' : 'grey.400' }}>{option.clientName}</Typography>
+                              <Typography variant='subtitle2' textAlign='start' width='100%' sx={{ color: (theme) => theme.palette.mode === 'light' ? 'primary.dark' : 'grey.700' }}>{option.clientEmail}</Typography>
+                            </Box>
+                          )}
+                          renderInput={(params) => <TextField
+                            {...params}
+                            label='Seleccione un cliente'
+                            sx={{
+                              '& .MuiButtonBase-root': {
+                                color: (theme) => theme.palette.primary.main
+                              },
+                              '& .MuiChip-root': {
+                                color: 'black',
+                                bgcolor: (theme) => theme.palette.primary.main
+                              },
+                              '& .MuiChip-root.Mui-disabled': {
+                                color: 'black',
+                                bgcolor: (theme) => theme.palette.primary[800]
+                              },
+                              '& .MuiButtonBase-root.Mui-disabled': {
+                                color: (theme) => theme.palette.primary[800]
+                              },
+                              '.Mui-disabled': {
+                                bgcolor: (theme) => alpha(theme.palette.grey[600], 1)
+                              }
+                            }}
+                                                   />}
+                          sx={{
+                            maxWidth: '100%',
+                            bgcolor: (theme) => alpha(theme.palette.background.paper, 1),
+                            color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white,
+                            '.Mui-disabled': {
+                              bgcolor: (theme) => alpha(theme.palette.grey[600], 1),
+                              color: (theme) => theme.palette.grey[700]
+                            },
+                            '& .MuiInputBase-input, & .MuiInputBase-root': {
+                              bgcolor: (theme) => alpha(theme.palette.background.paper, 1),
+                              color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white
+                            }
+                          }}
+                        />
+
+                      </CustomTabPanel>
+                      <CustomTabPanel value={tab} index={1} style={{ width: '100%', marginTop: 15 }}>
+                        <Autocomplete
+                          disablePortal
+                          fullWidth
+                          filterOptions={filterOptions}
+                          size='small'
+                          id='auto-combo-users'
+                          options={terminals}
+                          value={terminalSelected}
+                          onChange={(e, nue) => setTerminalSelected(nue)}
+                          getOptionLabel={(option) => option.terminalKitNumber}
+                          isOptionEqualToValue={(a, b) => (a.terminalId === b.terminalId)}
+                          renderOption={(props, option) => (
+                            <Box key={option.terminalLineOfService} component='li' sx={{ width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'start' }} {...props}>
+                              <Typography variant='body2' textAlign='start' width='100%' sx={{ color: (theme) => theme.palette.mode === 'light' ? 'grey.800' : 'grey.400' }}>{option.terminalKitNumber}</Typography>
+                              <Typography variant='subtitle2' textAlign='start' width='100%' sx={{ color: (theme) => theme.palette.mode === 'light' ? 'primary.dark' : 'grey.700' }}>{option.terminalLineOfService}</Typography>
+                            </Box>
+                          )}
+                          renderInput={(params) => <TextField
+                            {...params}
+                            label='Seleccione una terminal'
+                            sx={{
+                              '& .MuiButtonBase-root': {
+                                color: (theme) => theme.palette.primary.main
+                              },
+                              '& .MuiChip-root': {
+                                color: 'black',
+                                bgcolor: (theme) => theme.palette.primary.main
+                              },
+                              '& .MuiChip-root.Mui-disabled': {
+                                color: 'black',
+                                bgcolor: (theme) => theme.palette.primary[800]
+                              },
+                              '& .MuiButtonBase-root.Mui-disabled': {
+                                color: (theme) => theme.palette.primary[800]
+                              },
+                              '.Mui-disabled': {
+                                bgcolor: (theme) => alpha(theme.palette.grey[600], 1)
+                              }
+                            }}
+                                                   />}
+                          sx={{
+                            maxWidth: '100%',
+                            bgcolor: (theme) => alpha(theme.palette.background.paper, 1),
+                            color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white,
+                            '.Mui-disabled': {
+                              bgcolor: (theme) => alpha(theme.palette.grey[600], 1),
+                              color: (theme) => theme.palette.grey[700]
+                            },
+                            '& .MuiInputBase-input, & .MuiInputBase-root': {
+                              bgcolor: (theme) => alpha(theme.palette.background.paper, 1),
+                              color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white
+                            }
+                          }}
+                        />
+                      </CustomTabPanel>
+                    </Box>
+                    )
+                  : (
+                    <Box flex={1}>
+                      <Autocomplete
+                        disablePortal
+                        filterOptions={filterOptions}
+                        size='small'
+                        id='auto-combo-users'
+                        options={terminals}
+                        value={terminalSelected}
+                        onChange={(e, nue) => setTerminalSelected(nue)}
+                        getOptionLabel={(option) => option.terminalKitNumber}
+                        isOptionEqualToValue={(a, b) => (a.terminalId === b.terminalId)}
+                        renderOption={(props, option) => (
+                          <Box key={option.terminalLineOfService} component='li' sx={{ width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'start' }} {...props}>
+                            <Typography variant='body2' textAlign='start' width='100%' sx={{ color: (theme) => theme.palette.mode === 'light' ? 'grey.800' : 'grey.400' }}>{option.terminalKitNumber}</Typography>
+                            <Typography variant='subtitle2' textAlign='start' width='100%' sx={{ color: (theme) => theme.palette.mode === 'light' ? 'primary.dark' : 'grey.700' }}>{option.terminalLineOfService}</Typography>
+                          </Box>
+                        )}
+                        renderInput={(params) => <TextField
+                          {...params}
+                          label='Seleccione una terminal'
+                          sx={{
+                            '& .MuiButtonBase-root': {
+                              color: (theme) => theme.palette.primary.main
+                            },
+                            '& .MuiChip-root': {
+                              color: 'black',
+                              bgcolor: (theme) => theme.palette.primary.main
+                            },
+                            '& .MuiChip-root.Mui-disabled': {
+                              color: 'black',
+                              bgcolor: (theme) => theme.palette.primary[800]
+                            },
+                            '& .MuiButtonBase-root.Mui-disabled': {
+                              color: (theme) => theme.palette.primary[800]
+                            },
+                            '.Mui-disabled': {
+                              bgcolor: (theme) => alpha(theme.palette.grey[600], 1)
+                            }
+                          }}
+                                                 />}
+                        sx={{
+                          maxWidth: '100%',
+                          bgcolor: (theme) => alpha(theme.palette.background.paper, 1),
+                          color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white,
+                          '.Mui-disabled': {
+                            bgcolor: (theme) => alpha(theme.palette.grey[600], 1),
+                            color: (theme) => theme.palette.grey[700]
+                          },
+                          '& .MuiInputBase-input, & .MuiInputBase-root': {
+                            bgcolor: (theme) => alpha(theme.palette.background.paper, 1),
+                            color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white
+                          }
+                        }}
+                      />
+                    </Box>
+                    )}
+
+                <Box display='flex' flex={1} justifyContent='flex-end' alignSelf='end' gap={2}>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                      label='Seleccione una fecha'
+                      value={firstDate}
+                      onChange={(newValue) => setFirstDate(newValue)}
+                      sx={{
+                        '& .MuiInputLabel-root': { color: (theme) => theme.palette.primary.main },
+                        '& .MuiTextField-root': { bgcolor: 'transparent' },
+                        '& .MuiOutlinedInput-root': { bgcolor: 'transparent' },
+                        '& .MuiOutlinedInput-input': { bgcolor: 'transparent' }
+                      }}
+                    />
+                  </LocalizationProvider>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                      label='Seleccione otra fecha'
+                      value={secondDate}
+                      onChange={(newValue) => setSecondDate(newValue)}
+                      sx={{
+                        '& .MuiInputLabel-root': { color: (theme) => theme.palette.primary.main },
+                        '& .MuiTextField-root': { bgcolor: 'transparent' },
+                        '& .MuiOutlinedInput-root': { bgcolor: 'transparent' },
+                        '& .MuiOutlinedInput-input': { bgcolor: 'transparent' }
+                      }}
+                    />
+                  </LocalizationProvider>
+                  <Button
+                    variant='outlined' sx={{ alignSelf: 'center' }} onClick={requestData}
+                  >Generar
+                  </Button>
+                </Box>
               </Box>
-            )}
-            renderInput={(params) => <TextField
-              {...params}
-              label='Seleccione una terminal'
-              sx={{
-                '& .MuiButtonBase-root': {
-                  color: (theme) => theme.palette.primary.main
-                },
-                '& .MuiChip-root': {
-                  color: 'black',
-                  bgcolor: (theme) => theme.palette.primary.main
-                },
-                '& .MuiChip-root.Mui-disabled': {
-                  color: 'black',
-                  bgcolor: (theme) => theme.palette.primary[800]
-                },
-                '& .MuiButtonBase-root.Mui-disabled': {
-                  color: (theme) => theme.palette.primary[800]
-                },
-                '.Mui-disabled': {
-                  bgcolor: (theme) => alpha(theme.palette.grey[600], 1)
-                }
-              }}
-                                     />}
-            sx={{
-              maxWidth: '40%',
-              bgcolor: (theme) => alpha(theme.palette.background.paper, 1),
-              color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white,
-              '.Mui-disabled': {
-                bgcolor: (theme) => alpha(theme.palette.grey[600], 1),
-                color: (theme) => theme.palette.grey[700]
-              },
-              '& .MuiInputBase-input, & .MuiInputBase-root': {
-                bgcolor: (theme) => alpha(theme.palette.background.paper, 1),
-                color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white
-              }
-            }}
-          />
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker
-              label='Seleccione una fecha'
-              value={firstDate}
-              onChange={(newValue) => setFirstDate(newValue)}
-              sx={{
-                '& .MuiInputLabel-root': { color: (theme) => theme.palette.primary.main },
-                '& .MuiTextField-root': { bgcolor: 'transparent' },
-                '& .MuiOutlinedInput-root': { bgcolor: 'transparent' },
-                '& .MuiOutlinedInput-input': { bgcolor: 'transparent' }
-              }}
-            />
-          </LocalizationProvider>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker
-              label='Seleccione otra fecha'
-              value={secondDate}
-              onChange={(newValue) => setSecondDate(newValue)}
-              sx={{
-                '& .MuiInputLabel-root': { color: (theme) => theme.palette.primary.main },
-                '& .MuiTextField-root': { bgcolor: 'transparent' },
-                '& .MuiOutlinedInput-root': { bgcolor: 'transparent' },
-                '& .MuiOutlinedInput-input': { bgcolor: 'transparent' }
-              }}
-            />
-          </LocalizationProvider>
-          <Button variant='outlined' onClick={requestData}>Generar</Button>
-        </Box>
-        <Divider sx={{ width: '100%', borderColor: theme.palette.mode === 'light' ? theme.palette.grey[400] : theme.palette.grey[700] }} />
-        <Collapse in={!!data} sx={{ mt: 1 }}>
-          <Box
-            width='100%'
-            display='flex'
-            flexDirection='column'
-            alignItems='end'
-          >
-            {(data && (data.labels.length === 0 || data.data.length === 0)) && (
-              <NoInfoOverlay />
-            )}
-            {(data && (data.labels.length !== 0 || data.data.length !== 0)) && (
-              <>
-                <Box sx={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}>
-                  <Box maxWidth='50%'>
-                    <Typography variant='h2' alignSelf='start'>Consumo de datos de la terminal: {terminalSelected?.terminalKitNumber}</Typography>
-                  </Box>
-                  <Box display='flex'>
-                    <CustomTooltipBtns type='primary' title='Exportar a PNG'>
-                      <IconButton size='small' type='submit' onClick={exportMultipleChartsToPdf}>
-                        <TableChartTwoToneIcon color='primary' />
-                      </IconButton>
-                    </CustomTooltipBtns>
-                  </Box>
+              <Divider sx={{ width: '100%', borderColor: theme.palette.mode === 'light' ? theme.palette.grey[400] : theme.palette.grey[700] }} />
+              <Collapse in={!!data} sx={{ mt: 1 }}>
+                <Box
+                  width='100%'
+                  display='flex'
+                  flexDirection='column'
+                  alignItems='end'
+                >
+                  {(data && (data.labels.length === 0 || data.data.length === 0)) && (
+                    <NoInfoOverlay />
+                  )}
+                  {(data && (data.labels.length !== 0 || data.data.length !== 0)) && (
+                    <>
+                      <Box sx={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}>
+                        <Box maxWidth='50%'>
+                          <Typography variant='h2' alignSelf='start'>Consumo de datos de la terminal: {terminalSelected?.terminalKitNumber}</Typography>
+                        </Box>
+                        <Box display='flex'>
+                          <CustomTooltipBtns type='primary' title='Exportar a PDF'>
+                            <IconButton size='small' type='submit' onClick={div2PDF}>
+                              <TableChartTwoToneIcon color='primary' />
+                            </IconButton>
+                          </CustomTooltipBtns>
+                        </Box>
+                      </Box>
+                      <Box width='98%' display='flex' justifyContent='flex-end' justifySelf='self-end'>
+                        <BarChart
+                          className='custom-chart'
+                          xAxis={[{ scaleType: 'band', data: data.labels }]}
+                          series={[{ data: data.data, valueFormatter: (value) => `${value} GB` }]}
+                          height={350}
+                          title={`Consumo de datos de la terminal: ${terminalSelected?.terminalSiteName}`}
+                          yAxis={[{ label: 'Datos consumidos (GB)' }]}
+                          sx={{
+                            [`.${axisClasses.left} .${axisClasses.label}`]: {
+                              transform: 'translate(-10px, 0)',
+                              zIndex: 1
+                            },
+                            [`.${barElementClasses.root}`]: {
+                              fill: theme.palette.primary.dark,
+                              stroke: theme.palette.primary.dark,
+                              strokeWidth: 1,
+                              fillOpacity: 0.4
+                            },
+                            justifySelf: 'flex-end'
+                          }}
+                        />
+                        <Box id='container-bar' className='div2PDF' zIndex={-999} position='absolute' bottom={0} right={0} display='flex' width='100%' sx={{ opacity: 0 }}>
+                          <Bar
+                            data={mainData}
+                            options={{
+                              plugins: {
+                                title: {
+                                  display: true,
+                                  text: 'Chart.js Bar Chart - Stacked'
+                                }
+                              },
+                              responsive: true,
+                              scales: {
+                                x: {
+                                  stacked: true
+                                },
+                                y: {
+                                  stacked: true
+                                }
+                              }
+                            }}
+                          />
+                        </Box>
+                      </Box>
+                    </>
+                  )}
                 </Box>
-                <Box width='98%' display='flex' justifyContent='flex-end' justifySelf='self-end' zIndex={1}>
-                  <BarChart
-                    className='custom-chart'
-                    xAxis={[{ scaleType: 'band', data: data.labels }]}
-                    series={[{ data: data.data, valueFormatter: (value) => `${value} GB` }]}
-                    height={380}
-                    title={`Consumo de datos de la terminal: ${terminalSelected?.terminalSiteName}`}
-                    yAxis={[{ label: 'Datos consumidos (GB)' }]}
-                    sx={{
-                      [`.${axisClasses.left} .${axisClasses.label}`]: {
-                        transform: 'translate(-10px, 0)',
-                        zIndex: 1
-                      },
-                      [`.${barElementClasses.root}`]: {
-                        fill: theme.palette.primary.dark,
-                        stroke: theme.palette.primary.dark,
-                        strokeWidth: 1,
-                        fillOpacity: 0.4
-                      },
-                      justifySelf: 'flex-end'
-                    }}
-                  />
-                </Box>
-              </>
+              </Collapse>
+            </>
             )}
-          </Box>
-        </Collapse>
       </MainMirrorCard>
     </Box>
   )

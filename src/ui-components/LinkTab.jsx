@@ -1,12 +1,10 @@
 import { Tab } from '@mui/material'
-import { alpha, useTheme } from '@mui/material/styles'
 import PropTypes from 'prop-types'
 import { useNavigate } from 'react-router-dom'
 import { samePageLinkNavigation } from '../services/samplePageLinkNavigation'
 
 const LinkTab = (props) => {
   const navigate = useNavigate()
-  const theme = useTheme()
 
   return (
     <Tab
@@ -17,9 +15,6 @@ const LinkTab = (props) => {
           event.preventDefault()
           navigate(props.href)
         }
-      }}
-      sx={{
-        color: theme.palette.mode === 'light' && alpha(theme.palette.grey[700], 0.85)
       }}
       {...props}
     />

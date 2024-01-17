@@ -9,6 +9,9 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 import PersonRemoveTwoToneIcon from '@mui/icons-material/PersonRemoveTwoTone'
 import { Box, Chip, IconButton, TableCell, TableRow } from '@mui/material'
 
+// project imports
+import CustomTooltipBtns from '../../ui-components/CustomTooltipBtns'
+
 const Row = ({ element, hasExtendedRow, RowTemplate, page, onEdit, onDelete }) => {
   const [rowExpanded, setRowExpanded] = useState(false)
 
@@ -27,8 +30,12 @@ const Row = ({ element, hasExtendedRow, RowTemplate, page, onEdit, onDelete }) =
         </TableCell>
         <TableCell align='left' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[400] }}>
           <Box display='flex' gap={1}>
-            <IconButton size='small' color='primary' onClick={() => { onEdit(element) }}><EditNoteTwoToneIcon /></IconButton>
-            <IconButton size='small' color='error' onClick={() => { onDelete(element) }}><PersonRemoveTwoToneIcon /></IconButton>
+            <CustomTooltipBtns title='Editar' placement='top' type='primary'>
+              <IconButton size='small' color='primary' onClick={() => { onEdit(element) }}><EditNoteTwoToneIcon /></IconButton>
+            </CustomTooltipBtns>
+            <CustomTooltipBtns title='Eliminar' placement='top' type='error'>
+              <IconButton size='small' color='error' onClick={() => { onDelete(element) }}><PersonRemoveTwoToneIcon /></IconButton>
+            </CustomTooltipBtns>
           </Box>
         </TableCell>
         {hasExtendedRow && (

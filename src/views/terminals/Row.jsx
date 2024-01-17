@@ -15,6 +15,7 @@ import SaveTwoToneIcon from '@mui/icons-material/SaveTwoTone'
 import { Box, IconButton, TableCell, TableRow } from '@mui/material'
 
 // project imports
+import CustomTooltipBtns from '../../ui-components/CustomTooltipBtns'
 import InputBase from '../../ui-components/InputBase'
 
 const Row = ({ element, handleClick, isItemSelected, labelId, hasExtendedRow, hasMoreActions, RowTemplate, page, handleSave }) => {
@@ -27,8 +28,8 @@ const Row = ({ element, handleClick, isItemSelected, labelId, hasExtendedRow, ha
     try {
       await Yup.string().required('El nombre del sitio  es un campo requerido').validate(newData.terminalSiteName)
       await Yup.string().required('El nombre personalizado es un campo requerido').validate(newData.terminalFriendlyName)
-      await Yup.number().required('La latitud es un campo requerido').typeError('La latitud es un campo requerido').validate(newData.terminalLatitude)
-      await Yup.number().required('La logitud es un campo requerido').typeError('La logitud es un campo requerido').validate(newData.terminalLongitude)
+      await Yup.number().required('La latitud es un campo requerido').typeError('La latitud debe ser un dato numérico').validate(newData.terminalLatitude)
+      await Yup.number().required('La logitud es un campo requerido').typeError('La logitud debe ser un dato numérico').validate(newData.terminalLongitude)
       return true
     } catch (error) {
       toast.error(error.message)
@@ -51,6 +52,10 @@ const Row = ({ element, handleClick, isItemSelected, labelId, hasExtendedRow, ha
     setNewData({ ...newData, [e.target.name]: e.target.value })
   }
 
+  const handleChangeSwitch = (e, val) => {
+    setNewData({ ...newData, isMobile: val ? 1 : 0 })
+  }
+
   const Icon = mode === 0 ? DriveFileRenameOutlineTwoToneIcon : SaveTwoToneIcon
 
   useEffect(() => {
@@ -62,7 +67,7 @@ const Row = ({ element, handleClick, isItemSelected, labelId, hasExtendedRow, ha
   }, [mode])
 
   useEffect(() => {
-    setNewData({ ...element })
+    setNewData({ ...element, isMobile: !!(element.isMobile === 1) })
 
     return () => setNewData({})
   }, [element])
@@ -112,25 +117,29 @@ const Row = ({ element, handleClick, isItemSelected, labelId, hasExtendedRow, ha
             <Box sx={{ width: '100%', display: 'flex' }}>
               {hasMoreActions && (
                 <>
-                  <IconButton
-                    size='small' onClick={(e) => {
-                      handleChangeMode()
-                      handleClick(e, element.terminalId)
-                    }}
-                  >
-                    <Icon fontSize='small' sx={{ color: (theme) => mode ? theme.palette.mode === 'light' ? 'primary.dark' : 'primary.800' : 'primary.main' }} />
-                  </IconButton>
+                  <CustomTooltipBtns title={mode === 0 ? 'Editar' : 'Guardar'} placement='top' type='primary'>
+                    <IconButton
+                      size='small' onClick={(e) => {
+                        handleChangeMode()
+                        handleClick(e, element.terminalId)
+                      }}
+                    >
+                      <Icon fontSize='small' sx={{ color: (theme) => mode ? theme.palette.mode === 'light' ? 'primary.dark' : 'primary.800' : 'primary.main' }} />
+                    </IconButton>
+                  </CustomTooltipBtns>
                 </>
               )}
               {mode
                 ? (
-                  <IconButton
-                    size='small' onClick={() => {
-                      setMode(0)
-                    }}
-                  >
-                    <CancelTwoToneIcon fontSize='small' sx={{ color: (theme) => mode ? theme.palette.mode === 'light' ? 'error.main' : 'error.dark' : 'primary.main' }} />
-                  </IconButton>
+                  <CustomTooltipBtns title='Cancelar' type='error' placement='top'>
+                    <IconButton
+                      size='small' onClick={() => {
+                        setMode(0)
+                      }}
+                    >
+                      <CancelTwoToneIcon fontSize='small' sx={{ color: (theme) => mode ? theme.palette.mode === 'light' ? 'error.main' : 'error.dark' : 'primary.main' }} />
+                    </IconButton>
+                  </CustomTooltipBtns>
                   )
                 : (
                   <IconButton aria-label='expand row' size='small' onClick={() => setRowExpanded(!rowExpanded)}>
@@ -141,7 +150,7 @@ const Row = ({ element, handleClick, isItemSelected, labelId, hasExtendedRow, ha
           </TableCell>
         )}
       </TableRow>
-      {hasExtendedRow && <RowTemplate rowExpanded={rowExpanded} element={element} mode={mode} data={newData} handleChange={handleChangeData} />}
+      {hasExtendedRow && <RowTemplate rowExpanded={rowExpanded} element={element} mode={mode} data={newData} handleChange={handleChangeData} handleChangeSwitch={handleChangeSwitch} />}
     </>
   )
 }

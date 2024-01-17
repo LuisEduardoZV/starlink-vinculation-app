@@ -115,7 +115,7 @@ const Linking = () => {
               toast.success('Se han vinculado correctamente', { id: toastId })
               setStatus({ success: true })
               setSubmitting(false)
-              navigate('/terminalsAssigned', { replace: true, state: { view: 3 } })
+              navigate('/terminalsAssigned', { replace: true, state: { view: 4 } })
             }
           } catch (error) {
             toast.error(error.message, { id: toastId })

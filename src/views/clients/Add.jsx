@@ -75,7 +75,7 @@ const Add = ({ handleCancel, toastId }) => {
               .min(10, phonelenghtText)
               .required(requiredText)
               .typeError(requiredText),
-            clientZip: Yup.string().min(5, ziplenghtText).required(requiredText),
+            clientZip: Yup.string().min(5, ziplenghtText).max(5, ziplenghtText).required(requiredText),
             clientEmail: Yup.string().email(emailerrorText).max(255).required(requiredText).required(requiredText),
             clientTaxId: Yup.string().max(20, 'La longitud debe ser menor a 20 caracteres').matches(REGEX_VALID_RFC, 'Debe ser un RFC válido').required(requiredText),
             isEnabled: Yup.number(),

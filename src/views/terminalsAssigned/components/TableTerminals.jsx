@@ -19,11 +19,11 @@ const TableTerminals = ({ loading, data, handleDelete }) => {
   const theme = useTheme()
 
   const actionTemplate = (options) => {
-    return (options && !options.children
+    return (options && !options.children && typeof options.data.assignId === 'number'
       ? (
         <Box>
           <CustomTooltipBtns type='error' title='Eliminar vinculación'>
-            <IconButton size='small' color='error' onClick={() => handleDelete(options.key, options.data)}>
+            <IconButton size='small' color='error' onClick={() => handleDelete(options.data.assignId, options.data)}>
               <DeleteForeverTwoToneIcon fontSize='small' />
             </IconButton>
           </CustomTooltipBtns>
@@ -128,12 +128,17 @@ const TableTerminals = ({ loading, data, handleDelete }) => {
             bodyStyle={{ color: theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[400], fontSize: '0.875rem', padding: 16, alignItems: 'center', borderBottom: `1px solid ${alpha(theme.palette.grey[800], 0.5)}`, position: 'relative' }}
           />
           <Column
-            field='fullName' header='Nombre'
+            field='fullName' header='Nombre/Usuario'
+            headerStyle={{ color: theme.palette.mode === 'light' ? 'black' : 'white', textAlign: 'start', padding: 16, borderBottom: `1px solid ${alpha(theme.palette.grey[800], 0.7)}` }}
+            bodyStyle={{ color: theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[400], fontSize: '0.875rem', padding: 16, alignItems: 'center', borderBottom: `1px solid ${alpha(theme.palette.grey[800], 0.5)}`, overflowWrap: 'break-word' }}
+          />
+          <Column
+            field='terminalSiteName' header='Nombre del sitio'
             headerStyle={{ color: theme.palette.mode === 'light' ? 'black' : 'white', textAlign: 'start', padding: 16, borderBottom: `1px solid ${alpha(theme.palette.grey[800], 0.7)}` }}
             bodyStyle={{ color: theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[400], fontSize: '0.875rem', padding: 16, alignItems: 'center', borderBottom: `1px solid ${alpha(theme.palette.grey[800], 0.5)}` }}
           />
           <Column
-            field='terminalSiteName' header='Nombre del sitio'
+            field='terminalLineOfService' header='Terminal Id'
             headerStyle={{ color: theme.palette.mode === 'light' ? 'black' : 'white', textAlign: 'start', padding: 16, borderBottom: `1px solid ${alpha(theme.palette.grey[800], 0.7)}` }}
             bodyStyle={{ color: theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[400], fontSize: '0.875rem', padding: 16, alignItems: 'center', borderBottom: `1px solid ${alpha(theme.palette.grey[800], 0.5)}` }}
           />
