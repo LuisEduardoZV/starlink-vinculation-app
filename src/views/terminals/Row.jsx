@@ -40,7 +40,7 @@ const Row = ({ element, handleClick, isItemSelected, labelId, hasExtendedRow, ha
     if (mode) {
       const valid = await validInfo()
       if (valid) {
-        handleSave(newData)
+        handleSave({ ...newData, isMobile: newData.isMobile ? 1 : 0 })
         setMode(0)
       }
     } else {

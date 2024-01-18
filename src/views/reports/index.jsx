@@ -14,7 +14,6 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { BarElement, CategoryScale, Chart, LinearScale } from 'chart.js'
 import html2canvas from 'html2canvas'
 import { jsPDF } from 'jspdf'
-import { Bar } from 'react-chartjs-2'
 
 // project imports
 import LeaderboardTwoToneIcon from '@mui/icons-material/LeaderboardTwoTone'
@@ -57,7 +56,6 @@ const Reportes = () => {
   const [secondDate, setSecondDate] = useState(dayjs(new Date()))
 
   const [data, setData] = useState(null)
-  const [mainData, setMainData] = useState(null)
 
   const [tab, setTab] = useState(1)
 
@@ -83,11 +81,9 @@ const Reportes = () => {
     const but = e.target
     but.style.display = 'none'
     const input = window.document.getElementsByClassName('div2PDF')[0]
-    input.style.opacity = 1
 
     html2canvas(input).then(canvas => {
       const img = canvas.toDataURL('image/png')
-      input.style.opacity = 0
       const pdf = new jsPDF('l', 'pt')
       pdf.text(`Consumo de datos de la terminal: ${terminalSelected?.terminalKitNumber}`, 20, 20)
       pdf.addImage(
@@ -114,16 +110,6 @@ const Reportes = () => {
         data.push(Number(item.substring(item.lastIndexOf(':') + 1, item.indexOf('}'))))
       }
       setData({ labels, data })
-      setMainData({
-        labels,
-        datasets: [
-          {
-            label: 'Terminal ID',
-            data,
-            backgroundColor: alpha(theme.palette.primary.main, 0.4)
-          }
-        ]
-      })
     } catch (error) {
       console.log(error)
     }
@@ -418,9 +404,8 @@ const Reportes = () => {
                           </CustomTooltipBtns>
                         </Box>
                       </Box>
-                      <Box width='98%' display='flex' justifyContent='flex-end' justifySelf='self-end'>
+                      <Box width='98%' display='flex' justifyContent='flex-end' justifySelf='self-end' className='div2PDF'>
                         <BarChart
-                          className='custom-chart'
                           xAxis={[{ scaleType: 'band', data: data.labels }]}
                           series={[{ data: data.data, valueFormatter: (value) => `${value} GB` }]}
                           height={350}
@@ -440,28 +425,6 @@ const Reportes = () => {
                             justifySelf: 'flex-end'
                           }}
                         />
-                        <Box id='container-bar' className='div2PDF' zIndex={-999} position='absolute' bottom={0} right={0} display='flex' width='100%' sx={{ opacity: 0 }}>
-                          <Bar
-                            data={mainData}
-                            options={{
-                              plugins: {
-                                title: {
-                                  display: true,
-                                  text: 'Chart.js Bar Chart - Stacked'
-                                }
-                              },
-                              responsive: true,
-                              scales: {
-                                x: {
-                                  stacked: true
-                                },
-                                y: {
-                                  stacked: true
-                                }
-                              }
-                            }}
-                          />
-                        </Box>
                       </Box>
                     </>
                   )}

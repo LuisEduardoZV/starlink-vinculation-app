@@ -126,7 +126,7 @@ export function deleteClient (key) {
       dispatch(slice.actions.setLoader(true))
       const data = await apiCall({ url: `${BASE_URL_API}/Clients/${key}`, method: 'DELETE' })
       if (data && (data.length === 0 || !Array.isArray(data))) {
-        dispatch(slice.actions.hasError(new Error('Error al eliminar el cliente')))
+        dispatch(slice.actions.hasError(new Error('Error al eliminar el cliente ya que tiene terminales vinculadas')))
         dispatch(slice.actions.setSuccess(false))
       } else {
         dispatch(slice.actions.deleteClient(data))
@@ -134,7 +134,7 @@ export function deleteClient (key) {
       }
       dispatch(slice.actions.setLoader(false))
     } catch (error) {
-      dispatch(slice.actions.hasError(new Error('Error al eliminar el cliente')))
+      dispatch(slice.actions.hasError(new Error('Error al eliminar el cliente ya que tiene terminales vinculadas')))
       dispatch(slice.actions.setSuccess(false))
       dispatch(slice.actions.setLoader(false))
     }

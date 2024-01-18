@@ -23,7 +23,7 @@ const Linking = () => {
   const { user } = useAuth()
 
   const [view, setView] = useState(1)
-  const [viewType, setViewType] = useState(false)
+  const [viewType, setViewType] = useState(null)
 
   const initVal = useMemo(() => ({
     assignId: 0,
@@ -37,6 +37,7 @@ const Linking = () => {
 
   useEffect(() => {
     if (user && user.user && user.user.isPowerUser) setViewType(true)
+    else setViewType(false)
   }, [user])
 
   return (
@@ -115,7 +116,8 @@ const Linking = () => {
               toast.success('Se han vinculado correctamente', { id: toastId })
               setStatus({ success: true })
               setSubmitting(false)
-              navigate('/terminalsAssigned', { replace: true, state: { view: 4 } })
+              if (user.user.isPowerUser) navigate('/terminalsAssigned', { replace: true, state: { view: 4 } })
+              else navigate(`/clients/${user.user.clientId}/users`, { replace: true, state: { view: 0 } })
             }
           } catch (error) {
             toast.error(error.message, { id: toastId })

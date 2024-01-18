@@ -96,17 +96,19 @@ const TermianlsList = ({ values, handleChange, inView, viewType }) => {
 
   useEffect(() => {
     (async () => {
-      try {
-        let res = null
-        if (viewType) res = await apiCall({ url: `${BASE_URL_API}/TerminalNotAsigment` })
-        else res = await apiCall({ url: `${BASE_URL_API}/getClientTerminales?id=${values.client}` })
-        if (res) setData(res)
-        else throw new Error('Error al obtener las terminales')
+      if (viewType !== null) {
+        try {
+          let res = null
+          if (viewType) res = await apiCall({ url: `${BASE_URL_API}/TerminalNotAsigment` })
+          else res = await apiCall({ url: `${BASE_URL_API}/getClientTerminales?id=${values.client}` })
+          if (res) setData(res)
+          else throw new Error('Error al obtener las terminales')
 
-        setLoading(false)
-      } catch (error) {
-        console.log(error)
-        setLoading(false)
+          setLoading(false)
+        } catch (error) {
+          console.log(error)
+          setLoading(false)
+        }
       }
     })()
 

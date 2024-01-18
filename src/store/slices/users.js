@@ -65,7 +65,7 @@ export function deleteUser (key, client) {
         await getUsers(client)()
       }
     } catch (error) {
-      dispatch(slice.actions.hasError(new Error('Error al eliminar el usuario')))
+      dispatch(slice.actions.hasError(new Error('Error al eliminar el usuario ya que está vinculado a una terminal')))
       dispatch(slice.actions.setSuccess(false))
     }
   }

@@ -41,7 +41,7 @@ const SecondContainer = ({ inView, values, errors, touched, handleBlur, handleCh
 
   const defaultUserInfo = useMemo(() => ({
     userId: null,
-    fullName: 'NewUser-Terminal-',
+    fullName: '',
     email: '',
     password: '',
     isEnabled: 1,
