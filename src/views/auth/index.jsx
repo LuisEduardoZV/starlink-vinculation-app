@@ -1,7 +1,8 @@
 import { useState } from 'react'
 
 // mui imports
-import { Box, Typography } from '@mui/material'
+import { Box } from '@mui/material'
+import { alpha } from '@mui/material/styles'
 
 // third
 import { Formik } from 'formik'
@@ -9,15 +10,13 @@ import { toast } from 'sonner'
 import * as Yup from 'yup'
 
 // project imports
-import { alpha } from '@mui/material/styles'
 import useAuth from '../../hooks/useAuth'
 import MainMirrorCard from '../../ui-components/MainMirrorCard'
 import AuthLogin from './AuthLogin'
 
 // assets
-import bgLight from '../../assets/image/fondo-light.webp'
-import bg from '../../assets/image/opcion.jpg'
-import tangerine from '../../assets/image/tangerine.svg'
+import bg from '../../assets/image/fondo-starlink.jpeg'
+import icon from '../../assets/image/starlink.png'
 
 import { requiredText } from '../../utils/labelsErrorsFormik'
 
@@ -37,30 +36,33 @@ const Auth = () => {
       width: '100%',
       minHeight: '100vh',
       height: '100%',
+      maxHeight: '100vh',
       position: 'relative',
       display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
+      alignItems: 'start',
+      justifyContent: 'start',
       flex: 1,
-      backgroundImage: (theme) => theme.palette.mode === 'light' ? `url(${bgLight})` : `url(${bg})`,
+      backgroundImage: `url(${bg})`,
       backgroundRepeat: 'no-repeat',
       backgroundSize: 'cover',
       backgroundOrigin: 'border-box',
       backgroundPosition: 'bottom'
     }}
     >
-      <Box sx={{ position: 'relative', minWidth: 450, width: 'max-content', borderRadius: 2, zIndex: 5, animation: 'floating 3s ease-in-out infinite' }}>
-        <MainMirrorCard sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1, py: 4, boxShadow: (theme) => theme.palette.mode === 'light' && '7px 7px 20px 1px #c8c8c8, -7px -7px 20px 1px #ffffff' }}>
-          <img src={tangerine} alt='Tangerine icon' style={{ width: 90, height: 80 }} />
-          <Typography variant='h2' textAlign='center' mt={1} sx={{ textShadow: (theme) => theme.palette.mode === 'light' ? `2px 2px 1px ${theme.palette.grey[400]}` : `1px 2px 1px ${theme.palette.primary[800]}`, color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white }}>BackOffice Tangerine Metrics</Typography>
-          <Box sx={{
-            width: '100%',
-            borderImage: (theme) => (`linear-gradient(to right, ${alpha(theme.palette.background.paper, 0.7)}, ${theme.palette.primary.dark}, ${alpha(theme.palette.background.paper, 0.7)}) 30`),
-            borderWidth: '0.06em',
-            borderStyle: 'solid',
-            mb: 3
-          }}
-          />
+      {/*, animation: 'floating 3s ease-in-out infinite', */}
+      <Box sx={{ position: 'relative', minWidth: 450, width: 'max-content', borderRadius: 2, zIndex: 5, mx: 5, my: 20 }}>
+        <MainMirrorCard sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 1,
+          py: 4,
+          border: 'none',
+          borderRadius: 0,
+          boxShadow: 'none',
+          bgcolor: 'transparent'
+        }}
+        >
           <Formik
             initialValues={{
               user: '',

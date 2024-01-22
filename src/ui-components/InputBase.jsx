@@ -3,7 +3,7 @@ import React from 'react'
 import { TextField } from '@mui/material'
 import PropTypes from 'prop-types'
 
-const InputBase = React.forwardRef(({ error, ...others }, ref) => (
+const InputBase = React.forwardRef(({ error, extraSx, ...others }, ref) => (
   <TextField
     {...others}
     ref={ref}
@@ -27,7 +27,8 @@ const InputBase = React.forwardRef(({ error, ...others }, ref) => (
       '& .MuiInputBase-input.MuiFilledInput-input.Mui-disabled ': {
         color: (theme) => theme.palette.primary[500],
         WebkitTextFillColor: 'inherit'
-      }
+      },
+      ...extraSx
     }}
     inputProps={{ autoComplete: 'off', autoCorrect: 'off' }}
   />
@@ -36,7 +37,8 @@ const InputBase = React.forwardRef(({ error, ...others }, ref) => (
 InputBase.displayName = 'InputBase'
 
 InputBase.propTypes = {
-  error: PropTypes.bool
+  error: PropTypes.bool,
+  extraSx: PropTypes.object
 }
 
 export default InputBase
