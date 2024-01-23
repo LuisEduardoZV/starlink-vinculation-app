@@ -1,14 +1,19 @@
 import PropTypes from 'prop-types'
+import { useState } from 'react'
 
 // mui imports
-import { Grid, Tooltip } from '@mui/material'
+import { Grid, IconButton, InputAdornment, Tooltip } from '@mui/material'
 
 // project imports
+import VisibilityOffTwoToneIcon from '@mui/icons-material/VisibilityOffTwoTone'
+import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone'
 import CustomSwitch from '../../../ui-components/CustomSwitch'
 import InputBase from '../../../ui-components/InputBase'
 import DefaultBtnsForms from '../../../ui-components/extended/DefaultBtnsForms'
 
 const EditAuth = ({ errors, values, touched, handleBlur, handleChange, backBtn, handleReset, isSubmitting }) => {
+  const [showPass, setShowPass] = useState(false)
+
   return (
     <>
       <Grid container spacing={3}>
@@ -73,7 +78,7 @@ const EditAuth = ({ errors, values, touched, handleBlur, handleChange, backBtn, 
               name='password'
               value={values.password}
               label='Contraseña'
-              type='password'
+              type={!showPass ? 'password' : 'text'}
               variant='filled'
               size='small'
               fullWidth
@@ -82,11 +87,17 @@ const EditAuth = ({ errors, values, touched, handleBlur, handleChange, backBtn, 
               required
               onBlur={handleBlur}
               onChange={handleChange}
-              inputProps={{
+              InputProps={{
                 autocomplete: 'new-password',
                 form: {
                   autocomplete: 'off'
-                }
+                },
+                endAdornment: (
+                  <InputAdornment position='end' sx={{ bgcolor: 'transparent' }}>
+                    <IconButton size='small' onClick={() => setShowPass((prev) => !prev)}>
+                      {showPass ? <VisibilityOffTwoToneIcon /> : <VisibilityTwoToneIcon />}
+                    </IconButton>
+                  </InputAdornment>)
               }}
             />
           </Tooltip>

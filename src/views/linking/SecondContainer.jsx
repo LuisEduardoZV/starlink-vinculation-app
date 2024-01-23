@@ -10,7 +10,6 @@ import { useTheme } from '@mui/material/styles'
 // project imports
 import LoadingInfo from '../../ui-components/LoadingInfo'
 import MainMirrorFade from '../../ui-components/MainMirrorFade'
-import TransferList from '../../ui-components/TransferList'
 import CustomTabPanel from '../../ui-components/extended/CustomTabPanel'
 import DashUserSelection from './Step2/DashUserSelection'
 
@@ -32,7 +31,7 @@ async function not (a, b) {
 
 const SecondContainer = ({ inView, values, errors, touched, handleBlur, handleChange, viewType }) => {
   const theme = useTheme()
-  const { terminals, userVinculationInfo, client } = values
+  const { userVinculationInfo, client, terminals } = values
 
   const [users, setUsers] = useState([])
   const [dash, setDash] = useState([])
@@ -160,15 +159,10 @@ const SecondContainer = ({ inView, values, errors, touched, handleBlur, handleCh
       }}
     >
       <Box display='flex' flexDirection='row' columnGap={3} position='relative'>
-        <Box display='flex' flexDirection='column' width='65%'>
+        <Box width='100%' display='flex' flexDirection='column'>
           <Typography component='div' variant='h2' color={theme.palette.mode === 'light' ? 'black' : 'white'} display='flex' gap={1} alignItems='flex-start'>
             <Icon color='primary' /> Vinculación de usuarios con las terminales
           </Typography>
-          <TransferList terminals={terminals} termSelected={terminalsAsigned} setNewTerms={setTerminalsUser} disabled={terminalsAsigned.length > 0} />
-        </Box>
-
-        <Box width='35%' display='flex' flexDirection='column'>
-          <Typography variant='subtitle1' sx={{ color: theme.palette.mode === 'light' ? 'grey.800' : 'grey.400' }}>Selección o creación de usuarios</Typography>
           <Box sx={{ borderBottom: 1, borderColor: 'divider', maxWidth: '100%' }}>
             <Tabs
               value={viewTab}
@@ -185,8 +179,8 @@ const SecondContainer = ({ inView, values, errors, touched, handleBlur, handleCh
               }}
               TabIndicatorProps={{ style: { maxHeight: '2px' } }}
             >
-              {userVinculationInfo && userVinculationInfo.map((op, index) => (<Tab key={index} label={`Usuario ${index + 1}`} {...a11yProps(index)} />))}
-              <Tab label='Nuevo Usuario' {...a11yProps(userVinculationInfo.length)} />
+              {userVinculationInfo && userVinculationInfo.map((op, index) => (<Tab key={index} label={`Vinculación ${index + 1}`} {...a11yProps(index)} />))}
+              <Tab label='Nueva Vinculación' {...a11yProps(userVinculationInfo.length)} />
             </Tabs>
           </Box>
           {userVinculationInfo && userVinculationInfo.map((op, index) => (
@@ -203,7 +197,10 @@ const SecondContainer = ({ inView, values, errors, touched, handleBlur, handleCh
                 handleChangeAutocompleteInfo={handleChangeAutocompleteInfo}
                 handleBlur={handleBlur}
                 cancelBtn
+                terminalsAsigned={terminalsAsigned}
+                setTerminalsUser={setTerminalsUser}
                 handleDeleteUser={handleDeleteUser}
+                terminales={terminals}
                 {...(index === userVinculationInfo.length - 1) && { finishBtn: true }}
               />
             </CustomTabPanel>
@@ -224,6 +221,9 @@ const SecondContainer = ({ inView, values, errors, touched, handleBlur, handleCh
                   handleChangeAutocompleteInfo={handleChangeAutocompleteInfo}
                   handleBlur={handleBlur}
                   handleAddUser={handleAddUser}
+                  terminalsAsigned={terminalsAsigned}
+                  setTerminalsUser={setTerminalsUser}
+                  terminales={terminals}
                  />)}
           </CustomTabPanel>
         </Box>

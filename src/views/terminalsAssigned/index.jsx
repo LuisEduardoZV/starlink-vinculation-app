@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 // third
@@ -16,12 +16,13 @@ import CustomTooltipBtns from '../../ui-components/CustomTooltipBtns'
 import MainMirrorCard from '../../ui-components/MainMirrorCard'
 import ModalDelete from '../../ui-components/ModalDelete'
 import TableTerminals from './components/TableTerminals'
+import TreeViewTerminals from './components/TreeViewTerminals'
 
 // services
 import { BASE_URL_API } from '../../config'
 import { apiCall } from '../../contexts/api'
 import { useDispatch, useSelector } from '../../store'
-import { getAllTerminalsAssigned, getTerminalsByUser, resetErrorUsed } from '../../store/slices/terminalsAssigned'
+import { convertToTreeViewData, getAllTerminalsAssigned, getTerminalsByUser, resetErrorUsed } from '../../store/slices/terminalsAssigned'
 
 const toastId = toast()
 
@@ -30,10 +31,13 @@ const TerminalsAssigned = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
-  const { terminals, error, loading } = useSelector((state) => state.terminalsAssigned)
+  const typeOfView = useMemo(() => (state?.typeViewTerminals), [state])
+
+  const { terminals, error, loading, pureData } = useSelector((state) => state.terminalsAssigned)
 
   const [render, setRender] = useState(false)
-  const [data, setData] = useState(terminals)
+  const [data, setData] = useState([])
+  const [dataUser, setDataUser] = useState([])
 
   const [open, setOpen] = useState(false)
 
@@ -48,26 +52,53 @@ const TerminalsAssigned = () => {
     setOpen(true)
   }
 
-  const handleSearch = (e, filters) => {
+  const handleSearchByUser = (e, filters) => {
     if (filters.length === 0) {
-      setData(terminals)
+      setDataUser(pureData)
     } else {
       const newRows = []
-      const available = terminals
+      const available = pureData
 
       for (let j = 0; j < filters.length; j += 1) {
         for (let i = 0; i < available.length; i += 1) {
           if (
-            available[i].data?.fullName?.toLowerCase().includes(filters[j].trim().toLowerCase()) ||
-            available[i].data?.dashboardName?.toLowerCase()?.includes(filters[j].trim().toLowerCase()) ||
-            available[i].data?.terminalSiteName.toLowerCase().includes(filters[j].trim().toLowerCase())
+            available[i]?.fullName?.toLowerCase().includes(filters[j].trim().toLowerCase()) ||
+            available[i]?.dashboardName?.toLowerCase()?.includes(filters[j].trim().toLowerCase()) ||
+            available[i]?.terminalSiteName.toLowerCase().includes(filters[j].trim().toLowerCase())
           ) {
-            if (!newRows.find((value) => value === available[i])) { newRows.push(available[i]) }
+            if (!newRows.find((value) => value === available[i])) {
+              newRows.push(available[i])
+            }
           }
         }
       }
-      console.log(newRows)
-      setData(newRows)
+
+      setDataUser(newRows)
+    }
+  }
+
+  const handleSearch = async (e, filters) => {
+    if (filters.length === 0) {
+      setData(terminals)
+    } else {
+      const newRows = []
+      const available = pureData
+
+      for (let j = 0; j < filters.length; j += 1) {
+        for (let i = 0; i < available.length; i += 1) {
+          if (
+            available[i].fullName?.toLowerCase().includes(filters[j].trim().toLowerCase()) ||
+            available[i].dashboardName?.toLowerCase()?.includes(filters[j].trim().toLowerCase()) ||
+            available[i].terminalSiteName.toLowerCase().includes(filters[j].trim().toLowerCase())
+          ) {
+            if (!newRows.find((value) => value === available[i])) {
+              newRows.push(available[i])
+            }
+          }
+        }
+      }
+
+      setData(await convertToTreeViewData(newRows))
     }
   }
 
@@ -86,7 +117,8 @@ const TerminalsAssigned = () => {
 
   useEffect(() => {
     setData(terminals)
-  }, [terminals])
+    setDataUser(pureData)
+  }, [terminals, pureData])
 
   useEffect(() => {
     (async () => {
@@ -111,7 +143,7 @@ const TerminalsAssigned = () => {
         inFade={false}
         dataSelected={dataSelected}
         addIcon={LeakAddTwoToneIcon}
-        handleSearch={handleSearch}
+        handleSearch={typeOfView ? handleSearchByUser : handleSearch}
         btnsAvailable={false}
         {...(state && state.userId) && {
           extraBtns: [
@@ -126,11 +158,23 @@ const TerminalsAssigned = () => {
 
       <Box sx={{ display: 'flex', flex: 1, px: '10%' }}>
         <MainMirrorCard>
-          <TableTerminals
-            loading={loading}
-            data={data}
-            handleDelete={handleDelete}
-          />
+          {
+            typeOfView
+              ? (
+                <TableTerminals
+                  loading={loading}
+                  data={dataUser}
+                  handleDelete={handleDelete}
+                />
+                )
+              : (
+                <TreeViewTerminals
+                  loading={loading}
+                  data={data}
+                  handleDelete={handleDelete}
+                />
+                )
+          }
         </MainMirrorCard>
       </Box>
 
@@ -140,7 +184,7 @@ const TerminalsAssigned = () => {
         id={selected[0]}
         handleDelete={handleDeleteTerminalAssigned}
         title='Eliminar vinculo de terminal'
-        subtitle={<><b>¿Estás seguro de eliminar al usuario {dataSelected?.fullName} <i>({dataSelected?.email})</i>?</b> Al dar click en aceptar, esta de acuerdo que no podrá recuperar la información.</>}
+        subtitle={<><b>¿Estás seguro de desvincular la terminal {dataSelected?.terminalSiteName} del usuario: <i>{dataSelected?.email}</i>?</b> Al dar click en aceptar, esta de acuerdo que no podrá recuperar la información.</>}
       />
     </>
   )

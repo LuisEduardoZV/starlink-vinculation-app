@@ -71,21 +71,6 @@ export const terminalsTableHeadders = [
   }
 ]
 
-export const terminalsAssignedTableHeadders = [
-  {
-    id: 'fullName',
-    label: 'Nombre del usuario'
-  },
-  {
-    id: 'terminalSiteName',
-    label: 'Nombre del sitio'
-  },
-  {
-    id: 'dashboardName',
-    label: 'Nombre del dashboard'
-  }
-]
-
 export const superUsersTableHeadders = [
   {
     id: 'fullName',
@@ -105,20 +90,25 @@ export const superUsersTableHeadders = [
   }
 ]
 
-export const gridExample = [
+export const terminalsAssignedTableHeadders = [
   {
-    field: 'fullName',
-    headerName: 'Nombre del usuario',
-    flex: 1
+    id: 'terminalSiteName',
+    label: 'Nombre del sitio'
   },
   {
-    field: 'terminalSiteName',
-    headerName: 'Nombre del sitio',
-    flex: 1
+    id: 'terminalLineOfService',
+    label: 'Terminal ID'
   },
   {
-    field: 'dashboardName',
-    headerName: 'Nombre del dashboard',
-    flex: 1
+    id: 'terminalFriendlyName',
+    label: 'Nombre personalizado'
+  },
+  {
+    id: 'dashboardName',
+    label: 'Nombre del dashboard'
+  },
+  {
+    id: 'actions',
+    label: 'Acciones'
   }
 ]

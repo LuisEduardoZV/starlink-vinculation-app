@@ -10,6 +10,7 @@ const MESSAGE_SUUCESS_DELETE_GRAFANA = 'User deleted'
 const initialState = {
   error: null,
   terminals: [],
+  pureData: [],
   loading: false,
   success: false
 }
@@ -27,6 +28,9 @@ const slice = createSlice({
     setTerminalsInfoSuccess (state, action) {
       state.terminals = action.payload
     },
+    setTerminalsMainInfoSuccess (state, action) {
+      state.pureData = action.payload
+    },
     setLoader (state, action) {
       state.loading = action.payload
     },
@@ -39,7 +43,8 @@ const slice = createSlice({
 
 export default slice.reducer
 
-function convertToTreeViewData (jsonArray) {
+export async function convertToTreeViewData (info) {
+  const jsonArray = [...info]
   // Organizar el arreglo por clientId y fullName
   jsonArray.sort((a, b) => {
     if (a.clientId !== b.clientId) {
@@ -96,8 +101,9 @@ function convertToTreeViewData (jsonArray) {
 
 export function parseObject (data) {
   return async () => {
-    if (Array.isArray(data) && data.length > 0) {
-      const info = convertToTreeViewData(data)
+    dispatch(slice.actions.setTerminalsMainInfoSuccess(data))
+    if (Array.isArray(data)) {
+      const info = await convertToTreeViewData(data)
       dispatch(slice.actions.setTerminalsInfoSuccess(info))
       dispatch(slice.actions.setLoader(false))
       dispatch(slice.actions.setSuccess(true))
@@ -112,6 +118,7 @@ export function getAllTerminalsAssigned () {
       const res = await apiCall({ url: `${BASE_URL_API}/getAsigment` })
       await parseObject(res)()
     } catch (error) {
+      console.log(error)
       dispatch(slice.actions.hasError(new Error('Error al obtener la lista de terminales')))
       dispatch(slice.actions.setLoader(false))
       dispatch(slice.actions.setSuccess(false))
@@ -124,6 +131,7 @@ export function getTerminalsByUser (id) {
     try {
       dispatch(slice.actions.setLoader(true))
       const res = await apiCall({ url: `${BASE_URL_API}/getAsigmentUser?UserId=${id}` })
+      dispatch(slice.actions.setTerminalsMainInfoSuccess(res))
       await parseObject(res)()
     } catch (error) {
       dispatch(slice.actions.hasError(new Error('Error al obtener la lista de terminales del usuario')))
@@ -137,7 +145,7 @@ export function deleteTerminal (email, id) {
   return async () => {
     try {
       dispatch(slice.actions.setLoader(true))
-      const res = await await apiCall({ url: `${BASE_URL_API}/Assigns/${id}`, method: 'DELETE' })
+      const res = await apiCall({ url: `${BASE_URL_API}/Assigns/${id}`, method: 'DELETE' })
       if (res) {
         const resGrafana = await apiCallWithBody({ url: `${BASE_URL_API}/DeleteUserGraf`, body: JSON.stringify({ email, name: '', login: '', password: '', lastEmail: email }) })
         const result = JSON.parse(resGrafana)

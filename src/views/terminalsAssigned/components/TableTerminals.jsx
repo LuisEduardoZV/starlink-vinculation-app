@@ -1,160 +1,102 @@
-/* eslint-disable react/jsx-handler-names */
 import PropTypes from 'prop-types'
+import { useMemo, useState } from 'react'
 
 // mui imports
-import ArrowBackIosNewTwoToneIcon from '@mui/icons-material/ArrowBackIosNewTwoTone'
-import ArrowForwardIosTwoToneIcon from '@mui/icons-material/ArrowForwardIosTwoTone'
-import DeleteForeverTwoToneIcon from '@mui/icons-material/DeleteForeverTwoTone'
-import { Box, IconButton, MenuItem, Select } from '@mui/material'
-import { alpha, useTheme } from '@mui/material/styles'
-import { Column } from 'primereact/column'
-import { TreeTable } from 'primereact/treetable'
+import { Table, TableBody, TableCell, TableContainer, TablePagination, TableRow } from '@mui/material'
 
 // project imports
-import ChevronRightTwoToneIcon from '@mui/icons-material/ChevronRightTwoTone'
-import ExpandMoreTwoToneIcon from '@mui/icons-material/ExpandMoreTwoTone'
-import CustomTooltipBtns from '../../../ui-components/CustomTooltipBtns'
+import EnhancedTableHead from '../../../ui-components/EnhancedTableHead'
+import LoadingInfoTable from '../../../ui-components/LoadingInfoTable'
+import NoInfoOverlay from '../../../ui-components/NoInfoOverlay'
+import Row from '../Row'
+
+// services import
+import { getComparator, stableSort } from '../../../services/tableServices'
+import { terminalsAssignedTableHeadders as headCells } from '../../../utils/allColumnsTables'
 
 const TableTerminals = ({ loading, data, handleDelete }) => {
-  const theme = useTheme()
+  const [order, setOrder] = useState('asc')
+  const [orderBy, setOrderBy] = useState('terminalSiteName')
+  const [page, setPage] = useState(0)
+  const [rowsPerPage, setRowsPerPage] = useState(10)
 
-  const actionTemplate = (options) => {
-    return (options && !options.children && typeof options.data.assignId === 'number'
-      ? (
-        <Box>
-          <CustomTooltipBtns type='error' title='Eliminar vinculación'>
-            <IconButton size='small' color='error' onClick={() => handleDelete(options.data.assignId, options.data)}>
-              <DeleteForeverTwoToneIcon fontSize='small' />
-            </IconButton>
-          </CustomTooltipBtns>
-        </Box>
-        )
-      : <Box minWidth={10} />)
+  const handleRequestSort = (event, property) => {
+    const isAsc = orderBy === property && order === 'asc'
+    setOrder(isAsc ? 'desc' : 'asc')
+    setOrderBy(property)
   }
 
-  const togglerTemplate = (node, options) => {
-    if (!node) {
-      return
-    }
-
-    const expanded = options.expanded
-
-    return options.props.level === 0 || (options.props.level === 1 && node.children)
-      ? (
-        <IconButton className='p-treetable-toggler p-link' size='small' sx={{ position: options.props.level === 1 && 'absolute', right: options.props.level === 1 && -10, top: options.props.level === 1 && '50%', bottom: options.props.level === 1 && '50%' }} onClick={options.onClick}>
-          {expanded ? <ExpandMoreTwoToneIcon fontSize='small' color={theme.palette.mode === 'light' ? 'primary' : 'white'} /> : <ChevronRightTwoToneIcon fontSize='small' color={theme.palette.mode === 'light' ? 'primary' : 'white'} />}
-        </IconButton>
-        )
-      : <Box ml={5} mt={5} />
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage)
   }
 
-  if (!data) return
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10))
+    setPage(0)
+  }
+
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0
+
+  const visibleRows = useMemo(
+    () => stableSort(data, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
+    [order, orderBy, page, rowsPerPage, data]
+  )
+
   return (
     <>
-      {data && (
-        <TreeTable
-          value={data} rowHover loading={loading} paginator id='tabla' rows={10} tableStyle={{
-            minWidth: '50rem',
-            width: '100%'
-          }}
-          togglerTemplate={togglerTemplate}
-          paginatorTemplate={{
-            layout: 'RowsPerPageDropdown CurrentPageReport PrevPageLink NextPageLink',
-            RowsPerPageDropdown: (options) => {
-              const dropdownOptions = [
-                { value: 5 },
-                { value: 10 },
-                { value: 25 }
-              ]
+      <TableContainer sx={{ maxWidth: '100%' }}>
+        <Table sx={{ maxWidth: '100%', '& .MuiTableCell-root': { borderColor: (theme) => theme.palette.grey[800] } }} aria-labelledby='tableTitle' size='medium'>
+          {!loading && data.length === 0 && <NoInfoOverlay />}
+          <EnhancedTableHead
+            order={order}
+            orderBy={orderBy}
+            onRequestSort={handleRequestSort}
+            headCells={headCells}
+          />
+          <TableBody>
+            {loading
+              ? <LoadingInfoTable headCells={headCells} />
+              : visibleRows.map((row) => {
+                const labelId = `enhanced-table-checkbox-${row.assignId}`
 
-              return (
-                <>
-                  <Box component='span' sx={{ color: theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white, userSelect: 'none', py: 3, px: 2 }}>
-                    Filas por página:
-                  </Box>
-                  <Select
-                    value={options.value}
-                    onChange={(e) => options.onChange(e.target)}
-                    size='small'
-                    sx={{
-                      border: 'none',
-                      outline: 'none',
-                      borderColor: theme.palette.background.paper,
-                      outlineColor: theme.palette.background.paper,
-                      '& .MuiSelect-select': {
-                        bgcolor: theme.palette.background.paper,
-                        color: theme.palette.primary.main
-                      },
-                      '& .MuiSelect-icon': {
-                        color: theme.palette.primary.main
-                      }
-                    }}
-                  >
-                    {dropdownOptions.map(({ value }) => (
-                      <MenuItem key={value} value={value}>{value}</MenuItem>
-                    ))}
-                  </Select>
-                </>
-              )
-            },
-            CurrentPageReport: (options) => {
-              return (
-                <Box component='span' sx={{ color: theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white, userSelect: 'none', width: '120px', textAlign: 'center' }}>
-                  {options.first} - {options.last} de {options.totalRecords}
-                </Box>
-              )
-            },
-            PrevPageLink: () => {
-              return (
-                <Box mx={1}>
-                  <ArrowBackIosNewTwoToneIcon sx={{ fontSize: '1em', color: theme.palette.mode === 'light' ? 'primary.dark' : 'primary.main' }} />
-                </Box>
-              )
-            },
-            NextPageLink: () => {
-              return (
-                <Box mx={1}>
-                  <ArrowForwardIosTwoToneIcon sx={{ fontSize: '1em', color: theme.palette.mode === 'light' ? 'primary.dark' : 'primary.main' }} />
-                </Box>
-              )
-            }
-          }}
-          currentPageReportTemplate='{first} - {last} de {totalRecords}'
-          paginatorLeft resizableColumns showGridlines columnResizeMode='expand'
-        >
-          <Column
-            field='clientName' header='Cliente' expander
-            headerStyle={{ color: theme.palette.mode === 'light' ? 'black' : 'white', textAlign: 'start', padding: 16, borderBottom: `1px solid ${alpha(theme.palette.grey[800], 0.7)}` }}
-            bodyStyle={{ color: theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[400], fontSize: '0.875rem', padding: 16, alignItems: 'center', borderBottom: `1px solid ${alpha(theme.palette.grey[800], 0.5)}`, position: 'relative' }}
-          />
-          <Column
-            field='fullName' header='Nombre/Usuario'
-            headerStyle={{ color: theme.palette.mode === 'light' ? 'black' : 'white', textAlign: 'start', padding: 16, borderBottom: `1px solid ${alpha(theme.palette.grey[800], 0.7)}` }}
-            bodyStyle={{ color: theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[400], fontSize: '0.875rem', padding: 16, alignItems: 'center', borderBottom: `1px solid ${alpha(theme.palette.grey[800], 0.5)}`, overflowWrap: 'break-word' }}
-          />
-          <Column
-            field='terminalSiteName' header='Nombre del sitio'
-            headerStyle={{ color: theme.palette.mode === 'light' ? 'black' : 'white', textAlign: 'start', padding: 16, borderBottom: `1px solid ${alpha(theme.palette.grey[800], 0.7)}` }}
-            bodyStyle={{ color: theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[400], fontSize: '0.875rem', padding: 16, alignItems: 'center', borderBottom: `1px solid ${alpha(theme.palette.grey[800], 0.5)}` }}
-          />
-          <Column
-            field='terminalLineOfService' header='Terminal Id'
-            headerStyle={{ color: theme.palette.mode === 'light' ? 'black' : 'white', textAlign: 'start', padding: 16, borderBottom: `1px solid ${alpha(theme.palette.grey[800], 0.7)}` }}
-            bodyStyle={{ color: theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[400], fontSize: '0.875rem', padding: 16, alignItems: 'center', borderBottom: `1px solid ${alpha(theme.palette.grey[800], 0.5)}` }}
-          />
-          <Column
-            field='terminalFriendlyName' header='Nombre personalizado'
-            headerStyle={{ color: theme.palette.mode === 'light' ? 'black' : 'white', textAlign: 'start', padding: 16, borderBottom: `1px solid ${alpha(theme.palette.grey[800], 0.7)}` }}
-            bodyStyle={{ color: theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[400], fontSize: '0.875rem', padding: 16, alignItems: 'center', borderBottom: `1px solid ${alpha(theme.palette.grey[800], 0.5)}` }}
-          />
-          <Column
-            field='dashboardName' header='Nombre del dashboard'
-            headerStyle={{ color: theme.palette.mode === 'light' ? 'black' : 'white', textAlign: 'start', padding: 16, borderBottom: `1px solid ${alpha(theme.palette.grey[800], 0.7)}` }}
-            bodyStyle={{ color: theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[400], fontSize: '0.875rem', padding: 16, alignItems: 'center', borderBottom: `1px solid ${alpha(theme.palette.grey[800], 0.5)}` }}
-          />
-          <Column field='assignId' header='Acciones' headerStyle={{ color: theme.palette.mode === 'light' ? 'black' : 'white', textAlign: 'start', borderBottom: `1px solid ${alpha(theme.palette.grey[800], 0.7)}`, minWidth: 100, width: 100 }} bodyStyle={{ borderBottom: `1px solid ${alpha(theme.palette.grey[800], 0.5)}` }} body={actionTemplate} />
-        </TreeTable>
-      )}
+                return (
+                  <Row
+                    key={labelId}
+                    element={row}
+                    labelId={labelId}
+                    page={page}
+                    handleDelete={handleDelete}
+                  />
+                )
+              })}
+            {emptyRows > 0 && (
+              <TableRow
+                style={{
+                  height: 53 * emptyRows
+                }}
+              >
+                <TableCell colSpan={6} />
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25]}
+        component='div'
+        sx={{
+          color: 'white',
+          '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': { color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white },
+          '& .MuiSelect-select, & .MuiSvgIcon-root': { color: (theme) => theme.palette.primary.main }
+        }}
+        count={data.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+        labelRowsPerPage='Filas por página:'
+        labelDisplayedRows={({ from, to, count }) => (`${from}-${to} de ${count}`)}
+      />
     </>
   )
 }

@@ -3,12 +3,12 @@ import { alpha, styled } from '@mui/material/styles'
 
 const CustomListItemButtonPrimary = styled(ListItemButton)(({ theme }) => ({
   '.MuiTouchRipple-child': {
-    backgroundColor: theme.palette.primary[800]
+    backgroundColor: theme.palette.mode === 'light' ? theme.palette.primary.main : theme.palette.primary.light
   },
   color: 'white',
   border: '1px solid',
   borderColor: 'transparent',
-  textAlign: 'left',
+  textAlign: 'right',
   transition: 'all 0.3s ease-in-out',
   '&:hover': {
     backgroundColor: theme.palette.mode === 'light' ? alpha(theme.palette.primary.main, 0.05) : alpha(theme.palette.primary.light, 0.01)
@@ -23,11 +23,14 @@ const CustomListItemButtonPrimary = styled(ListItemButton)(({ theme }) => ({
   },
   '&.Mui-selected .MuiListItemText-primary': {
     fontWeight: 800,
-    textAlign: 'right',
+    textAlign: 'left',
     color: theme.palette.mode === 'light' && theme.palette.common.black
   },
   '&.Mui-selected .MuiListItemText-secondary': {
     color: theme.palette.mode === 'light' && theme.palette.common.black
+  },
+  '.MuiListItemText-primary': {
+    transition: 'all 0.3s ease-in-out'
   },
   '&:hover .MuiListItemText-primary': {
     color: theme.palette.primary.main
@@ -39,7 +42,7 @@ const CustomListItemButtonPrimary = styled(ListItemButton)(({ theme }) => ({
 
 const CustomListItemButtonInfo = styled(ListItemButton)(({ theme }) => ({
   '.MuiTouchRipple-child': {
-    backgroundColor: theme.palette.primary[800]
+    backgroundColor: theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white
   },
   color: 'white',
   border: '1px solid',
@@ -71,5 +74,41 @@ const CustomListItemButtonInfo = styled(ListItemButton)(({ theme }) => ({
   }
 }))
 
-export { CustomListItemButtonInfo, CustomListItemButtonPrimary }
+const CustomListItemButtonInfoDisable = styled(ListItemButton)(({ theme }) => ({
+  '.MuiTouchRipple-child': {
+    backgroundColor: theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white
+  },
+  border: '1px solid',
+  borderColor: 'transparent',
+  textAlign: 'left',
+  transition: 'all 0.3s ease-in-out',
+  '&:hover': {
+    backgroundColor: theme.palette.mode === 'light' ? alpha(theme.palette.common.black, 0.05) : alpha(theme.palette.common.white, 0.05)
+  },
+  '.MuiListItemText-primary': {
+    transition: 'all 0.3s ease-in-out'
+  },
+  '&:hover .MuiListItemText-primary': {
+    color: theme.palette.grey[800]
+  },
+  '&.Mui-selected': {
+    backgroundColor: alpha(theme.palette.common.black, 0.06),
+    borderColor: theme.palette.grey[800],
+    backdropFilter: 'blur(60px)'
+  },
+  '&.Mui-selected .MuiListItemText-primary': {
+    fontWeight: 800,
+    textAlign: 'right'
+  },
+  '&.Mui-selected .MuiListItemText-secondary': {
+    fontWeight: theme.palette.mode === 'light' ? 400 : 600,
+    textAlign: 'right'
+  },
+  '&.Mui-selected:hover': {
+    backgroundColor: alpha(theme.palette.common.black, 0.06),
+    borderColor: theme.palette.grey[800]
+  }
+}))
+
+export { CustomListItemButtonInfo, CustomListItemButtonInfoDisable, CustomListItemButtonPrimary }
 

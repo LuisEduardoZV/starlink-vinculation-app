@@ -14,7 +14,9 @@ import PerfectScrollbar from 'react-perfect-scrollbar'
 // project imports
 import { BASE_URL_API } from '../../../config'
 import { apiCall } from '../../../contexts/api'
-import { CustomListItemButtonInfo as CustomListItemButton } from '../../../ui-components/CustomListItemButton'
+import useAuth from '../../../hooks/useAuth'
+import { CustomListItemButtonInfo as CustomListItemButton, CustomListItemButtonInfoDisable as CustomListItemButtonDisable } from '../../../ui-components/CustomListItemButton'
+import CustomTooltipBtns from '../../../ui-components/CustomTooltipBtns'
 import InputSearch from '../../../ui-components/InputSearch'
 import MainMirrorFade from '../../../ui-components/MainMirrorFade'
 
@@ -23,13 +25,15 @@ import 'react-perfect-scrollbar/dist/css/styles.css'
 const skeltonsLoaders = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
 const TermianlsList = ({ values, handleChange, inView, viewType }) => {
-  const { terminals } = values
+  const { terminals, client } = values
   const theme = useTheme()
+  const { user } = useAuth()
 
   const matchDown2Xl = useMediaQuery(theme.breakpoints.down('2xl'))
 
   const [data, setData] = useState([])
   const [allTerminal, setAllTerminals] = useState(data)
+  const [preSelected, setPreselected] = useState(null)
   const [loading, setLoading] = useState(true)
 
   const [selected, setSelected] = useState([])
@@ -96,11 +100,21 @@ const TermianlsList = ({ values, handleChange, inView, viewType }) => {
 
   useEffect(() => {
     (async () => {
+      if (viewType && client) {
+        const presSelRes = await apiCall({ url: `${BASE_URL_API}/getClientTerminales?id=${client}` })
+        setPreselected(presSelRes)
+      }
+      if (!client) setPreselected(null)
+    })()
+  }, [viewType, client])
+
+  useEffect(() => {
+    (async () => {
       if (viewType !== null) {
         try {
           let res = null
           if (viewType) res = await apiCall({ url: `${BASE_URL_API}/TerminalNotAsigment` })
-          else res = await apiCall({ url: `${BASE_URL_API}/getClientTerminales?id=${values.client}` })
+          else res = await apiCall({ url: `${BASE_URL_API}/getClientTerminales?id=${user.user.clientId}` })
           if (res) setData(res)
           else throw new Error('Error al obtener las terminales')
 
@@ -113,7 +127,7 @@ const TermianlsList = ({ values, handleChange, inView, viewType }) => {
     })()
 
     return () => setLoading(true)
-  }, [viewType, values.client])
+  }, [viewType, user])
 
   useEffect(() => {
     setAllTerminals(data.sort((a, b) => {
@@ -146,7 +160,7 @@ const TermianlsList = ({ values, handleChange, inView, viewType }) => {
         <PerfectScrollbar style={{ height: 'fit-content', maxHeight: matchDown2Xl ? '55vh' : '60vh', paddingLeft: 10, paddingRight: 15 }}>
           <List component={Box} display='flex' flexWrap='wrap' columnGap={1} rowGap={2}>
             {selected.length !== 0 && (
-              <Accordion sx={{ backgroundColor: 'transparent', width: '100%' }}>
+              <Accordion defaultExpanded sx={{ backgroundColor: 'transparent', width: '100%' }}>
                 <AccordionSummary expandIcon={<ExpandMoreTwoTone />}>
                   <Typography variant='h4' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[800] : theme.palette.grey[400] }} width='100%'>Terminal(es) Seleccionada(s):</Typography>
                 </AccordionSummary>
@@ -171,6 +185,24 @@ const TermianlsList = ({ values, handleChange, inView, viewType }) => {
                           }}
                         />
                       </CustomListItemButton>
+                    ))}
+                    {preSelected && preSelected.map(({ terminalId, terminalKitNumber, serviceLineNumber }) => (
+                      <CustomTooltipBtns
+                        key={terminalId}
+                        type='white'
+                        title='Previamente vinculada al cliente'
+                        followCursor
+                        arrow={false}
+                      >
+                        <CustomListItemButtonDisable
+                          selected
+                          sx={{ maxWidth: '31%', width: '100%', minWidth: '31%' }}
+                        >
+                          <ListItemText
+                            primary={terminalKitNumber} secondary={serviceLineNumber} color='secondary'
+                          />
+                        </CustomListItemButtonDisable>
+                      </CustomTooltipBtns>
                     ))}
                   </Box>
                 </AccordionDetails>

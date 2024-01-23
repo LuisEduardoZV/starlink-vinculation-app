@@ -6,7 +6,6 @@ import React from 'react'
 import { Box, Chip, Collapse, TableCell, TableRow, Typography } from '@mui/material'
 import { alpha } from '@mui/material/styles'
 
-import CustomSwitch from '../../ui-components/CustomSwitch'
 import InputBase from '../../ui-components/InputBase'
 
 const RowExpanded = ({ rowExpanded, element, mode, data, handleChange, handleChangeSwitch }) => {
@@ -58,87 +57,69 @@ const RowExpanded = ({ rowExpanded, element, mode, data, handleChange, handleCha
                 borderRadius: '0.2rem',
                 boxShadow: 5,
                 gap: 1,
-                justifyContent: 'space-around'
+                justifyContent: 'space-around',
+                alignItems: 'center'
               }}
             >
-              <Box display='flex' flex={1} gap={1} alignItems='center'>
-                {mode && data.isMobile
-                  ? (<InputBase
-                      name='terminalLatitude'
-                      value={data.terminalLatitude}
-                      label='Latitud'
-                      variant='filled'
-                      size='small'
-                      fullWidth
-                      color='primary'
-                      required
-                      onChange={handleChange}
-                     />)
-                  : (
-                    <>
-                      <Typography variant='subtitle1' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[800] : alpha(theme.palette.common.white, 0.8) }}>
-                        Latitud:
-                      </Typography>
-                      <Typography>{element.terminalLatitude}</Typography>
-                    </>
-                    )}
-              </Box>
-              <Box display='flex' flex={1} gap={1} alignItems='center'>
+              {!element.isMobile && (
+                <>
+                  <Box display='flex' flex={1} gap={1} alignItems='center'>
+                    {mode
+                      ? (<InputBase
+                          name='terminalLatitude'
+                          value={data.terminalLatitude}
+                          label='Latitud'
+                          variant='filled'
+                          size='small'
+                          fullWidth
+                          color='primary'
+                          required
+                          onChange={handleChange}
+                         />)
+                      : (
+                        <>
+                          <Typography variant='subtitle1' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[800] : alpha(theme.palette.common.white, 0.8) }}>
+                            Latitud:
+                          </Typography>
+                          <Typography>{element.terminalLatitude}</Typography>
+                        </>
+                        )}
+                  </Box>
+                  <Box display='flex' flex={1} gap={1} alignItems='center'>
 
-                {mode && data.isMobile
-                  ? (<InputBase
-                      name='terminalLongitude'
-                      value={data.terminalLongitude}
-                      label='Longitud'
-                      variant='filled'
-                      size='small'
-                      fullWidth
-                      color='primary'
-                      required
-                      onChange={handleChange}
-                     />)
-                  : (
-                    <>
-                      <Typography variant='subtitle1' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[800] : alpha(theme.palette.common.white, 0.8) }}>
-                        Longitud:
-                      </Typography>
-                      <Typography>{element.terminalLongitude}</Typography>
-                    </>
-                    )}
-              </Box>
+                    {mode
+                      ? (<InputBase
+                          name='terminalLongitude'
+                          value={data.terminalLongitude}
+                          label='Longitud'
+                          variant='filled'
+                          size='small'
+                          fullWidth
+                          color='primary'
+                          required
+                          onChange={handleChange}
+                         />)
+                      : (
+                        <>
+                          <Typography variant='subtitle1' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[800] : alpha(theme.palette.common.white, 0.8) }}>
+                            Longitud:
+                          </Typography>
+                          <Typography>{element.terminalLongitude}</Typography>
+                        </>
+                        )}
+                  </Box>
+                </>)}
               <Box display='flex' flex={2} gap={1} alignItems='center'>
                 <Typography variant='subtitle1' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[800] : alpha(theme.palette.common.white, 0.8) }}>
                   Número de la línea de servicio:
                 </Typography>
                 <Typography>{element.serviceLineNumber}</Typography>
               </Box>
-              {!mode && (
-                <Box display='flex' flex={1} gap={1} alignItems='center'>
-                  <Typography variant='subtitle1' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[800] : alpha(theme.palette.common.white, 0.8) }}>
-                    Histórico:
-                  </Typography>
-                  <Chip label={element.dataHistoric ? 'Activado' : 'Desactivado'} sx={{ color: (theme) => (element.dataHistoric ? theme.palette.mode === 'light' ? theme.palette.primary[800] : theme.palette.success.dark : theme.palette.error.main), borderColor: (theme) => (element.dataHistoric ? theme.palette.mode === 'light' ? theme.palette.primary[800] : theme.palette.success.dark : theme.palette.error.main) }} clickable size='small' variant='outlined' />
-                </Box>
-              )}
               <Box display='flex' flex={1} gap={1} alignItems='center' position='relative' height='max-content'>
-                {mode
-                  ? (<CustomSwitch
-                      value={Boolean(data.isMobile)}
-                      handleChange={handleChangeSwitch}
-                      name='isMobile'
-                      label='Terminal movible'
-                      option1='Desactivado'
-                      option2='Activado'
-                      sxLabel={{ top: 0, left: 0 }}
-                     />)
-                  : (
-                    <>
-                      <Typography variant='subtitle1' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[800] : alpha(theme.palette.common.white, 0.8) }}>
-                        Móvil:
-                      </Typography>
-                      <Chip label={element.isMobile ? 'Activado' : 'Desactivado'} sx={{ color: (theme) => (element.isMobile ? theme.palette.mode === 'light' ? theme.palette.primary[800] : theme.palette.success.dark : theme.palette.error.main), borderColor: (theme) => (element.isMobile ? theme.palette.mode === 'light' ? theme.palette.primary[800] : theme.palette.success.dark : theme.palette.error.main) }} clickable size='small' variant='outlined' />
-                    </>
-                    )}
+                <Typography variant='subtitle1' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[800] : alpha(theme.palette.common.white, 0.8) }}>
+                  Tipo de terminal:
+                </Typography>
+                <Chip label={element.isMobile ? 'Terminal Movible' : 'Terminal Fija'} sx={{ color: (theme) => (element.isMobile ? theme.palette.mode === 'light' ? theme.palette.primary[800] : theme.palette.success.dark : theme.palette.error.main), borderColor: (theme) => (element.isMobile ? theme.palette.mode === 'light' ? theme.palette.primary[800] : theme.palette.success.dark : theme.palette.error.main) }} clickable size='small' variant='outlined' />
               </Box>
             </Box>
           </Box>

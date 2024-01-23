@@ -16,6 +16,8 @@ import {
   Typography
 } from '@mui/material'
 
+import PerfectScrollBar from 'react-perfect-scrollbar'
+
 function not (a, b) {
   return a.filter(({ terminalId }) => b.findIndex((op) => (op?.terminalId === terminalId)) === -1)
 }
@@ -76,7 +78,7 @@ export default function TransferList ({ terminals, termSelected, setNewTerms, di
   }
 
   const customList = (title, items) => (
-    <Box>
+    <Box width='100%' position='relative'>
       <CardHeader
         sx={{ px: 2, py: 1 }}
         avatar={
@@ -93,52 +95,51 @@ export default function TransferList ({ terminals, termSelected, setNewTerms, di
           />
         }
         title={title}
-        subheader={`${numberOfChecked(items)}/${items.length} seleccionados`}
       />
       <Divider sx={{ borderColor: 'grey.500' }} />
-      <List
-        sx={{
-          width: 350,
-          height: 'max-content',
-          maxHeight: '50vh',
-          bgcolor: 'transparent',
-          overflow: 'auto'
-        }}
-        dense
-        component='div'
-        role='list'
-      >
-        {items.map((op) => {
-          const { terminalId, terminalLineOfService, terminalKitNumber } = op
-          const labelId = `transfer-list-all-item-${terminalId}-label`
+      <PerfectScrollBar style={{ maxHeight: '35vh', height: '100%', overflowX: 'hidden' }}>
+        <List
+          sx={{
+            width: '40vw',
+            height: 'max-content',
+            bgcolor: 'transparent'
+          }}
+          dense
+          component='div'
+          role='list'
+        >
+          {items.map((op) => {
+            const { terminalId, terminalLineOfService, terminalKitNumber } = op
+            const labelId = `transfer-list-all-item-${terminalId}-label`
 
-          return (
-            <Fragment key={terminalId}>
-              <ListItem
-                role='listitem'
-                color='primary'
-                onClick={handleToggle(op)}
-                sx={{
-                  mb: 1.5
-                }}
-              >
-                <ListItemIcon>
-                  <Checkbox
-                    checked={checked.findIndex((op) => (op.terminalId === terminalId)) !== -1}
-                    tabIndex={-1}
-                    disableRipple
-                    disabled={disabled}
-                    inputProps={{
-                      'aria-labelledby': labelId
-                    }}
-                  />
-                </ListItemIcon>
-                <ListItemText id={labelId} primary={<Typography variant='body1'>{terminalKitNumber}</Typography>} secondary={<Typography variant='subtitle2'>{terminalLineOfService}</Typography>} sx={{ color: (theme) => theme.palette.mode === 'light' ? 'grey.800' : 'white' }} />
-              </ListItem>
-            </Fragment>
-          )
-        })}
-      </List>
+            return (
+              <Fragment key={terminalId}>
+                <ListItem
+                  role='listitem'
+                  color='primary'
+                  onClick={handleToggle(op)}
+                  sx={{
+                    mb: 1.5
+                  }}
+                >
+                  <ListItemIcon>
+                    <Checkbox
+                      checked={checked.findIndex((op) => (op.terminalId === terminalId)) !== -1}
+                      tabIndex={-1}
+                      disableRipple
+                      disabled={disabled}
+                      inputProps={{
+                        'aria-labelledby': labelId
+                      }}
+                    />
+                  </ListItemIcon>
+                  <ListItemText id={labelId} primary={<Typography variant='body1'>{terminalKitNumber}</Typography>} secondary={<Typography variant='subtitle2'>{terminalLineOfService}</Typography>} sx={{ color: (theme) => theme.palette.mode === 'light' ? 'grey.800' : 'white' }} />
+                </ListItem>
+              </Fragment>
+            )
+          })}
+        </List>
+      </PerfectScrollBar>
     </Box>
   )
 
@@ -149,7 +150,7 @@ export default function TransferList ({ terminals, termSelected, setNewTerms, di
 
   return (
     <Grid container spacing={2} alignItems='start'>
-      <Grid item>{customList('Disponibles', left)}</Grid>
+      <Grid item>{customList('Terminales disponibles', left)}</Grid>
       <Grid item alignSelf='center'>
         <Grid container direction='column' alignItems='center'>
           <Button
@@ -174,7 +175,7 @@ export default function TransferList ({ terminals, termSelected, setNewTerms, di
           </Button>
         </Grid>
       </Grid>
-      <Grid item>{customList('Asignados', right)}</Grid>
+      <Grid item>{customList('Terminales asignadas', right)}</Grid>
     </Grid>
   )
 }

@@ -41,7 +41,7 @@ const Row = ({ element, hasExtendedRow, RowTemplate, page, onEdit, onDelete }) =
               <IconButton size='small' sx={{ color: 'primary.main' }} onClick={() => { onEdit(element) }}><EditNoteTwoToneIcon /></IconButton>
             </CustomTooltipBtns>
             <CustomTooltipBtns key='terminalsbtn' placement='top' type={theme.palette.mode === 'light' ? 'white' : 'info'} title='Ver terminales'>
-              <IconButton size='small' sx={{ color: 'grey.700' }} onClick={() => navigate('/terminalsAssigned', { state: { userId: element.userId } })}><SatelliteAltTwoTone fontSize='small' /></IconButton>
+              <IconButton size='small' sx={{ color: 'grey.700' }} onClick={() => navigate('/terminalsAssigned', { state: { userId: element.userId, typeViewTerminals: 1 } })}><SatelliteAltTwoTone fontSize='small' /></IconButton>
             </CustomTooltipBtns>
             <CustomTooltipBtns key='deletebtn' placement='top' type='error' title='Eliminar'>
               <IconButton size='small' color='error' onClick={() => { onDelete(element) }}><PersonRemoveTwoToneIcon /></IconButton>

@@ -7,8 +7,9 @@ import DeleteForeverTwoToneIcon from '@mui/icons-material/DeleteForeverTwoTone'
 import { Box, IconButton, TableCell, TableRow } from '@mui/material'
 
 // project imports
+import CustomTooltipBtns from '../../ui-components/CustomTooltipBtns'
 
-const Row = ({ element, handleClick, isItemSelected, hasExtendedRow, hasMoreActions, RowTemplate, page }) => {
+const Row = ({ element, handleDelete, hasExtendedRow, RowTemplate, page }) => {
   const [rowExpanded, setRowExpanded] = useState(false)
 
   useEffect(() => {
@@ -17,24 +18,21 @@ const Row = ({ element, handleClick, isItemSelected, hasExtendedRow, hasMoreActi
 
   return (
     <>
-      <TableRow hover aria-checked={isItemSelected} tabIndex={-1} sx={{ cursor: 'pointer' }}>
+      <TableRow hover tabIndex={-1}>
         <TableCell />
-        <TableCell component='th' align='left' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[400] }}>{element.fullName}</TableCell>
-        <TableCell align='left' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[400] }}>{element.terminalSiteName}</TableCell>
+        <TableCell component='th' align='left' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[400] }}>{element.terminalSiteName}</TableCell>
+        <TableCell align='left' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[400] }}>{element.terminalLineOfService}</TableCell>
+        <TableCell align='left' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[400] }}>{element.terminalFriendlyName}</TableCell>
         <TableCell align='left' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[400] }}>{element.dashboardName}</TableCell>
-        {hasMoreActions && (
-          <TableCell width='auto'>
-            <Box sx={{ width: 'auto', display: 'flex' }}>
-              <IconButton
-                size='small' onClick={(e) => {
-                  handleClick(e, element.terminalId)
-                }}
-              >
-                <DeleteForeverTwoToneIcon fontSize='small' sx={{ color: 'error.main' }} />
+        <TableCell align='left' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[400] }}>
+          <Box>
+            <CustomTooltipBtns type='error' title='Eliminar vinculación'>
+              <IconButton size='small' color='error' onClick={() => handleDelete(element.assignId, element)}>
+                <DeleteForeverTwoToneIcon fontSize='small' />
               </IconButton>
-            </Box>
-          </TableCell>
-        )}
+            </CustomTooltipBtns>
+          </Box>
+        </TableCell>
       </TableRow>
       {hasExtendedRow && <RowTemplate rowExpanded={rowExpanded} element={element} />}
     </>
@@ -43,12 +41,10 @@ const Row = ({ element, handleClick, isItemSelected, hasExtendedRow, hasMoreActi
 
 Row.propTypes = {
   element: PropTypes.object.isRequired,
-  handleClick: PropTypes.func.isRequired,
+  handleDelete: PropTypes.func.isRequired,
   changeMode: PropTypes.func,
-  isItemSelected: PropTypes.bool.isRequired,
   page: PropTypes.number.isRequired,
   hasExtendedRow: PropTypes.bool,
-  hasMoreActions: PropTypes.bool,
   rowMode: PropTypes.number,
   RowTemplate: PropTypes.any
 }

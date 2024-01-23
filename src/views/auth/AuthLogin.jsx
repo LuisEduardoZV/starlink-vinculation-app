@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 // mui imports
 import VisibilityOffTwoToneIcon from '@mui/icons-material/VisibilityOffTwoTone'
 import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone'
-import { Box, Button, IconButton, InputAdornment, Tooltip } from '@mui/material'
+import { Box, Button, IconButton, InputAdornment, Tooltip, Typography } from '@mui/material'
 import { alpha, createTheme, useTheme } from '@mui/material/styles'
 
 // third imports
@@ -34,6 +34,7 @@ const AuthLogin = ({
 
   return (
     <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column', gap: 4, color: 'white' }}>
+      <Typography variant='h2' textAlign='right' color='white'>BackEnd Tangerine Metrics</Typography>
       <Tooltip arrow followCursor disableInteractive {...errors.user && { title: errors.user }}>
         <InputBase
           label='Usuario'

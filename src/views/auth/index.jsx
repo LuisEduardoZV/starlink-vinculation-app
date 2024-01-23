@@ -15,8 +15,7 @@ import MainMirrorCard from '../../ui-components/MainMirrorCard'
 import AuthLogin from './AuthLogin'
 
 // assets
-import bg from '../../assets/image/fondo-starlink.jpeg'
-import icon from '../../assets/image/starlink.png'
+import bg from '../../assets/image/starlink.png'
 
 import { requiredText } from '../../utils/labelsErrorsFormik'
 
@@ -42,14 +41,63 @@ const Auth = () => {
       alignItems: 'start',
       justifyContent: 'start',
       flex: 1,
-      backgroundImage: `url(${bg})`,
-      backgroundRepeat: 'no-repeat',
-      backgroundSize: 'cover',
-      backgroundOrigin: 'border-box',
-      backgroundPosition: 'bottom'
+      bgcolor: (theme) => theme.palette.common.black,
+      overflow: 'hidden'
     }}
     >
-      {/*, animation: 'floating 3s ease-in-out infinite', */}
+      <Box
+        sx={{
+          position: 'absolute',
+          width: '68%',
+          height: '2px',
+          bgcolor: 'white',
+          boxShadow: '0 0 20px white, 0 0 20px white inset',
+          top: '74%',
+          transform: 'translate(0,-74%) rotate(-10deg)',
+          border: (theme) => `1px solid ${theme.palette.grey[200]}`,
+          animation: 'blinkNeon 1.5s linear infinite'
+        }}
+      />
+      <Box
+        sx={{
+          position: 'absolute',
+          width: '25%',
+          height: '8px',
+          bgcolor: 'white',
+          boxShadow: '0 0 20px white, 0 0 20px white inset',
+          top: '10%',
+          right: '15%',
+          transform: 'translate(0,-10%) rotate(-70deg)',
+          border: (theme) => `1px solid ${theme.palette.grey[200]}`,
+          animation: 'blinkNeon 3s linear infinite'
+        }}
+      />
+      <Box
+        sx={{
+          position: 'absolute',
+          width: 350,
+          height: 350,
+          top: '35%',
+          bgcolor: (theme) => alpha(theme.palette.grey[400], 0.04),
+          borderRadius: '50%',
+          right: '21%',
+          boxShadow: (theme) => `0px 0px 300px 300px ${alpha(theme.palette.grey[700], 0.1)}`,
+          animation: 'floating 3s ease-in-out infinite'
+        }}
+      />
+      <Box
+        component='img'
+        sx={{
+          position: 'absolute',
+          height: 500,
+          width: 500,
+          top: '15%',
+          right: '15%',
+          animation: 'floating 3s ease-in-out infinite'
+        }}
+        alt='Starlink product'
+        src={bg}
+      />
       <Box sx={{ position: 'relative', minWidth: 450, width: 'max-content', borderRadius: 2, zIndex: 5, mx: 5, my: 20 }}>
         <MainMirrorCard sx={{
           display: 'flex',
