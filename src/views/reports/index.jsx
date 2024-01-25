@@ -55,34 +55,45 @@ const Reportes = () => {
 
   const filterOptions = createFilterOptions({
     matchFrom: 'any',
-    stringify: (option) => (option.terminalLineOfService || option.terminalKitNumber)
+    stringify: (option) => (option.terminalKitNumber + option.terminalLineOfService)
   })
 
   const filterOptionsClients = createFilterOptions({
     matchFrom: 'any',
-    stringify: (option) => (option.clienName || option.clientEmail)
+    stringify: (option) => (option.clienName + option.clientEmail)
   })
 
-  const div2PDF = (e) => {
+  const div2PDF = async (e) => {
     const but = e.target
     but.style.display = 'none'
     const input = window.document.getElementsByClassName('div2PDF')[0]
     input.style.backgroundColor = 'transparent'
 
+    let clientName = 'Terminal no vinculada a ningún cliente'
+    const res = await apiCall({ url: `${BASE_URL_API}/getAsigment` })
+    if (res) {
+      res.forEach((op) => {
+        if (op.fullName && op.terminalId) {
+          if (Number(terminalSelected.terminalId) === Number(op.terminalId)) clientName = op.fullName
+        }
+      })
+    }
+
     html2canvas(input).then(canvas => {
       const img = canvas.toDataURL('image/png')
       const pdf = new jsPDF('l', 'pt')
-      pdf.setFontSize(20)
+      pdf.setFontSize(25)
       pdf.text(`Consumo de datos de la terminal: ${terminalSelected?.terminalKitNumber}`, 20, 30)
       pdf.setFontSize(15)
-      pdf.text(`Rango de fechas: del ${firstDate} al ${secondDate}`, 20, 55)
-      pdf.text(`Línea de servicio: ${terminalSelected?.terminalLineOfService}`, 20, 75)
-      pdf.text(`Nombre del sitio: ${terminalSelected?.terminalSiteName}`, 20, 95)
+      pdf.text(`Fecha: ${firstDate.format('DD/MM/YYYY')} - ${secondDate.format('DD/MM/YYYY')}`, 20, 55)
+      pdf.text(`Cliente: ${clientName}`, 420, 55)
+      pdf.text(`Nombre del sitio: ${terminalSelected?.terminalSiteName}`, 20, 80)
+      pdf.text(`Línea de servicio: ${terminalSelected?.terminalLineOfService}`, 20, 105)
       pdf.addImage(
         img,
         'png',
         15,
-        100,
+        110,
         842,
         500
       )
@@ -273,7 +284,6 @@ const Reportes = () => {
                       value={firstDate}
                       onChange={(newValue) => {
                         setFirstDate(newValue)
-                        setSecondDate(newValue)
                       }}
                       disableFuture
                       sx={{

@@ -66,8 +66,12 @@ export const AuthContextProvider = ({ children }) => {
   const loginProvider = async (user, password) => {
     try {
       const res = await apiCall({ url: `${BASE_URL_API}/Login?email=${user}&password=${password}` })
-      if (res) {
+      if (res && res.email && res.fullName) {
         if (!res.isAdmin && !res.isPowerUser) return -1
+        if (!res.isPowerUser && res.isAdmin) {
+          const hasTerminals = await apiCall({ url: `${BASE_URL_API}/getAsigmentUser?UserId=${res.userId}` })
+          if (Array.isArray(hasTerminals) && hasTerminals.length === 0) return -2
+        }
         setConfig({
           ...config,
           isLoggedIn: true,
@@ -81,8 +85,9 @@ export const AuthContextProvider = ({ children }) => {
             user: res
           }
         })
+        return res
       }
-      return !!res
+      return !res
     } catch (error) {
       Promise.reject(error)
       console.log(error.code)

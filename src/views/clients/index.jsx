@@ -14,6 +14,7 @@ import { Box, IconButton } from '@mui/material'
 // project imports
 import { useDispatch, useSelector } from '../../store'
 import { deleteClient, getAllClients, resetErrorUsed, setClientInfo } from '../../store/slices/clients'
+import AsideBackButton from '../../ui-components/AsideBackButton'
 import AsideMenuCrud from '../../ui-components/AsideMenuCrud'
 import CustomTooltipBtns from '../../ui-components/CustomTooltipBtns'
 import MainMirrorFade from '../../ui-components/MainMirrorFade'
@@ -142,6 +143,13 @@ const Clients = () => {
             </IconButton>
           </CustomTooltipBtns>]}
       />
+
+      {collapsed && (
+        <AsideBackButton
+          inFade={!collapsed}
+          handleBack={handleCancel}
+        />
+      )}
 
       <Box sx={{ display: 'flex', flex: 1, px: '10%', position: 'relative' }}>
         <MainMirrorFade open={!collapsed}>

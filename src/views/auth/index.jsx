@@ -78,10 +78,10 @@ const Auth = () => {
           width: 350,
           height: 350,
           top: '35%',
-          bgcolor: (theme) => alpha(theme.palette.grey[400], 0.04),
+          bgcolor: (theme) => alpha(theme.palette.grey[500], 0.07),
           borderRadius: '50%',
           right: '21%',
-          boxShadow: (theme) => `0px 0px 300px 300px ${alpha(theme.palette.grey[700], 0.1)}`,
+          boxShadow: (theme) => `0px 0px 350px 350px ${alpha(theme.palette.grey[700], 0.05)}`,
           animation: 'floating 3s ease-in-out infinite'
         }}
       />
@@ -128,8 +128,10 @@ const Auth = () => {
 
                 if (account === -1) {
                   toast.error('No tiene permisos suficientes para ingresar', { id: notify })
+                } else if (account === -2) {
+                  toast.success('Acceso denegado. Es necesario tener terminales vinculadas para acceder', { id: notify })
                 } else if (account) {
-                  toast.success(`Sesión iniciada como: ${values.user}`, { id: notify })
+                  toast.success(`Sesión iniciada. Bienvenido(a) ${account.fullName}`, { id: notify })
                 } else {
                   toast.error('El usuario y/o contraseña no son correctos', { id: notify })
                 }

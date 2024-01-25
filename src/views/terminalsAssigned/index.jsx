@@ -64,7 +64,11 @@ const TerminalsAssigned = () => {
           if (
             available[i]?.fullName?.toLowerCase().includes(filters[j].trim().toLowerCase()) ||
             available[i]?.dashboardName?.toLowerCase()?.includes(filters[j].trim().toLowerCase()) ||
-            available[i]?.terminalSiteName.toLowerCase().includes(filters[j].trim().toLowerCase())
+            available[i]?.terminalSiteName.toLowerCase().includes(filters[j].trim().toLowerCase()) ||
+            available[i]?.clientName.toLowerCase().includes(filters[j].trim().toLowerCase()) ||
+            available[i]?.email.toLowerCase().includes(filters[j].trim().toLowerCase()) ||
+            available[i]?.terminalLineOfService.toLowerCase().includes(filters[j].trim().toLowerCase()) ||
+            available[i]?.terminalFriendlyName.toLowerCase().includes(filters[j].trim().toLowerCase())
           ) {
             if (!newRows.find((value) => value === available[i])) {
               newRows.push(available[i])
@@ -89,7 +93,11 @@ const TerminalsAssigned = () => {
           if (
             available[i].fullName?.toLowerCase().includes(filters[j].trim().toLowerCase()) ||
             available[i].dashboardName?.toLowerCase()?.includes(filters[j].trim().toLowerCase()) ||
-            available[i].terminalSiteName.toLowerCase().includes(filters[j].trim().toLowerCase())
+            available[i].terminalSiteName.toLowerCase().includes(filters[j].trim().toLowerCase()) ||
+            available[i]?.clientName.toLowerCase().includes(filters[j].trim().toLowerCase()) ||
+            available[i]?.email.toLowerCase().includes(filters[j].trim().toLowerCase()) ||
+            available[i]?.terminalLineOfService.toLowerCase().includes(filters[j].trim().toLowerCase()) ||
+            available[i]?.terminalFriendlyName.toLowerCase().includes(filters[j].trim().toLowerCase())
           ) {
             if (!newRows.find((value) => value === available[i])) {
               newRows.push(available[i])

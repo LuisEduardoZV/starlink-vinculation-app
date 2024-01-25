@@ -27,7 +27,7 @@ const AuthLogin = ({
         main: theme.palette.common.white
       },
       common: {
-        white: theme.palette.grey[500]
+        white: theme.palette.grey[200]
       }
     }
   })
