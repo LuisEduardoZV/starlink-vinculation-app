@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 // mui imports
-import { Box } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import { alpha } from '@mui/material/styles'
 
 // third
@@ -10,6 +10,7 @@ import { toast } from 'sonner'
 import * as Yup from 'yup'
 
 // project imports
+import { SYS_VERSION } from '../../config'
 import useAuth from '../../hooks/useAuth'
 import MainMirrorCard from '../../ui-components/MainMirrorCard'
 import AuthLogin from './AuthLogin'
@@ -98,6 +99,17 @@ const Auth = () => {
         alt='Starlink product'
         src={bg}
       />
+      <Box
+        sx={{ position: 'absolute', top: 0, right: 0, bgcolor: 'transparent' }}
+      >
+        <Typography
+          variant='caption'
+          py={1}
+          bgcolor='transparent'
+        >
+          v{SYS_VERSION}
+        </Typography>
+      </Box>
       <Box sx={{ position: 'relative', minWidth: 450, width: 'max-content', borderRadius: 2, zIndex: 5, mx: 5, my: 20 }}>
         <MainMirrorCard sx={{
           display: 'flex',

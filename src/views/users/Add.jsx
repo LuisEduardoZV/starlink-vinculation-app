@@ -25,7 +25,7 @@ const Add = ({ handleReset, client, backBtn }) => {
       <Formik
         initialValues={{
           userId: 0,
-          clientId: client,
+          clientId: Number(client),
           fullName: '',
           email: '',
           password: '',

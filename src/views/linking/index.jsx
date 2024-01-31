@@ -16,6 +16,7 @@ import useAuth from '../../hooks/useAuth'
 import FirstContainer from './FirstContainer'
 import SecondContainer from './SecondContainer'
 
+import { MSG_SUCCESS_LINK_CLIENTTERMINAL } from '../../utils/constants'
 import { requiredText } from '../../utils/labelsErrorsFormik'
 
 const Linking = () => {
@@ -30,29 +31,93 @@ const Linking = () => {
     client: user?.user?.isPowerUser ? null : user?.user?.clientId,
     terminals: [],
     userVinculationInfo: [],
+    clientName: '',
     submit: null
   }), [user])
 
+  function finishRedirect (name, client, toTerminals) {
+    if (toTerminals) {
+      navigate('/terminals', {
+        replace: true,
+        state: {
+          view: user?.user?.isPowerUser ? 1 : 2, client: name, viewByClient: client
+        }
+      })
+    } else navigate('/terminalsAssigned', { replace: true, state: { view: user?.user?.isPowerUser ? 3 : 2 } })
+  }
+
   const handleContinue = () => setView((prev) => prev + 1)
+
+  const handleCancel = () => setView((prev) => prev - 1)
+
+  const handleLinkWithClient = async (client, terminals, clientName) => {
+    const toastId = toast.loading('Vinculando...')
+    try {
+      const newTerminals = terminals.map(({ terminalId }) => ({
+        terminalId,
+        clientId: client,
+        clientTerminal_Id: 0
+      }))
+      const res = await apiCallWithBody({ url: `${BASE_URL_API}/Client_TerminalAll`, body: JSON.stringify(newTerminals) })
+
+      if (res === MSG_SUCCESS_LINK_CLIENTTERMINAL) {
+        toast.success('Se ha vinculado correctamente las terminales con el cliente', { id: toastId })
+        finishRedirect(clientName, client, 1)
+      } else throw new Error()
+    } catch (error) {
+      console.log(error)
+      toast.error('Error al vincular las terminales con el cliente', { id: toastId })
+    }
+  }
+
+  const handleUnlinkWithClient = async (id) => {
+    const toastId = toast.loading('Desvinculando...')
+    try {
+      const res = await apiCallWithBody({ url: `${BASE_URL_API}/ClientTerminals/${id}`, method: 'DELETE' })
+      if (res && Array.isArray(res)) {
+        toast.success('Se ha desvinculado correctamente', { id: toastId })
+        return true
+      } else throw new Error('Error al desvincular la terminal con el cliente')
+    } catch (error) {
+      console.log(error)
+      toast.error(error.message, { id: toastId })
+    }
+  }
+
+  const validationSchema = useMemo(() => {
+    if (user && user.user && user.user.isPowerUser) {
+      return Yup.object().shape({
+        client: Yup.string().required(requiredText),
+        terminals: Yup.array().min(1, 'Debe seleccionar por lo menos una terminal').required(requiredText)
+      })
+    } else {
+      return Yup.object().shape({
+        client: Yup.string().required(requiredText),
+        terminals: Yup.array()
+      })
+    }
+  }, [user])
 
   useEffect(() => {
     if (user && user.user && user.user.isPowerUser) setViewType(true)
-    else setViewType(false)
+    else {
+      setViewType(false)
+      handleContinue()
+    }
   }, [user])
 
   return (
-    <Box>
+    <Box position='relative' minHeight='max-content'>
       <Formik
         initialValues={initVal}
-        validationSchema={Yup.object().shape({
-          client: Yup.string().required(requiredText),
-          terminals: Yup.array().min(1, 'Debe seleccionar por lo menos una terminal').required(requiredText)
-        })}
+        validationSchema={validationSchema}
         onSubmit={async (values, { setStatus, setSubmitting }) => {
           delete values.submit
 
           const toastId = toast.loading('Vinculando...')
           try {
+            if (values.terminals && values.terminals.length > 0) await handleLinkWithClient(values.client, values.terminals, values.clientName)
+
             const usersInfo = []
             for (let i = 0; i < values.userVinculationInfo.length; i++) {
               const user = values.userVinculationInfo[i]
@@ -97,7 +162,7 @@ const Linking = () => {
               }
             }
 
-            console.log(usersInfo)
+            // console.log(usersInfo)
 
             const globalData = []
             for (let i = 0; i < usersInfo.length; i++) {
@@ -113,18 +178,17 @@ const Linking = () => {
             const response = await apiCallWithBody({ url: `${BASE_URL_API}/AssignsALL`, method: 'POST', body: JSON.stringify(globalData) })
 
             if (response === 'Insert') {
-              toast.success('Se han vinculado correctamente', { id: toastId })
+              toast.success('Se han vinculado correctamente los usuarios', { id: toastId })
               setStatus({ success: true })
               setSubmitting(false)
-              if (user.user.isPowerUser) navigate('/terminalsAssigned', { replace: true, state: { view: 4 } })
-              else navigate(`/clients/${user.user.clientId}/users`, { replace: true, state: { view: 0 } })
+              finishRedirect(values.clientName, values.client, 0)
             }
           } catch (error) {
             toast.error(error.message, { id: toastId })
           }
         }}
       >
-        {({ values, errors, touched, handleSubmit, setFieldValue, handleBlur }) => (
+        {({ values, handleSubmit, setFieldValue }) => (
           <form noValidate onSubmit={handleSubmit}>
             <Box sx={{ display: 'flex', px: '4%', gap: 5, height: '100%', width: '100%', justifyContent: 'center' }}>
               <FirstContainer
@@ -133,15 +197,15 @@ const Linking = () => {
                 handleChange={setFieldValue}
                 handleContinue={handleContinue}
                 viewType={viewType}
+                handleLinkWithClient={handleLinkWithClient}
+                handleUnlinkWithClient={handleUnlinkWithClient}
               />
               <SecondContainer
                 inView={view}
                 values={values}
-                errors={errors}
-                touched={touched}
                 handleChange={setFieldValue}
-                handleBlur={handleBlur}
                 viewType={viewType}
+                handleCancel={handleCancel}
               />
             </Box>
           </form>

@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useMemo, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 
 // third
 import { toast } from 'sonner'
@@ -7,24 +8,27 @@ import { toast } from 'sonner'
 // mui imports
 import LeakAddTwoToneIcon from '@mui/icons-material/LeakAddTwoTone'
 import RefreshTwoToneIcon from '@mui/icons-material/RefreshTwoTone'
-import { Box, IconButton } from '@mui/material'
+import { Box, IconButton, Typography } from '@mui/material'
 
 // project imports
 import useAuth from '../../hooks/useAuth'
 import AsideMenuCrud from '../../ui-components/AsideMenuCrud'
 import CustomTooltipBtns from '../../ui-components/CustomTooltipBtns'
 import MainMirrorCard from '../../ui-components/MainMirrorCard'
+import ModalDelete from '../../ui-components/ModalDelete'
 import TableTerminals from './components/TableTerminals'
+// import ViewByClient from './components/ViewByClient'
 
 // services
 import { useDispatch, useSelector } from '../../store'
-import { getAllTerminals, getTerminalsByClient, modifyTerminal, resetErrorUsed } from '../../store/slices/terminals'
+import { getAllTerminals, getTerminalsByClient, modifyTerminal, resetErrorUsed, unlickTerminalWithClient } from '../../store/slices/terminals'
 
 const toastId = toast()
 
 const Terminals = () => {
   const { user } = useAuth()
   const dispatch = useDispatch()
+  const { state } = useLocation()
 
   const { terminals, error, loading, success } = useSelector((state) => state.terminals)
 
@@ -34,12 +38,19 @@ const Terminals = () => {
   const [selected, setSelected] = useState([])
   const [dataSelected, setDataSelected] = useState(null)
 
+  const [open, setOpen] = useState(false)
+
   const isSuperUser = useMemo(() => ((user && user.user) ? user.user.isPowerUser === 1 : false), [user])
+
+  // const viewType = useMemo(() => ((state && state.viewByClient) ? 1 : 0), [state])
+
+  const clientName = useMemo(() => ((state && state.client) ? state.client : null), [state])
 
   const getInfo = () => {
     if (user) {
       if (user.user.isPowerUser) {
-        dispatch(getAllTerminals())
+        if (state && state.viewByClient) dispatch(getTerminalsByClient(state.viewByClient))
+        else dispatch(getAllTerminals())
       } else {
         dispatch(getTerminalsByClient(user?.user?.clientId))
       }
@@ -82,10 +93,31 @@ const Terminals = () => {
     }
   }
 
+  const handleClickOpenModal = (terminal, terminalId) => {
+    handleClick(terminalId)
+    setDataSelected(terminal)
+    setOpen(true)
+  }
+
+  const handleClickCloseModal = () => {
+    setOpen(false)
+  }
+
   const handleSave = async (info) => {
     const id = toast.loading('Cargando...')
     dispatch(modifyTerminal(info, !(user.user.isPowerUser), user.user.clientId))
     if (success) toast.success('Se ha actualizado la información', { id })
+  }
+
+  const handleUnlick = async () => {
+    const toastId = toast.loading('Cargando...')
+    if (dataSelected && dataSelected.clientTerminal_Id && state && state.viewByClient) {
+      dispatch(unlickTerminalWithClient(dataSelected.clientTerminal_Id, state.viewByClient))
+      if (success) {
+        toast.success('Se ha actualizado la información', { id: toastId })
+        handleClickCloseModal()
+      }
+    } else toast.error('Error al inicializar el boton')
   }
 
   useEffect(() => {
@@ -97,7 +129,7 @@ const Terminals = () => {
     (async () => {
       getInfo()
     })()
-  }, [user])
+  }, [user, state])
 
   useEffect(() => {
     if (error) {
@@ -114,11 +146,12 @@ const Terminals = () => {
         addIcon={LeakAddTwoToneIcon}
         handleSearch={handleSearch}
         btnsAvailable={false}
-        extraBtns={[<CustomTooltipBtns key='btnRefresh' type='secondary' title='Actualizar'><IconButton onClick={() => getInfo()}><RefreshTwoToneIcon sx={{ color: 'primary.dark' }} /></IconButton></CustomTooltipBtns>]}
+        extraBtns={[<CustomTooltipBtns key='btnRefresh' type='primary' title='Actualizar'><IconButton onClick={() => getInfo()}><RefreshTwoToneIcon sx={{ color: 'primary.dark' }} /></IconButton></CustomTooltipBtns>]}
       />
 
       <Box sx={{ display: 'flex', flex: 1, px: '10%' }}>
         <MainMirrorCard>
+          {clientName && <Typography variant='h3' py={1} textAlign='right'>Terminales vinculadas del cliente: {clientName}</Typography>}
           <TableTerminals
             loading={loading}
             data={data}
@@ -126,9 +159,23 @@ const Terminals = () => {
             handleClick={handleClick}
             handleSave={handleSave}
             isSuperUser={isSuperUser}
+            viewType={state?.viewByClient}
+            handleOpen={handleClickOpenModal}
           />
         </MainMirrorCard>
       </Box>
+
+      {
+        dataSelected &&
+          <ModalDelete
+            title='Desvinculación de terminal'
+            subtitle={<><b>¿Estás seguro de desvincular la terminal {dataSelected?.terminalKitNumber}?</b></>}
+            handleClose={handleClickCloseModal}
+            handleDelete={handleUnlick}
+            open={open}
+            id={dataSelected?.clientId}
+          />
+      }
     </>
   )
 }

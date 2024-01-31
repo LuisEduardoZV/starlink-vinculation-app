@@ -1,10 +1,16 @@
-import MapVisualization from '../views/map'
+import MapVisualization from '../views/maps'
 
 // ==============================|| EXTERNAL ROUTING ||============================== //
 
-const ExternalRoutes = {
+const ExternalRouteViewPoint = {
   path: '/viewPoint/:h3/:terminal',
-  element: (<MapVisualization />)
+  element: <MapVisualization />
 }
 
-export default ExternalRoutes
+const ExternalRouteAllPoints = {
+  path: '/viewPoints/:clientName',
+  element: <MapVisualization />
+}
+
+export { ExternalRouteAllPoints, ExternalRouteViewPoint }
+

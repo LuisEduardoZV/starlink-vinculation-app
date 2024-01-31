@@ -62,7 +62,7 @@ const CustomListItemButtonInfo = styled(ListItemButton)(({ theme }) => ({
   },
   '&.Mui-selected .MuiListItemText-primary': {
     fontWeight: 800,
-    textAlign: 'right'
+    textAlign: 'left'
   },
   '&.Mui-selected .MuiListItemText-secondary': {
     fontWeight: theme.palette.mode === 'light' ? 400 : 600,
@@ -89,7 +89,7 @@ const CustomListItemButtonInfoDisable = styled(ListItemButton)(({ theme }) => ({
     transition: 'all 0.3s ease-in-out'
   },
   '&:hover .MuiListItemText-primary': {
-    color: theme.palette.grey[800]
+    color: theme.palette.grey[600]
   },
   '&.Mui-selected': {
     backgroundColor: alpha(theme.palette.common.black, 0.06),
@@ -98,11 +98,11 @@ const CustomListItemButtonInfoDisable = styled(ListItemButton)(({ theme }) => ({
   },
   '&.Mui-selected .MuiListItemText-primary': {
     fontWeight: 800,
-    textAlign: 'right'
+    textAlign: 'left'
   },
   '&.Mui-selected .MuiListItemText-secondary': {
     fontWeight: theme.palette.mode === 'light' ? 400 : 600,
-    textAlign: 'right'
+    textAlign: 'left'
   },
   '&.Mui-selected:hover': {
     backgroundColor: alpha(theme.palette.common.black, 0.06),

@@ -2,24 +2,15 @@ import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 
 // mui imports
-import { Box, Tabs, Typography } from '@mui/material'
-import { alpha, useTheme } from '@mui/material/styles'
+import { Box, Typography } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
 
 // project imports
 import useAuth from '../hooks/useAuth'
 import { samePageLinkNavigation } from '../services/samplePageLinkNavigation'
-import LinkTab from '../ui-components/LinkTab'
 import ProfileSection from './ProfileSection'
-
-// icons
-import AccountCircleTwoToneIcon from '@mui/icons-material/AccountCircleTwoTone'
-import AdminPanelSettingsTwoToneIcon from '@mui/icons-material/AdminPanelSettingsTwoTone'
-import CloudDoneTwoToneIcon from '@mui/icons-material/CloudDoneTwoTone'
-import ContactPhoneTwoToneIcon from '@mui/icons-material/ContactPhoneTwoTone'
-import InsertLinkIcon from '@mui/icons-material/InsertLink'
-import SatelliteAltTwoToneIcon from '@mui/icons-material/SatelliteAltTwoTone'
-import SummarizeTwoToneIcon from '@mui/icons-material/SummarizeTwoTone'
-import SupervisedUserCircleTwoToneIcon from '@mui/icons-material/SupervisedUserCircleTwoTone'
+import AdminUserMenu from './components/AdminUserMenu'
+import PowerUserMenu from './components/PowerUserMenu'
 
 const HeaderSection = () => {
   const { user } = useAuth()
@@ -71,53 +62,9 @@ const HeaderSection = () => {
     >
       <Typography flex={2} variant='h3' sx={{ textShadow: theme.palette.mode === 'light' ? `2px 2px 1px ${theme.palette.grey[400]}` : `1px 2px 1px ${theme.palette.primary[800]}`, color: theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white, width: '100%' }}>Backend Tangerine Metrics</Typography>
       <Box flex={5} display='flex' justifyContent='center'>
-        <Tabs
-          value={tab}
-          onChange={handleChange}
-          sx={{
-            minHeight: '40px',
-            display: 'flex',
-            width: 'fit-content',
-            '& .MuiTab-root.Mui-selected': { color: 'black', bgcolor: (theme) => alpha(theme.palette.common.white, 0.55), transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms' },
-            '& .MuiTab-root': { py: 0, minHeight: '40px', pt: 0.5 },
-            '& .MuiTabs-flexContainer': { borderColor: (theme) => theme.palette.grey[400] }
-          }}
-          TabIndicatorProps={{ style: { maxHeight: '2px' } }}
-        >
-          {user?.user?.isPowerUser
-            ? (
-              <LinkTab
-                label='Clientes' href='/clients'
-                icon={<SupervisedUserCircleTwoToneIcon
-                  fontSize='small' sx={{ color: tab === 0 ? theme.palette.primary[800] : theme.palette.primary.main }}
-                      />}
-              />)
-            : (
-              <LinkTab
-                label='Usuarios' href={`/clients/${user?.user?.clientId}/users`} icon={<AccountCircleTwoToneIcon fontSize='small' sx={{ color: tab === 0 ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />}
-              />
-              )}
-          {user?.user?.isPowerUser
-            ? (
-              <LinkTab
-                label='Super usuarios' href='/admins' icon={<AdminPanelSettingsTwoToneIcon fontSize='small' sx={{ color: tab === 1 ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />}
-              />)
-            : (
-              <LinkTab
-                label='Contactos' href={`/clients/${user?.user?.clientId}/contacts`} icon={<ContactPhoneTwoToneIcon fontSize='small' sx={{ color: tab === 1 ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />}
-              />
-              )}
-          <LinkTab label='Terminales' href='/terminals' icon={<SatelliteAltTwoToneIcon fontSize='small' sx={{ color: tab === 2 ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />} />
-          <LinkTab
-            label='Vincular' href='/linking' icon={<InsertLinkIcon fontSize='small' sx={{ color: tab === (3) ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />}
-          />
-          {user?.user?.isPowerUser && <LinkTab
-            label='Terminales Asignadas' href='/terminalsAssigned' icon={<CloudDoneTwoToneIcon fontSize='small' sx={{ color: tab === 4 ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />} sx={{ borderLeft: `solid 1px ${theme.palette.mode === 'light' ? theme.palette.grey[400] : theme.palette.grey[400]}` }}
-                                      />}
-          <LinkTab
-            label='Reportes' href='/reports' icon={<SummarizeTwoToneIcon fontSize='small' sx={{ color: tab === (user?.user?.isPowerUser ? 5 : 4) ? (theme) => theme.palette.primary[800] : (theme) => theme.palette.primary.main }} />}
-          />
-        </Tabs>
+        {user?.user?.isPowerUser
+          ? (<PowerUserMenu tab={tab} handleChange={handleChange} />)
+          : (<AdminUserMenu tab={tab} user={user} handleChange={handleChange} />)}
       </Box>
       <Box flex={1} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
         <ProfileSection />

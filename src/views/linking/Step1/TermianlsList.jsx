@@ -1,12 +1,13 @@
 import PropTypes from 'prop-types'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 // mui imports
 import { ExpandMoreTwoTone } from '@mui/icons-material'
 import LooksOneTwoTone from '@mui/icons-material/LooksOneTwoTone'
 import LooksTwoTwoToneIcon from '@mui/icons-material/LooksTwoTwoTone'
+import RemoveCircleTwoToneIcon from '@mui/icons-material/RemoveCircleTwoTone'
 import { Accordion, AccordionDetails, AccordionSummary, Box, List, ListItemText, Skeleton, Slide, Typography, useMediaQuery } from '@mui/material'
-import { useTheme } from '@mui/material/styles'
+import { alpha, useTheme } from '@mui/material/styles'
 
 // third
 import PerfectScrollbar from 'react-perfect-scrollbar'
@@ -24,7 +25,7 @@ import 'react-perfect-scrollbar/dist/css/styles.css'
 
 const skeltonsLoaders = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
-const TermianlsList = ({ values, handleChange, inView, viewType }) => {
+const TermianlsList = ({ values, handleChange, inView, viewType, handleUnlinkWithClient }) => {
   const { terminals, client } = values
   const theme = useTheme()
   const { user } = useAuth()
@@ -98,15 +99,19 @@ const TermianlsList = ({ values, handleChange, inView, viewType }) => {
     }
   }
 
+  const getPreSelected = useCallback(async () => {
+    if (viewType && client) {
+      const presSelRes = await apiCall({ url: `${BASE_URL_API}/getClientTerminalesAllCli?id=${client}` })
+      setPreselected(presSelRes)
+    }
+    if (!client) setPreselected(null)
+  }, [client, viewType])
+
   useEffect(() => {
     (async () => {
-      if (viewType && client) {
-        const presSelRes = await apiCall({ url: `${BASE_URL_API}/getClientTerminales?id=${client}` })
-        setPreselected(presSelRes)
-      }
-      if (!client) setPreselected(null)
+      await getPreSelected()
     })()
-  }, [viewType, client])
+  }, [getPreSelected])
 
   useEffect(() => {
     (async () => {
@@ -114,7 +119,7 @@ const TermianlsList = ({ values, handleChange, inView, viewType }) => {
         try {
           let res = null
           if (viewType) res = await apiCall({ url: `${BASE_URL_API}/TerminalNotAsigment` })
-          else res = await apiCall({ url: `${BASE_URL_API}/getClientTerminales?id=${user.user.clientId}` })
+          else res = await apiCall({ url: `${BASE_URL_API}/getClientTerminalesAllCli?id=${user.user.clientId}` })
           if (res) setData(res)
           else throw new Error('Error al obtener las terminales')
 
@@ -142,7 +147,7 @@ const TermianlsList = ({ values, handleChange, inView, viewType }) => {
   return (
     <MainMirrorFade
       componentTransition={Slide} direction='left' in={inView === 1} sx={{
-        maxHeight: matchDown2Xl ? '75vh' : '85vh',
+        maxHeight: matchDown2Xl ? '70vh' : '80vh',
         height: '100%',
         position: 'relative',
         maxWidth: viewType ? '70%' : '90%',
@@ -157,9 +162,9 @@ const TermianlsList = ({ values, handleChange, inView, viewType }) => {
         <Box>
           <InputSearch handleSearch={handleSearch} />
         </Box>
-        <PerfectScrollbar style={{ height: 'fit-content', maxHeight: matchDown2Xl ? '55vh' : '60vh', paddingLeft: 10, paddingRight: 15 }}>
+        <PerfectScrollbar style={{ height: 'fit-content', maxHeight: matchDown2Xl ? '50vh' : '55vh', paddingLeft: 10, paddingRight: 15 }}>
           <List component={Box} display='flex' flexWrap='wrap' columnGap={1} rowGap={2}>
-            {selected.length !== 0 && (
+            {client && (
               <Accordion defaultExpanded sx={{ backgroundColor: 'transparent', width: '100%' }}>
                 <AccordionSummary expandIcon={<ExpandMoreTwoTone />}>
                   <Typography variant='h4' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[800] : theme.palette.grey[400] }} width='100%'>Terminal(es) Seleccionada(s):</Typography>
@@ -169,9 +174,8 @@ const TermianlsList = ({ values, handleChange, inView, viewType }) => {
                     {selected.map(({ terminalId, terminalKitNumber, serviceLineNumber, terminalSiteName, terminalLineOfService }) => (
                       <CustomListItemButton
                         key={terminalId}
-                        onClick={(e) => handleClick(e, terminalId, terminalSiteName, terminalLineOfService, terminalKitNumber)}
                         selected
-                        sx={{ maxWidth: '31%', width: '100%', minWidth: '31%' }}
+                        sx={{ maxWidth: '31%', width: '100%', minWidth: '31%', position: 'relative' }}
                       >
                         <ListItemText
                           primary={terminalKitNumber} secondary={serviceLineNumber} color='secondary' sx={{
@@ -184,62 +188,103 @@ const TermianlsList = ({ values, handleChange, inView, viewType }) => {
                             }
                           }}
                         />
+                        <Box
+                          sx={{
+                            position: 'absolute',
+                            right: 3,
+                            top: 3,
+                            zIndex: 5,
+                            color: 'grey.700'
+                          }}
+                        >
+                          <RemoveCircleTwoToneIcon fontSize='small' onClick={(e) => handleClick(e, terminalId, terminalSiteName, terminalLineOfService, terminalKitNumber)} color='inherit' sx={{ cursor: 'pointer' }} />
+                        </Box>
                       </CustomListItemButton>
                     ))}
-                    {preSelected && preSelected.map(({ terminalId, terminalKitNumber, serviceLineNumber }) => (
-                      <CustomTooltipBtns
-                        key={terminalId}
-                        type='white'
-                        title='Previamente vinculada al cliente'
-                        followCursor
-                        arrow={false}
-                      >
-                        <CustomListItemButtonDisable
-                          selected
-                          sx={{ maxWidth: '31%', width: '100%', minWidth: '31%' }}
-                        >
-                          <ListItemText
-                            primary={terminalKitNumber} secondary={serviceLineNumber} color='secondary'
-                          />
-                        </CustomListItemButtonDisable>
-                      </CustomTooltipBtns>
-                    ))}
+                    {user?.user?.isPowerUser
+                      ? (
+                          (preSelected)
+                            ? preSelected.map(({ terminalId, terminalKitNumber, serviceLineNumber, clientTerminal_Id: clientTerminalId }) => (
+                              <CustomTooltipBtns
+                                key={terminalId}
+                                type='white'
+                                title='Previamente vinculada al cliente'
+                                followCursor
+                                arrow={false}
+                              >
+                                <CustomListItemButtonDisable
+                                  selected
+                                  sx={{ maxWidth: '31%', width: '100%', minWidth: '31%' }}
+                                >
+                                  <ListItemText
+                                    primary={terminalKitNumber} secondary={serviceLineNumber} color='secondary'
+                                  />
+                                  <Box
+                                    sx={{
+                                      position: 'absolute',
+                                      right: 3,
+                                      top: 3,
+                                      zIndex: 5,
+                                      color: 'grey.700'
+                                    }}
+                                  >
+                                    <RemoveCircleTwoToneIcon
+                                      fontSize='small' color='inherit' sx={{ cursor: 'pointer' }} onClick={async () => {
+                                        const res = await handleUnlinkWithClient(clientTerminalId)
+                                        if (res) await getPreSelected()
+                                      }}
+                                    />
+                                  </Box>
+                                </CustomListItemButtonDisable>
+                              </CustomTooltipBtns>
+                            ))
+                            : (
+                              <>
+                                <Skeleton sx={{ maxWidth: '31%', width: '100%', minWidth: '31%', height: 120, mt: -3, borderRadius: 0, bgcolor: theme.palette.mode === 'light' ? 'grey.300' : alpha(theme.palette.grey[900], 0.1) }} />
+                                <Skeleton sx={{ maxWidth: '31%', width: '100%', minWidth: '31%', height: 120, mt: -3, borderRadius: 0, bgcolor: theme.palette.mode === 'light' ? 'grey.300' : alpha(theme.palette.grey[900], 0.1) }} />
+                              </>
+                              )
+                        )
+                      : null}
+
                   </Box>
                 </AccordionDetails>
               </Accordion>
             )}
-            <Accordion defaultExpanded sx={{ backgroundColor: 'transparent', height: 'fit-content', maxHeight: matchDown2Xl ? '55vh' : '60vh', width: '100%' }}>
-              <AccordionSummary expandIcon={<ExpandMoreTwoTone />}>
-                <Typography variant='h4' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[800] : theme.palette.grey[400] }} width='100%'>Terminales Disponibles:</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Box display='flex' flexWrap='wrap' columnGap={1} rowGap={2} sx={{ height: 'fit-content', maxHeight: matchDown2Xl ? '55vh' : '60vh' }}>
-                  {loading
-                    ? skeltonsLoaders.map((op) => (<Skeleton key={op} height={70} />))
-                    : (allTerminal.map(({ terminalId, serviceLineNumber, terminalSiteName, terminalKitNumber, terminalLineOfService }) => (
-                      <CustomListItemButton
-                        key={terminalId}
-                        onClick={(e) => handleClick(e, terminalId, terminalSiteName, terminalLineOfService, terminalKitNumber)}
-                        sx={{ maxWidth: '31%', width: '100%' }}
-                      >
-                        <ListItemText
-                          primary={`${terminalKitNumber}`} secondary={serviceLineNumber} color='info' sx={{
-                            '& .MuiTypography-root': {
-                              color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.grey[400],
-                              fontWeight: 800
-                            },
-                            '& .MuiListItemText-secondary': {
-                              color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[500] : theme.palette.grey[700],
-                              fontWeight: 400
-                            }
-                          }}
-                        />
-                      </CustomListItemButton>
-                      )
-                      ))}
-                </Box>
-              </AccordionDetails>
-            </Accordion>
+            {client && (
+              <Accordion defaultExpanded sx={{ backgroundColor: 'transparent', height: 'fit-content', maxHeight: matchDown2Xl ? '55vh' : '60vh', width: '100%' }}>
+                <AccordionSummary expandIcon={<ExpandMoreTwoTone />}>
+                  <Typography variant='h4' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[800] : theme.palette.grey[400] }} width='100%'>Terminales Disponibles:</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Box display='flex' flexWrap='wrap' columnGap={1} rowGap={2} sx={{ height: 'fit-content', maxHeight: matchDown2Xl ? '55vh' : '60vh' }}>
+                    {loading
+                      ? skeltonsLoaders.map((op) => (<Skeleton key={op} height={70} />))
+                      : (allTerminal.map(({ terminalId, serviceLineNumber, terminalSiteName, terminalKitNumber, terminalLineOfService }) => (
+                        <CustomListItemButton
+                          key={terminalId}
+                          onClick={(e) => handleClick(e, terminalId, terminalSiteName, terminalLineOfService, terminalKitNumber)}
+                          sx={{ maxWidth: '31%', width: '100%' }}
+                        >
+                          <ListItemText
+                            primary={`${terminalKitNumber}`} secondary={serviceLineNumber} color='info' sx={{
+                              '& .MuiTypography-root': {
+                                color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.grey[400],
+                                fontWeight: 800
+                              },
+                              '& .MuiListItemText-secondary': {
+                                color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[500] : theme.palette.grey[700],
+                                fontWeight: 400
+                              }
+                            }}
+                          />
+                        </CustomListItemButton>
+                        )
+                        ))}
+                  </Box>
+                </AccordionDetails>
+              </Accordion>
+            )}
           </List>
         </PerfectScrollbar>
       </Box>
@@ -251,6 +296,7 @@ TermianlsList.propTypes = {
   values: PropTypes.object,
   viewType: PropTypes.bool,
   handleChange: PropTypes.func,
+  handleUnlinkWithClient: PropTypes.func,
   inView: PropTypes.number
 }
 

@@ -5,14 +5,14 @@ export async function apiCall ({
   headers = new Headers({
     Accept: 'application/json',
     'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*',
-    'Content-Security-Policy': 'upgrade-insecure-requests'
+    'Access-Control-Allow-Origin': '*'
   })
 }) {
   try {
     const datos = await fetch(url, {
       method,
-      headers
+      headers,
+      mode: 'cors'
     })
       .then(async (response) => {
         if (response.ok) {
@@ -40,16 +40,19 @@ export async function apiCallWithBody ({
   headers = new Headers({
     Accept: 'application/json',
     'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*',
-    'Content-Security-Policy': 'upgrade-insecure-requests'
-  })
+    'Access-Control-Allow-Origin': '*'
+  }),
+  extras = {
+    referrerPolicy: 'unsafe-url',
+    mode: 'cors'
+  }
 }) {
   try {
     const datos = await fetch(url, {
       method,
       body,
       headers,
-      referrerPolicy: 'unsafe-url'
+      ...extras
     })
       .then((response) => {
         if (response.ok) {

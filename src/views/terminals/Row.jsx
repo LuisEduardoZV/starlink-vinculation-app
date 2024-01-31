@@ -11,6 +11,7 @@ import CancelTwoToneIcon from '@mui/icons-material/CancelTwoTone'
 import DriveFileRenameOutlineTwoToneIcon from '@mui/icons-material/DriveFileRenameOutlineTwoTone'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
+import LinkOffTwoToneIcon from '@mui/icons-material/LinkOffTwoTone'
 import SaveTwoToneIcon from '@mui/icons-material/SaveTwoTone'
 import { Box, IconButton, TableCell, TableRow } from '@mui/material'
 
@@ -18,7 +19,7 @@ import { Box, IconButton, TableCell, TableRow } from '@mui/material'
 import CustomTooltipBtns from '../../ui-components/CustomTooltipBtns'
 import InputBase from '../../ui-components/InputBase'
 
-const Row = ({ element, handleClick, isItemSelected, labelId, hasExtendedRow, hasMoreActions, RowTemplate, page, handleSave }) => {
+const Row = ({ element, handleClick, isItemSelected, labelId, hasExtendedRow, hasMoreActions, RowTemplate, page, handleSave, viewType, handleOpen }) => {
   const [rowExpanded, setRowExpanded] = useState(false)
   const [mode, setMode] = useState(0)
 
@@ -40,7 +41,12 @@ const Row = ({ element, handleClick, isItemSelected, labelId, hasExtendedRow, ha
     if (mode) {
       const valid = await validInfo()
       if (valid) {
-        handleSave({ ...newData, isMobile: newData.isMobile ? 1 : 0 })
+        handleSave({
+          ...newData,
+          isMobile: newData.isMobile ? 1 : 0,
+          terminalLatitude: Number(newData.terminalLatitude),
+          terminalLongitude: Number(newData.terminalLongitude)
+        })
         setMode(0)
       }
     } else {
@@ -111,7 +117,7 @@ const Row = ({ element, handleClick, isItemSelected, labelId, hasExtendedRow, ha
         </TableCell>
         <TableCell align='left' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[400] }}>{element.terminalLineOfService}</TableCell>
         <TableCell align='left' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[400] }}>{element.terminalKitNumber}</TableCell>
-        <TableCell align='left' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[400] }}>{element.terminalSerialNumber}</TableCell>
+        <TableCell align='left' sx={{ color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[400] }}>{element.terminalSerialNumber ?? '------------------------------'}</TableCell>
         {hasExtendedRow && (
           <TableCell>
             <Box sx={{ width: '100%', display: 'flex' }}>
@@ -128,6 +134,23 @@ const Row = ({ element, handleClick, isItemSelected, labelId, hasExtendedRow, ha
                     </IconButton>
                   </CustomTooltipBtns>
                 </>
+              )}
+              {viewType && (
+                <CustomTooltipBtns title='Desvincular' placement='top' type='error'>
+                  <IconButton
+                    size='small' onClick={(e) => {
+                      handleClick(e, element.terminalId)
+                      handleOpen(element, element.terminalId)
+                    }}
+                    sx={{
+                      visibility: mode ? 'hidden' : 'visible',
+                      opacity: mode ? 0 : 100,
+                      transition: 'all 0.2s linear'
+                    }}
+                  >
+                    <LinkOffTwoToneIcon fontSize='small' sx={{ color: 'error.main' }} />
+                  </IconButton>
+                </CustomTooltipBtns>
               )}
               {mode
                 ? (
@@ -160,12 +183,14 @@ Row.propTypes = {
   handleClick: PropTypes.func.isRequired,
   handleSave: PropTypes.func,
   changeMode: PropTypes.func,
+  handleOpen: PropTypes.func,
   isItemSelected: PropTypes.bool.isRequired,
   labelId: PropTypes.string.isRequired,
   page: PropTypes.number.isRequired,
   hasExtendedRow: PropTypes.bool,
   hasMoreActions: PropTypes.bool,
   rowMode: PropTypes.number,
+  viewType: PropTypes.number,
   RowTemplate: PropTypes.any
 }
 

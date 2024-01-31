@@ -15,7 +15,7 @@ import RowExpanded from '../RowExpanded'
 import { getComparator, stableSort } from '../../../services/tableServices'
 import { terminalsTableHeadders as headCells } from '../../../utils/allColumnsTables'
 
-const TableTerminals = ({ loading, data, selected, handleClick, handleSave, isSuperUser }) => {
+const TableTerminals = ({ loading, data, selected, handleClick, handleSave, isSuperUser, viewType, handleOpen }) => {
   const [order, setOrder] = React.useState('asc')
   const [orderBy, setOrderBy] = React.useState('terminalSiteName')
   const [page, setPage] = React.useState(0)
@@ -75,7 +75,9 @@ const TableTerminals = ({ loading, data, selected, handleClick, handleSave, isSu
                     RowTemplate={RowExpanded}
                     {...isSuperUser && {
                       hasMoreActions: true,
-                      handleSave
+                      handleSave,
+                      viewType,
+                      handleOpen
                     }}
                   />
                 )
@@ -120,7 +122,9 @@ TableTerminals.propTypes = {
   data: PropTypes.array,
   selected: PropTypes.array,
   handleClick: PropTypes.func,
-  handleSave: PropTypes.func
+  handleSave: PropTypes.func,
+  handleOpen: PropTypes.func,
+  viewType: PropTypes.number
 }
 
 export default TableTerminals

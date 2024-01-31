@@ -75,7 +75,15 @@ export function addUser (data) {
   return async () => {
     try {
       dispatch(slice.actions.setLoader(true))
-      const res = await apiCallWithBody({ url: `${BASE_URL_API}/Users`, body: JSON.stringify(data) })
+      const res = await apiCallWithBody({
+        url: `${BASE_URL_API}/Users`,
+        body: JSON.stringify(data),
+        extras: {},
+        headers: new Headers({
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        })
+      })
       if (res && (res.length === 0 || !Array.isArray(res))) {
         dispatch(slice.actions.hasError(new Error('Error al intenar agregar el usuario')))
         dispatch(slice.actions.setLoader(false))

@@ -30,7 +30,7 @@ function union (a, b) {
   return [...a, ...not(b, a)]
 }
 
-export default function TransferList ({ terminals, termSelected, setNewTerms, disabled }) {
+export default function TransferList ({ terminals, termSelected, setNewTerms, disabled, preSelected }) {
   const [checked, setChecked] = useState([])
   const [left, setLeft] = useState(not(terminals, termSelected))
   const [right, setRight] = useState(termSelected)
@@ -77,7 +77,7 @@ export default function TransferList ({ terminals, termSelected, setNewTerms, di
     setChecked(not(checked, rightChecked))
   }
 
-  const customList = (title, items) => (
+  const customList = (title, items, preItems) => (
     <Box width='100%' position='relative'>
       <CardHeader
         sx={{ px: 2, py: 1 }}
@@ -100,7 +100,7 @@ export default function TransferList ({ terminals, termSelected, setNewTerms, di
       <PerfectScrollBar style={{ maxHeight: '35vh', height: '100%', overflowX: 'hidden' }}>
         <List
           sx={{
-            width: '40vw',
+            width: '36vw',
             height: 'max-content',
             bgcolor: 'transparent'
           }}
@@ -150,7 +150,7 @@ export default function TransferList ({ terminals, termSelected, setNewTerms, di
 
   return (
     <Grid container spacing={2} alignItems='start'>
-      <Grid item>{customList('Terminales disponibles', left)}</Grid>
+      <Grid item>{customList('Terminales seleccionadas', left)}</Grid>
       <Grid item alignSelf='center'>
         <Grid container direction='column' alignItems='center'>
           <Button
@@ -183,6 +183,7 @@ export default function TransferList ({ terminals, termSelected, setNewTerms, di
 TransferList.propTypes = {
   terminals: PropTypes.array,
   termSelected: PropTypes.array,
+  preSelected: PropTypes.array,
   setNewTerms: PropTypes.func,
   disabled: PropTypes.bool
 }

@@ -57,12 +57,13 @@ const ClientList = ({ handleChange, inView }) => {
     }
   }
 
-  const handleChangeSelected = (clientId) => {
+  const handleChangeSelected = (clientId, name) => {
     const available = [...data]
     const indexClient = available.findIndex((op) => (op.clientId === clientId))
     const clientInfo = available.splice(indexClient, 1)
 
     handleChange('client', clientInfo[0].clientId)
+    handleChange('clientName', name)
     setSelected(clientInfo[0])
     setClients(available)
   }
@@ -151,7 +152,7 @@ const ClientList = ({ handleChange, inView }) => {
                         : clients.map(({ clientId, clientName, clientEmail }, index) => (
                           <CustomListItemButton
                             key={clientId}
-                            onClick={() => handleChangeSelected(clientId)}
+                            onClick={() => handleChangeSelected(clientId, clientName)}
                           >
                             <ListItemText
                               primary={clientName} secondary={clientEmail} sx={{

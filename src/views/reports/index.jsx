@@ -169,59 +169,61 @@ const Reportes = () => {
           : (
             <>
               <Box width='100%' display='flex' justifyContent='space-between' alignItems='center' gap={2} position='relative'>
-                <Autocomplete
-                  disablePortal
-                  filterOptions={filterOptionsClients}
-                  size='small'
-                  id='auto-combo-users'
-                  options={clients}
-                  value={clientSelected}
-                  onChange={(e, nue) => setClientSelected(nue)}
-                  getOptionLabel={(option) => option.clientName}
-                  isOptionEqualToValue={(a, b) => (a.clientId === b.clientId)}
-                  renderOption={(props, option) => (
-                    <Box key={option.clientId} component='li' sx={{ width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'start' }} {...props}>
-                      <Typography variant='body2' textAlign='start' width='100%' sx={{ color: (theme) => theme.palette.mode === 'light' ? 'grey.800' : 'grey.400' }}>{option.clientName}</Typography>
-                      <Typography variant='subtitle2' textAlign='start' width='100%' sx={{ color: (theme) => theme.palette.mode === 'light' ? 'primary.dark' : 'grey.700' }}>{option.clientEmail}</Typography>
-                    </Box>
-                  )}
-                  renderInput={(params) => <TextField
-                    {...params}
-                    label='Seleccione un cliente'
-                    sx={{
-                      '& .MuiButtonBase-root': {
-                        color: (theme) => theme.palette.primary.main
-                      },
-                      '& .MuiChip-root': {
-                        color: 'black',
-                        bgcolor: (theme) => theme.palette.primary.main
-                      },
-                      '& .MuiChip-root.Mui-disabled': {
-                        color: 'black',
-                        bgcolor: (theme) => theme.palette.primary[800]
-                      },
-                      '& .MuiButtonBase-root.Mui-disabled': {
-                        color: (theme) => theme.palette.primary[800]
-                      },
-                      '.Mui-disabled': {
-                        bgcolor: (theme) => alpha(theme.palette.grey[600], 1)
-                      }
-                    }}
-                                           />}
-                  sx={{
-                    width: '25%',
-                    bgcolor: (theme) => alpha(theme.palette.background.paper, 1),
-                    color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white,
-                    '.Mui-disabled': {
-                      bgcolor: (theme) => alpha(theme.palette.grey[600], 1),
-                      color: (theme) => theme.palette.grey[700]
-                    },
-                    '& .MuiInputBase-input, & .MuiInputBase-root': {
-                      bgcolor: (theme) => alpha(theme.palette.background.paper, 1),
-                      color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white
-                    }
-                  }}
-                />
+                {user.user.isPowerUser
+                  ? <Autocomplete
+                      disablePortal
+                      filterOptions={filterOptionsClients}
+                      size='small'
+                      id='auto-combo-users'
+                      options={clients}
+                      value={clientSelected}
+                      onChange={(e, nue) => setClientSelected(nue)}
+                      getOptionLabel={(option) => option.clientName}
+                      isOptionEqualToValue={(a, b) => (a.clientId === b.clientId)}
+                      renderOption={(props, option) => (
+                        <Box key={option.clientId} component='li' sx={{ width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'start' }} {...props}>
+                          <Typography variant='body2' textAlign='start' width='100%' sx={{ color: (theme) => theme.palette.mode === 'light' ? 'grey.800' : 'grey.400' }}>{option.clientName}</Typography>
+                          <Typography variant='subtitle2' textAlign='start' width='100%' sx={{ color: (theme) => theme.palette.mode === 'light' ? 'primary.dark' : 'grey.700' }}>{option.clientEmail}</Typography>
+                        </Box>
+                      )}
+                      renderInput={(params) => <TextField
+                        {...params}
+                        label='Seleccione un cliente'
+                        sx={{
+                          '& .MuiButtonBase-root': {
+                            color: (theme) => theme.palette.primary.main
+                          },
+                          '& .MuiChip-root': {
+                            color: 'black',
+                            bgcolor: (theme) => theme.palette.primary.main
+                          },
+                          '& .MuiChip-root.Mui-disabled': {
+                            color: 'black',
+                            bgcolor: (theme) => theme.palette.primary[800]
+                          },
+                          '& .MuiButtonBase-root.Mui-disabled': {
+                            color: (theme) => theme.palette.primary[800]
+                          },
+                          '.Mui-disabled': {
+                            bgcolor: (theme) => alpha(theme.palette.grey[600], 1)
+                          }
+                        }}
+                                               />}
+                      sx={{
+                        width: '25%',
+                        bgcolor: (theme) => alpha(theme.palette.background.paper, 1),
+                        color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white,
+                        '.Mui-disabled': {
+                          bgcolor: (theme) => alpha(theme.palette.grey[600], 1),
+                          color: (theme) => theme.palette.grey[700]
+                        },
+                        '& .MuiInputBase-input, & .MuiInputBase-root': {
+                          bgcolor: (theme) => alpha(theme.palette.background.paper, 1),
+                          color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white
+                        }
+                      }}
+                    />
+                  : null}
                 <Autocomplete
                   disablePortal
                   filterOptions={filterOptions}
@@ -262,7 +264,7 @@ const Reportes = () => {
                     }}
                                            />}
                   sx={{
-                    width: '25%',
+                    width: user.user.isPowerUser ? '25%' : '45%',
                     bgcolor: (theme) => alpha(theme.palette.background.paper, 1),
                     color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white,
                     '.Mui-disabled': {

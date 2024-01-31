@@ -58,7 +58,7 @@ export function getTerminalsByClient (id) {
   return async () => {
     try {
       dispatch(slice.actions.setLoader(true))
-      const res = await apiCall({ url: `${BASE_URL_API}/getClientTerminales?id=${id}` })
+      const res = await apiCall({ url: `${BASE_URL_API}/getClientTerminalesAllCli?id=${id}` })
       dispatch(slice.actions.setTerminalsInfoSuccess(res))
       dispatch(slice.actions.setLoader(false))
       dispatch(slice.actions.setSuccess(true))
@@ -84,6 +84,26 @@ export function modifyTerminal (data, haveClient, client) {
     } catch (error) {
       dispatch(slice.actions.hasError(error))
       dispatch(slice.actions.hasError(new Error('Error al editar la terminal')))
+      dispatch(slice.actions.setLoader(false))
+      dispatch(slice.actions.setSuccess(false))
+    }
+  }
+}
+
+export function unlickTerminalWithClient (id, client) {
+  return async () => {
+    try {
+      dispatch(slice.actions.setLoader(true))
+      const res = await apiCallWithBody({ url: `${BASE_URL_API}/ClientTerminals/${id}`, method: 'DELETE' })
+      if (res) await getTerminalsByClient(client)()
+      else {
+        dispatch(slice.actions.setLoader(false))
+        dispatch(slice.actions.setSuccess(false))
+        dispatch(slice.actions.hasError(new Error('Error al desvincular la terminal ya que está asignada a un usuario')))
+      }
+    } catch (error) {
+      dispatch(slice.actions.hasError(error))
+      dispatch(slice.actions.hasError(new Error('Error al desvincular la terminal ya que está asignada a un usuario')))
       dispatch(slice.actions.setLoader(false))
       dispatch(slice.actions.setSuccess(false))
     }

@@ -19,7 +19,7 @@ const AsideBackButton = ({ inFade, handleBack }) => {
     : { borderRadius: 3, boxShadow: '20px 20px 48px #c8c8c8, -20px -20px 48px #ffffff' }
 
   return (
-    <Fade in mountOnEnter unmountOnExit style={{ zIndex: 5 }}>
+    <Fade in={inFade ?? true} mountOnEnter unmountOnExit style={{ zIndex: 5 }}>
       <Box position='relative' width='auto'>
         <Box sx={{ position: 'fixed', color: 'white', left: '4%', bgcolor: (theme) => alpha(theme.palette.background.paper, 0.7), p: 1, backdropFilter: 'blur(10px)', ...extraTheme }}>
           <Stack direction='column'>

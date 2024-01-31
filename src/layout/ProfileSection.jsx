@@ -29,6 +29,7 @@ import { alpha, useTheme } from '@mui/material/styles'
 import { toast } from 'sonner'
 
 // project imports
+import { SYS_VERSION } from '../config'
 import MainCard from '../ui-components/MainCard'
 import Transitions from '../ui-components/Transitions'
 
@@ -246,6 +247,15 @@ const ProfileSection = () => {
                           />
                         </ListItemButton>
                       </List>
+                    </Box>
+                    <Box display='flex' flexDirection='column' alignItems='center'>
+                      <Divider sx={{ width: '100%', borderColor: 'grey.800' }} />
+                      <Typography
+                        variant='caption'
+                        py={1}
+                      >
+                        v{SYS_VERSION}
+                      </Typography>
                     </Box>
                   </MainCard>
                 )}

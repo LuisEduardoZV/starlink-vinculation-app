@@ -9,6 +9,7 @@ import { toast } from 'sonner'
 import AccountCircleTwoToneIcon from '@mui/icons-material/AccountCircleTwoTone'
 import ContactPhoneTwoToneIcon from '@mui/icons-material/ContactPhoneTwoTone'
 import GroupAddTwoToneIcon from '@mui/icons-material/GroupAddTwoTone'
+import SatelliteAltTwoToneIcon from '@mui/icons-material/SatelliteAltTwoTone'
 import { Box, IconButton } from '@mui/material'
 
 // project imports
@@ -140,6 +141,18 @@ const Clients = () => {
           <CustomTooltipBtns key='contactbtn' type='white' title='Contactos'>
             <IconButton onClick={() => { navigate(`/clients/${selected[0]}/contacts`) }}>
               <ContactPhoneTwoToneIcon sx={{ color: 'grey.700' }} />
+            </IconButton>
+          </CustomTooltipBtns>,
+          <CustomTooltipBtns key='terminalsbtn' type='primary' title='Terminales'>
+            <IconButton onClick={() => {
+              navigate('/terminals', {
+                state: {
+                  view: 1, client: dataSelected?.clientName, viewByClient: selected[0]
+                }
+              })
+            }}
+            >
+              <SatelliteAltTwoToneIcon sx={{ color: 'primary.main' }} />
             </IconButton>
           </CustomTooltipBtns>]}
       />
