@@ -135,5 +135,8 @@ export function modifyUser (data) {
 
 
 export function resetErrorUsed () {
-  return async () => { dispatch(slice.actions.resetError(null)) }
+  return async () => {
+    dispatch(slice.actions.resetError(null))
+    dispatch(slice.actions.setSuccessMsg(null))
+  }
 }

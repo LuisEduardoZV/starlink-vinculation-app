@@ -122,14 +122,17 @@ const UserList = () => {
   }, [error])
 
   useEffect(() => {
-    if (success && successMsg) toast.success(successMsg, { id: toastId })
+    if (success && successMsg) {
+      toast.success(successMsg, { id: toastId })
+      dispatch(resetErrorUsed())
+    }
   }, [success, successMsg])
 
   const titleList = state?.client ? `Usuarios de ${state.client}` : 'Lista de usuarios'
 
   return (
     <>
-      {user?.user?.isPowerUser && <AsideBackButton inFade={collapsed} handleBack={collapsed ? handleCancel : null} />}
+      {(user && user.user && user.user.isPowerUser) && <AsideBackButton inFade handleBack={collapsed ? handleCancel : null} />}
 
       <Box sx={{ display: 'flex', flex: 1, px: '10%', position: 'relative', flexDirection: 'column' }}>
         <HeaderSearchBox title={titleList} handleOnAdd={handleAdd} handleSearch={handleSearch} open={!collapsed} />
