@@ -46,14 +46,13 @@ const Edit = ({ handleReset, data, backBtn }) => {
           dataForm.isAdmin = values.isAdmin ? 1 : 0
           dataForm.isEnabled = 1
           // console.log(values)
-          const idToast = toast.loading('Cargando...')
+          toast.loading('Cargando...')
           dispatch(modifyUser(dataForm))
           if (success) {
             setStatus({ success: true })
             setSubmitting(false)
             handleReset()
             resetForm()
-            toast.success(`El usuario ${values.fullName} se editó correctamente`, { id: idToast })
           }
         }}
       >

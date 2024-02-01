@@ -28,7 +28,7 @@ const UserList = () => {
   const { user } = useAuth()
   const dispatch = useDispatch()
 
-  const { users, error, success, loading } = useSelector((state) => state.users)
+  const { users, error, success, loading, successMsg } = useSelector((state) => state.users)
 
   const navigate = useNavigate()
   const { clientId } = useParams()
@@ -73,15 +73,9 @@ const UserList = () => {
   }
 
   const handleDelete = (id) => {
-    const toastId = toast.loading('Cargando...')
+    toast.loading('Cargando...', { id: toastId })
     dispatch(deleteUser(id, clientId))
-
-    if (success) {
-      handleCancel()
-      toast.success('El usuario ha sido eliminado correctamente', { id: toastId })
-    } else {
-      handleCancel()
-    }
+    handleCancel()
   }
 
   const handleSearch = (e, filters) => {
@@ -126,6 +120,10 @@ const UserList = () => {
       dispatch(resetErrorUsed())
     }
   }, [error])
+
+  useEffect(() => {
+    if (success && successMsg) toast.success(successMsg, { id: toastId })
+  }, [success, successMsg])
 
   const titleList = state?.client ? `Usuarios de ${state.client}` : 'Lista de usuarios'
 

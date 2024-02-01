@@ -88,9 +88,9 @@ const EditAuth = ({ errors, values, touched, handleBlur, handleChange, backBtn, 
               onBlur={handleBlur}
               onChange={handleChange}
               InputProps={{
-                autocomplete: 'new-password',
+                autoComplete: 'new-password',
                 form: {
-                  autocomplete: 'off'
+                  autoComplete: 'off'
                 },
                 endAdornment: (
                   <InputAdornment position='end' sx={{ bgcolor: 'transparent' }}>

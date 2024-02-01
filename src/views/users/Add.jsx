@@ -45,14 +45,13 @@ const Add = ({ handleReset, client, backBtn }) => {
           const dataForm = { ...values }
           dataForm.isAdmin = values.isAdmin ? 1 : 0
           dataForm.isEnabled = 1
-          const idToast = toast.loading('Cargando...')
+          toast.loading('Cargando...')
           dispatch(addUser(dataForm))
           if (success) {
             setStatus({ success: true })
             setSubmitting(false)
             handleReset()
             resetForm()
-            toast.success(`El usuario ${values.fullName} se agregó correctamente`, { id: idToast })
           }
         }}
       >

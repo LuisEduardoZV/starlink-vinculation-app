@@ -7,6 +7,7 @@ import { Table, TableBody, TableCell, TableContainer, TablePagination, TableRow 
 // project imports
 import EnhancedTableHead from '../../ui-components/EnhancedTableHead'
 import LoadingInfoTable from '../../ui-components/LoadingInfoTable'
+import NoInfoOverlay from '../../ui-components/NoInfoOverlay'
 import Row from './Row'
 
 import { getComparator, stableSort } from '../../services/tableServices'
@@ -58,7 +59,7 @@ const ClientsTable = ({ loading, setSelected, setDataSelected, setView, selected
     <>
       <TableContainer sx={{ maxWidth: '100%' }}>
         <Table sx={{ maxWidth: '100%', '& .MuiTableCell-root': { borderColor: (theme) => theme.palette.grey[800] } }} aria-labelledby='tableTitle' size='medium'>
-          {!loading && data.length === 0 && <caption>No se han encotrado datos</caption>}
+          {!loading && data.length === 0 && <caption><NoInfoOverlay /></caption>}
           <EnhancedTableHead
             order={order}
             orderBy={orderBy}
