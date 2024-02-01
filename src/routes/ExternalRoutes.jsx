@@ -1,4 +1,5 @@
 import MapVisualization from '../views/maps'
+import ViewAll from '../views/maps/ViewAll'
 
 // ==============================|| EXTERNAL ROUTING ||============================== //
 
@@ -7,10 +8,10 @@ const ExternalRouteViewPoint = {
   element: <MapVisualization />
 }
 
-const ExternalRouteAllPoints = {
-  path: '/viewPoints/:clientName',
-  element: <MapVisualization />
+const ExternalRoutePointsByClient = {
+  path: '/locations/:clientName',
+  element: <ViewAll />
 }
 
-export { ExternalRouteAllPoints, ExternalRouteViewPoint }
+export { ExternalRoutePointsByClient, ExternalRouteViewPoint }
 
