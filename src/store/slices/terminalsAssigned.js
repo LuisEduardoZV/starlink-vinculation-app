@@ -111,11 +111,12 @@ export function parseObject (data) {
   }
 }
 
-export function getAllTerminalsAssigned () {
+export function getAllTerminalsAssigned (clientId) {
   return async () => {
     try {
       dispatch(slice.actions.setLoader(true))
-      const res = await apiCall({ url: `${BASE_URL_API}/getAsigment` })
+      let res = await apiCall({ url: `${BASE_URL_API}/getAsigment` })
+      if (clientId) res = res.filter((op) => (op.clientId === clientId))
       await parseObject(res)()
     } catch (error) {
       console.log(error)

@@ -106,7 +106,7 @@ const DashUserSelection = React.forwardRef(({ values, handleChangeAutocompleteIn
               isOptionEqualToValue={(a, b) => (a.userId === b.userId)}
               renderInput={(params) => <TextField
                 {...params}
-                label='Usuarios disponibles del cliente'
+                label='Usuarios del cliente'
                 sx={{
                   '& .MuiButtonBase-root': {
                     color: (theme) => theme.palette.primary.main

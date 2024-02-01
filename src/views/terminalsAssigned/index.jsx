@@ -130,8 +130,9 @@ const TerminalsAssigned = () => {
 
   useEffect(() => {
     (async () => {
-      if (state && state.userId) {
-        dispatch(getTerminalsByUser(state.userId))
+      if (state) {
+        if (state.clientId) dispatch(getAllTerminalsAssigned(state.clientId))
+        if (state.userId) dispatch(getTerminalsByUser(state.userId))
       } else {
         dispatch(getAllTerminalsAssigned())
       }

@@ -46,7 +46,7 @@ const TableTerminals = ({ loading, data, handleDelete }) => {
     <>
       <TableContainer sx={{ maxWidth: '100%' }}>
         <Table sx={{ maxWidth: '100%', '& .MuiTableCell-root': { borderColor: (theme) => theme.palette.grey[800] } }} aria-labelledby='tableTitle' size='medium'>
-          {!loading && data.length === 0 && <NoInfoOverlay />}
+          {!loading && data.length === 0 && <caption><NoInfoOverlay /></caption>}
           <EnhancedTableHead
             order={order}
             orderBy={orderBy}

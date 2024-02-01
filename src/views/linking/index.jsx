@@ -43,7 +43,7 @@ const Linking = () => {
           view: user?.user?.isPowerUser ? 1 : 2, client: name, viewByClient: client
         }
       })
-    } else navigate('/terminalsAssigned', { replace: true, state: { view: user?.user?.isPowerUser ? 3 : 2 } })
+    } else navigate('/terminalsAssigned', { replace: true, state: { view: user?.user?.isPowerUser ? 3 : 2, clientId: client } })
   }
 
   const handleContinue = () => setView((prev) => prev + 1)
