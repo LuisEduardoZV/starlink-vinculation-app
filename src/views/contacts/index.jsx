@@ -62,8 +62,9 @@ const Contacts = () => {
     dispatch(deleteContact(id, clientId))
     if (success) {
       toast.success('Contacto eliminado correctamente', { id: idToast })
-      needRender()
       setOpen(false)
+      onCloseDetails()
+      needRender()
     }
   }
 

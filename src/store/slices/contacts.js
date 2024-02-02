@@ -77,14 +77,14 @@ export function addContact (data) {
       dispatch(slice.actions.setLoader(true))
       const res = await apiCallWithBody({ url: `${BASE_URL_API}/Contacts`, body: JSON.stringify(data) })
       if (res && (res.length === 0 || !Array.isArray(res))) {
-        dispatch(slice.actions.hasError(new Error('Error al intenar agregar el contacto')))
+        dispatch(slice.actions.hasError(new Error('Error al intentar agregar el contacto')))
         dispatch(slice.actions.setLoader(false))
         dispatch(slice.actions.setSuccess(false))
       } else {
         await getContacts(data?.clientId)()
       }
     } catch (error) {
-      dispatch(slice.actions.hasError(new Error('Error al intenar agregar el contacto')))
+      dispatch(slice.actions.hasError(new Error('Error al intentar agregar el contacto')))
       dispatch(slice.actions.setLoader(false))
       dispatch(slice.actions.setSuccess(false))
     }
@@ -97,7 +97,7 @@ export function modifyContact (data) {
       dispatch(slice.actions.setLoader(true))
       const res = await apiCallWithBody({ url: `${BASE_URL_API}/Contacts/${data.contactId}`, method: 'PUT', body: JSON.stringify(data) })
       if (res && (res.length === 0 || !Array.isArray(res))) {
-        dispatch(slice.actions.hasError(new Error('Error al intenar agregar el contacto')))
+        dispatch(slice.actions.hasError(new Error('Error al intentar agregar el contacto')))
         dispatch(slice.actions.setLoader(false))
         dispatch(slice.actions.setSuccess(false))
       } else {
@@ -105,7 +105,7 @@ export function modifyContact (data) {
       }
     } catch (error) {
       dispatch(slice.actions.hasError(error))
-      dispatch(slice.actions.hasError(new Error('Error al intenar editar el contacto')))
+      dispatch(slice.actions.hasError(new Error('Error al intentar editar el contacto')))
       dispatch(slice.actions.setLoader(false))
       dispatch(slice.actions.setSuccess(false))
     }
@@ -116,7 +116,7 @@ export function deleteContact (key, client) {
   return async () => {
     try {
       const res = await apiCall({ url: `${BASE_URL_API}/Contacts/${key}`, method: 'DELETE' })
-      if (res && (res.length === 0 || !Array.isArray(res))) {
+      if (res && !Array.isArray(res)) {
         dispatch(slice.actions.hasError(new Error('Error al eliminar el contacto')))
         dispatch(slice.actions.setSuccess(false))
       } else {
