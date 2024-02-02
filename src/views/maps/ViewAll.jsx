@@ -12,7 +12,7 @@ import { GOOGLE_MAP_KEY } from '../../config'
 import { apiCallWithBody } from '../../contexts/api'
 import LoadingInfo from '../../ui-components/LoadingInfo'
 import NoInfoOverlay from '../../ui-components/NoInfoOverlay'
-import { DARK_MODE_STYLE_MAP } from '../../utils/constants'
+import { DARK_MODE_STYLE_MAP, REGEX_VALID_UUIDTERMINAL } from '../../utils/constants'
 import CustomMarker from './components/CustomMarker'
 
 const BASE_URL_API = 'https://ws-tangraph.ever-track.com/api'
@@ -22,8 +22,7 @@ const center = {
 }
 
 const ViewAll = () => {
-  const { clientName } = useParams()
-  console.log(clientName)
+  const { filter } = useParams()
 
   const { isLoaded } = useLoadScript({ googleMapsApiKey: GOOGLE_MAP_KEY })
 
@@ -33,24 +32,32 @@ const ViewAll = () => {
   const [hasError, setHasError] = useState(false)
 
   const onLoadFunction = useCallback((map) => {
-    const bounds = new window.google.maps.LatLngBounds()
-    data.forEach((op) => {
-      bounds.extend({ lat: Number(op.terminalLatitude), lng: Number(op.terminalLongitude) })
-    })
-    map.fitBounds(bounds)
+    if (data && data.length > 1) {
+      const bounds = new window.google.maps.LatLngBounds()
+      data.forEach((op) => {
+        bounds.extend({ lat: Number(op.terminalLatitude), lng: Number(op.terminalLongitude) })
+      })
+      map.fitBounds(bounds)
+    }
   }, [data])
 
   useEffect(() => {
     (async () => {
       try {
-        if (clientName) {
+        if (filter) {
           setLoading(true)
+          const body = REGEX_VALID_UUIDTERMINAL.test(filter)
+            ? {
+                clientName: '',
+                terminalLineOfService: filter
+              }
+            : {
+                clientName: filter,
+                terminalLineOfService: ''
+              }
           const res = await apiCallWithBody({
             url: `${BASE_URL_API}/TerminalInfoMaps`,
-            body: JSON.stringify({
-              clientName,
-              terminalLineOfService: ''
-            })
+            body: JSON.stringify(body)
           })
           if (Array.isArray(res) && res.length > 0) {
             setData(res)
@@ -69,7 +76,7 @@ const ViewAll = () => {
       setLoading(true)
       setHasError(false)
     }
-  }, [clientName])
+  }, [filter])
 
   if (!isLoaded || loading) {
     return (

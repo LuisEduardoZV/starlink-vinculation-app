@@ -9,7 +9,7 @@ const ExternalRouteViewPoint = {
 }
 
 const ExternalRoutePointsByClient = {
-  path: '/locations/:clientName',
+  path: '/locations/:filter',
   element: <ViewAll />
 }
 
