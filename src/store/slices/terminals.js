@@ -9,7 +9,8 @@ const initialState = {
   error: null,
   terminals: [],
   loading: false,
-  success: false
+  success: false,
+  successMsg: null
 }
 
 const slice = createSlice({
@@ -30,6 +31,9 @@ const slice = createSlice({
     },
     setSuccess (state, action) {
       state.success = action.payload
+    },
+    setSuccessMsg (state, action) {
+      state.successMsg = action.payload
     }
   }
 })
@@ -73,10 +77,14 @@ export function getTerminalsByClient (id) {
 export function modifyTerminal (data, haveClient, client) {
   return async () => {
     try {
+      dispatch(slice.actions.setSuccessMsg(null))
       dispatch(slice.actions.setLoader(true))
       const res = await apiCallWithBody({ url: `${BASE_URL_API}/Terminals/${data.terminalId}`, method: 'PUT', body: JSON.stringify(data) })
-      if (res) haveClient ? await getTerminalsByClient(client)() : await getAllTerminals()()
-      else {
+      if (res) {
+        dispatch(slice.actions.setSuccess(true))
+        dispatch(slice.actions.setSuccessMsg('Se ha actualizado la información'))
+        haveClient ? await getTerminalsByClient(client)() : await getAllTerminals()()
+      } else {
         dispatch(slice.actions.setLoader(false))
         dispatch(slice.actions.setSuccess(false))
         dispatch(slice.actions.hasError(new Error('Error al editar la terminal')))
@@ -93,13 +101,17 @@ export function modifyTerminal (data, haveClient, client) {
 export function unlickTerminalWithClient (id, client) {
   return async () => {
     try {
+      dispatch(slice.actions.setSuccessMsg(null))
       dispatch(slice.actions.setLoader(true))
       const res = await apiCallWithBody({ url: `${BASE_URL_API}/ClientTerminals/${id}`, method: 'DELETE' })
-      if (res) await getTerminalsByClient(client)()
-      else {
+      if (res && typeof res !== 'string') {
+        dispatch(slice.actions.setSuccess(true))
+        dispatch(slice.actions.setSuccessMsg('Se ha desvinculado la terminal correctamente'))
+        await getTerminalsByClient(client)()
+      } else {
+        dispatch(slice.actions.hasError(new Error('Error al desvincular la terminal ya que está asignada a un usuario')))
         dispatch(slice.actions.setLoader(false))
         dispatch(slice.actions.setSuccess(false))
-        dispatch(slice.actions.hasError(new Error('Error al desvincular la terminal ya que está asignada a un usuario')))
       }
     } catch (error) {
       dispatch(slice.actions.hasError(error))
@@ -111,5 +123,8 @@ export function unlickTerminalWithClient (id, client) {
 }
 
 export function resetErrorUsed () {
-  return async () => { dispatch(slice.actions.resetError(null)) }
+  return async () => {
+    dispatch(slice.actions.resetError(null))
+    dispatch(slice.actions.setSuccessMsg(null))
+  }
 }

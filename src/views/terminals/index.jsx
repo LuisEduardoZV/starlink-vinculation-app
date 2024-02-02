@@ -30,7 +30,7 @@ const Terminals = () => {
   const dispatch = useDispatch()
   const { state } = useLocation()
 
-  const { terminals, error, loading, success } = useSelector((state) => state.terminals)
+  const { terminals, error, loading, success, successMsg } = useSelector((state) => state.terminals)
 
   const [mainData, setMainData] = useState([])
   const [data, setData] = useState(mainData)
@@ -104,20 +104,16 @@ const Terminals = () => {
   }
 
   const handleSave = async (info) => {
-    const id = toast.loading('Cargando...')
+    toast.loading('Cargando...', { id: toastId })
     dispatch(modifyTerminal(info, !(user.user.isPowerUser), user.user.clientId))
-    if (success) toast.success('Se ha actualizado la información', { id })
   }
 
   const handleUnlick = async () => {
-    const toastId = toast.loading('Cargando...')
+    toast.loading('Cargando...', { id: toastId })
     if (dataSelected && dataSelected.clientTerminal_Id && state && state.viewByClient) {
       dispatch(unlickTerminalWithClient(dataSelected.clientTerminal_Id, state.viewByClient))
-      if (success) {
-        toast.success('Se ha actualizado la información', { id: toastId })
-        handleClickCloseModal()
-      }
-    } else toast.error('Error al inicializar el boton')
+      handleClickCloseModal()
+    } else toast.error('Error interno', { id: toastId })
   }
 
   useEffect(() => {
@@ -137,6 +133,13 @@ const Terminals = () => {
       dispatch(resetErrorUsed())
     }
   }, [error])
+
+  useEffect(() => {
+    if (success && successMsg) {
+      toast.success(successMsg, { id: toastId })
+      dispatch(resetErrorUsed())
+    }
+  }, [success, successMsg])
 
   return (
     <>
