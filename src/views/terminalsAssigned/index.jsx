@@ -132,7 +132,7 @@ const TerminalsAssigned = () => {
     (async () => {
       if (state) {
         if (state.clientId) dispatch(getAllTerminalsAssigned(state.clientId))
-        if (state.userId) dispatch(getTerminalsByUser(state.userId))
+        else if (state.userId) dispatch(getTerminalsByUser(state.userId))
       } else {
         dispatch(getAllTerminalsAssigned())
       }

@@ -77,7 +77,7 @@ const Linking = () => {
       if (res && Array.isArray(res)) {
         toast.success('Se ha desvinculado correctamente', { id: toastId })
         return true
-      } else throw new Error('Error al desvincular la terminal con el cliente')
+      } else throw new Error('Error al desvincular la terminal ya que está vinculada con un usuario')
     } catch (error) {
       console.log(error)
       toast.error(error.message, { id: toastId })
@@ -181,7 +181,7 @@ const Linking = () => {
               toast.success('Se han vinculado correctamente los usuarios', { id: toastId })
               setStatus({ success: true })
               setSubmitting(false)
-              finishRedirect(values.clientName, values.client, 0)
+              finishRedirect(values.clientName, user.user.isPowerUser ? null : values.client, 0)
             }
           } catch (error) {
             toast.error(error.message, { id: toastId })
