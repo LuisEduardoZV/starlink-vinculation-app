@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 
 // third imports
 import { GoogleMap, MarkerClusterer, useLoadScript } from '@react-google-maps/api'
@@ -12,7 +12,7 @@ import { GOOGLE_MAP_KEY } from '../../config'
 import { apiCallWithBody } from '../../contexts/api'
 import LoadingInfo from '../../ui-components/LoadingInfo'
 import NoInfoOverlay from '../../ui-components/NoInfoOverlay'
-import { DARK_MODE_STYLE_MAP, REGEX_VALID_UUIDTERMINAL } from '../../utils/constants'
+import { DARK_MODE_STYLE_MAP } from '../../utils/constants'
 import CustomMarker from './components/CustomMarker'
 
 const BASE_URL_API = 'https://ws-tangraph.ever-track.com/api'
@@ -22,7 +22,7 @@ const center = {
 }
 
 const ViewAll = () => {
-  const { filter } = useParams()
+  const [params] = useSearchParams()
 
   const { isLoaded } = useLoadScript({ googleMapsApiKey: GOOGLE_MAP_KEY })
 
@@ -44,15 +44,15 @@ const ViewAll = () => {
   useEffect(() => {
     (async () => {
       try {
-        if (filter) {
+        if ((params.has('ClientName') && params.get('ClientName') !== '') || (params.has('terminal') && params.get('terminal') !== '')) {
           setLoading(true)
-          const body = REGEX_VALID_UUIDTERMINAL.test(filter)
+          const body = params.get('terminal').toString().toLowerCase() !== 'all'
             ? {
                 clientName: '',
-                terminalLineOfService: filter
+                terminalLineOfService: params.get('terminal').toString()
               }
             : {
-                clientName: filter,
+                clientName: params.get('ClientName').toString(),
                 terminalLineOfService: ''
               }
           const res = await apiCallWithBody({
@@ -60,13 +60,25 @@ const ViewAll = () => {
             body: JSON.stringify(body)
           })
           if (Array.isArray(res) && res.length > 0) {
-            setData(res)
+            // eslint-disable-next-line array-callback-return
+            const filter = res.filter((op) => {
+              let { terminalLatitude, terminalLongitude } = op
+              if (terminalLatitude && terminalLongitude) {
+                terminalLatitude = parseFloat(terminalLatitude)
+                terminalLongitude = parseFloat(terminalLongitude)
+                if (terminalLatitude > 21.6) {
+                  return !(terminalLongitude < -117.0 || terminalLongitude > -97.0 || terminalLatitude > 32.8) && op
+                } else return !(terminalLongitude < -106.0 || terminalLongitude > -86.7 || terminalLatitude < 14.5) && op
+              }
+            })
+            console.log(filter)
+            setData(filter)
           } else {
             setHasError(true)
           }
 
           setLoading(false)
-        }
+        } else setHasError(true)
       } catch (error) {
         console.log(error)
       }
@@ -76,7 +88,7 @@ const ViewAll = () => {
       setLoading(true)
       setHasError(false)
     }
-  }, [filter])
+  }, [params])
 
   if (!isLoaded || loading) {
     return (
@@ -112,11 +124,11 @@ const ViewAll = () => {
           >
             <MarkerClusterer>
               {(clusterer) => (
-                <div>
+                <Box>
                   {(!loading && isLoaded) && data.map((op, index) => (
                     <CustomMarker key={index} {...op} clusterer={clusterer} />
                   ))}
-                </div>
+                </Box>
               )}
             </MarkerClusterer>
 
