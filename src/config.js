@@ -1,10 +1,10 @@
 export const BASE_PATH = ''
 
-export const BASE_URL = 'https://test-tangraph.ever-track.com'
-// export const BASE_URL = 'https://ws-tangraph.ever-track.com'
+// export const BASE_URL = 'https://test-tangraph.ever-track.com'
+export const BASE_URL = 'https://ws-tangraph.ever-track.com'
 
-export const BASE_URL_API = 'https://test-tangraph.ever-track.com/api'
-// export const BASE_URL_API = 'https://ws-tangraph.ever-track.com/api'
+// export const BASE_URL_API = 'https://test-tangraph.ever-track.com/api'
+export const BASE_URL_API = 'https://ws-tangraph.ever-track.com/api'
 
 export const BASE_URL_GRAFANA = 'http://starlink.tangerinemetrics.com/api/'
 
