@@ -73,6 +73,7 @@ const TableTerminals = ({ loading, data, selected, handleClick, handleSave, isSu
                     page={page}
                     hasExtendedRow
                     RowTemplate={RowExpanded}
+                    isSuperUser={isSuperUser}
                     {...isSuperUser && {
                       hasMoreActions: true,
                       handleSave,

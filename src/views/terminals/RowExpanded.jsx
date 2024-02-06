@@ -8,7 +8,7 @@ import { alpha } from '@mui/material/styles'
 
 import InputBase from '../../ui-components/InputBase'
 
-const RowExpanded = ({ rowExpanded, element, mode, data, handleChange, handleChangeSwitch }) => {
+const RowExpanded = ({ rowExpanded, element, mode, data, handleChange, isSuperUser }) => {
   return (
     <TableRow
       sx={{
@@ -61,7 +61,7 @@ const RowExpanded = ({ rowExpanded, element, mode, data, handleChange, handleCha
                 alignItems: 'center'
               }}
             >
-              {!element.isMobile && (
+              {(!element.isMobile && isSuperUser) && (
                 <>
                   <Box display='flex' flex={1} gap={1} alignItems='center'>
                     {mode
@@ -134,7 +134,7 @@ RowExpanded.propTypes = {
   element: PropTypes.object,
   data: PropTypes.object,
   handleChange: PropTypes.func,
-  handleChangeSwitch: PropTypes.func,
+  isSuperUser: PropTypes.bool,
   mode: PropTypes.number
 }
 

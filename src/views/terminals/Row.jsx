@@ -19,7 +19,7 @@ import { Box, IconButton, TableCell, TableRow } from '@mui/material'
 import CustomTooltipBtns from '../../ui-components/CustomTooltipBtns'
 import InputBase from '../../ui-components/InputBase'
 
-const Row = ({ element, handleClick, isItemSelected, labelId, hasExtendedRow, hasMoreActions, RowTemplate, page, handleSave, viewType, handleOpen }) => {
+const Row = ({ element, handleClick, isItemSelected, labelId, hasExtendedRow, hasMoreActions, RowTemplate, page, handleSave, viewType, handleOpen, isSuperUser }) => {
   const [rowExpanded, setRowExpanded] = useState(false)
   const [mode, setMode] = useState(0)
 
@@ -121,20 +121,16 @@ const Row = ({ element, handleClick, isItemSelected, labelId, hasExtendedRow, ha
         {hasExtendedRow && (
           <TableCell>
             <Box sx={{ width: '100%', display: 'flex' }}>
-              {hasMoreActions && (
-                <>
-                  <CustomTooltipBtns title={mode === 0 ? 'Editar' : 'Guardar'} placement='top' type='primary'>
-                    <IconButton
-                      size='small' onClick={(e) => {
-                        handleChangeMode()
-                        handleClick(e, element.terminalId)
-                      }}
-                    >
-                      <Icon fontSize='small' sx={{ color: (theme) => mode ? theme.palette.mode === 'light' ? 'primary.dark' : 'primary.800' : 'primary.main' }} />
-                    </IconButton>
-                  </CustomTooltipBtns>
-                </>
-              )}
+              <CustomTooltipBtns title={mode === 0 ? 'Editar' : 'Guardar'} placement='top' type='primary'>
+                <IconButton
+                  size='small' onClick={(e) => {
+                    handleChangeMode()
+                    handleClick(e, element.terminalId)
+                  }}
+                >
+                  <Icon fontSize='small' sx={{ color: (theme) => mode ? theme.palette.mode === 'light' ? 'primary.dark' : 'primary.800' : 'primary.main' }} />
+                </IconButton>
+              </CustomTooltipBtns>
               {viewType && (
                 <CustomTooltipBtns title='Desvincular' placement='top' type='error'>
                   <IconButton
@@ -173,7 +169,7 @@ const Row = ({ element, handleClick, isItemSelected, labelId, hasExtendedRow, ha
           </TableCell>
         )}
       </TableRow>
-      {hasExtendedRow && <RowTemplate rowExpanded={rowExpanded} element={element} mode={mode} data={newData} handleChange={handleChangeData} handleChangeSwitch={handleChangeSwitch} />}
+      {hasExtendedRow && <RowTemplate rowExpanded={rowExpanded} element={element} mode={mode} data={newData} handleChange={handleChangeData} handleChangeSwitch={handleChangeSwitch} isSuperUser={isSuperUser} />}
     </>
   )
 }
@@ -191,6 +187,7 @@ Row.propTypes = {
   hasMoreActions: PropTypes.bool,
   rowMode: PropTypes.number,
   viewType: PropTypes.number,
+  isSuperUser: PropTypes.bool,
   RowTemplate: PropTypes.any
 }
 
