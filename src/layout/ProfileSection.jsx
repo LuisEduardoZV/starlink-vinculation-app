@@ -49,10 +49,10 @@ const getUserType = (isPower, isAdmin) => {
     IconUser = SupervisorAccountIcon
   }
   if (!isPower && isAdmin) {
-    text = 'Cliente Administrador'
+    text = 'Usuario Administrador'
     IconUser = BadgeIcon
   }
-  if (!isPower && !isAdmin) text = 'Usuario base'
+  if (!isPower && !isAdmin) text = 'Usuario Base'
   return (
     <Typography component='div' variant='h6' sx={{ fontWeight: 400, color: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[500], display: 'flex', alignItems: 'center', gap: 1, justifyContent: 'flex-end', width: '100%' }}>
       <IconUser fontSize='small' sx={{ color: 'primary.light' }} />
@@ -153,6 +153,7 @@ const ProfileSection = () => {
                 {open && (
                   <MainCard
                     border={false} elevation={16} content={false} boxShadow shadow={theme.shadows[16]}
+                    sx={{ maxWidth: 250 }}
                   >
                     <Box sx={{ p: 2, pb: 0, gap: 1, display: 'flex', flexDirection: 'column' }}>
                       <Stack direction='column' spacing={0.5} alignItems='start'>
@@ -163,6 +164,14 @@ const ProfileSection = () => {
                       </Stack>
                       <Stack direction='row' spacing={0.5} alignItems='center'>
                         {getUserType(user?.user.isPowerUser, user?.user.isAdmin)}
+                      </Stack>
+                      <Divider sx={{ borderColor: (theme) => theme.palette.primary.main }} />
+                      <Stack
+                        direction='row' spacing={0.5} alignItems='start'
+                        justifyItems='start'
+                      >
+                        <Typography variant='subtitle1'>Cliente:</Typography>
+                        <Typography variant='caption' sx={{ wordBreak: 'break-word' }}>{user?.user.clientName}</Typography>
                       </Stack>
                       <Divider sx={{ borderColor: (theme) => theme.palette.primary.main }} />
                     </Box>
@@ -196,7 +205,7 @@ const ProfileSection = () => {
                           />
                         </RadioGroup>
                       </FormControl>
-                      <Divider />
+                      <Divider sx={{ borderColor: (theme) => theme.palette.primary.main }} />
                     </Box>
                     <Box sx={{ p: 2, pt: 0 }}>
                       <List

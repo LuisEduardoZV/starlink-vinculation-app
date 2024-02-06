@@ -71,6 +71,8 @@ export const AuthContextProvider = ({ children }) => {
         if (!res.isPowerUser && res.isAdmin) {
           const hasTerminals = await apiCall({ url: `${BASE_URL_API}/getAsigmentUser?UserId=${res.userId}` })
           if (Array.isArray(hasTerminals) && hasTerminals.length === 0) return -2
+          const client = await apiCall({ url: `${BASE_URL_API}/Clients/${res.clientId}` })
+          if (client && client.clientName) res.clientName = client.clientName
         }
         setConfig({
           ...config,
