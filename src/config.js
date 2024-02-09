@@ -1,4 +1,4 @@
-export const BASE_PATH = ''
+export const BASE_PATH = 'starlink-vinculation-app'
 
 export const BASE_URL_API = 'https://test-tangraph.ever-track.com/api'
 

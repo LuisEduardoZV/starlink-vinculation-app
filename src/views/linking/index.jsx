@@ -122,36 +122,13 @@ const Linking = () => {
             for (let i = 0; i < values.userVinculationInfo.length; i++) {
               const user = values.userVinculationInfo[i]
               if (user.userId) {
-                const userInfo = user.userId
-                const userGrafana = await apiCallWithBody({
-                  url: `${BASE_URL_API}/AltaUserGraf?type=1`,
-                  body: JSON.stringify({
-                    name: userInfo.fullName,
-                    email: userInfo.email,
-                    login: userInfo.email,
-                    password: userInfo.password,
-                    OrgId: 1
-                  })
-                })
-                if (!userGrafana) throw new Error('Hubo un error al crear el usuario en Grafana para el usuario existente, contacte con el administrador')
                 usersInfo.push({ terminals: user.terminals, dashboards: user.dashboards, userId: user.userId.userId })
               } else {
                 user.userId = 0
                 const newUserInfo = { terminals: user.terminals, dashboards: user.dashboards, userId: null }
                 const newUser = await apiCallWithBody({ url: `${BASE_URL_API}/Users`, method: 'POST', body: JSON.stringify({ ...user, fullname: user.fullName, isAdmin: user.isAdmin ? 1 : 0 }) })
                 console.log(newUser)
-                if (!newUser) throw new Error('Hubo un error al crear el nuveo usuario en Tan-Graph')
-                const userGrafana = await apiCallWithBody({
-                  url: `${BASE_URL_API}/AltaUserGraf?type=1`,
-                  body: JSON.stringify({
-                    name: user.fullName,
-                    email: user.email,
-                    login: user.email,
-                    password: user.password,
-                    OrgId: 1
-                  })
-                })
-                if (!userGrafana) throw new Error('Hubo un error al crear el usuario en Grafana, contacte con el administrador')
+                if (!newUser) throw new Error('Hubo un error al crear el nuveo usuario')
                 const newUserId = await newUser.find(({ email, userId }) => (user.email === email && userId))
                 if (newUserId && newUserId.userId) {
                   newUserInfo.userId = newUserId.userId
