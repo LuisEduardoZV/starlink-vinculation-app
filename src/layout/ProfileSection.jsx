@@ -165,14 +165,18 @@ const ProfileSection = () => {
                       <Stack direction='row' spacing={0.5} alignItems='center'>
                         {getUserType(user?.user.isPowerUser, user?.user.isAdmin)}
                       </Stack>
-                      <Divider sx={{ borderColor: (theme) => theme.palette.primary.main }} />
-                      <Stack
-                        direction='row' spacing={0.5} alignItems='start'
-                        justifyItems='start'
-                      >
-                        <Typography variant='subtitle1'>Cliente:</Typography>
-                        <Typography variant='caption' sx={{ wordBreak: 'break-word' }}>{user?.user.clientName}</Typography>
-                      </Stack>
+                      {!(user?.user.isPowerUser) && (
+                        <>
+                          <Divider sx={{ borderColor: (theme) => theme.palette.primary.main }} />
+                          <Stack
+                            direction='row' spacing={0.5} alignItems='start'
+                            justifyItems='start'
+                          >
+                            <Typography variant='subtitle1'>Cliente:</Typography>
+                            <Typography variant='caption' sx={{ wordBreak: 'break-word' }}>{user?.user.clientName}</Typography>
+                          </Stack>
+                        </>
+                      )}
                       <Divider sx={{ borderColor: (theme) => theme.palette.primary.main }} />
                     </Box>
                     <Box p={2} display='flex' flexDirection='column' gap={1}>

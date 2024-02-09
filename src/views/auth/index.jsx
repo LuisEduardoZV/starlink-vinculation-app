@@ -125,8 +125,8 @@ const Auth = () => {
         >
           <Formik
             initialValues={{
-              user: '',
-              password: ''
+              user: 'demo@demo.com',
+              password: 'demo'
             }}
             validationSchema={Yup.object().shape({
               user: Yup.string().required(requiredText),

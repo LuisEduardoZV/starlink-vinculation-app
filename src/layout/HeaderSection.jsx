@@ -60,7 +60,7 @@ const HeaderSection = () => {
       ...extraTheme
     }}
     >
-      <Typography flex={2} variant='h3' sx={{ textShadow: theme.palette.mode === 'light' ? `2px 2px 1px ${theme.palette.grey[400]}` : `1px 2px 1px ${theme.palette.primary[800]}`, color: theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white, width: '100%' }}>Backend Tangerine Metrics</Typography>
+      <Typography flex={2} variant='h3' sx={{ textShadow: theme.palette.mode === 'light' ? `2px 2px 1px ${theme.palette.grey[400]}` : `1px 2px 1px ${theme.palette.primary[800]}`, color: theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white, width: '100%' }}>Starlink Vinculation App</Typography>
       <Box flex={5} display='flex' justifyContent='center'>
         {user?.user?.isPowerUser
           ? (<PowerUserMenu tab={tab} handleChange={handleChange} />)
