@@ -46,12 +46,12 @@ El proyecto cuenta con un archivo de configuración *[config.js](doc:config.js)*
 Dentro del archivo se tiene el siguiente objeto el cual le ayudará a personalizar un poco la página a su gusto: 
 
 ```json
-    {
-        fontFamily: "'Roboto', sans-serif",
-        borderRadius: 8,
-        outlinedFilled: true,
-        navType: 'light' // o dark
-    }
+{
+   fontFamily: "'Roboto', sans-serif",
+   borderRadius: 8,
+   outlinedFilled: true,
+   navType: 'light' // o dark
+}
 ```
 
 Para por visulizar las ventanas con mapa, es necesario que coloque su llave personal de Google Maps en la variable *GOOGLE_MAP_KEY*
