@@ -41,7 +41,7 @@ Para el funcionamiento del proyecto es necesario tener instalado Node.js, por fa
 
 ## Configuración⚙️
 
-El proyecto cuenta con un archivo de configuración *[config.js](doc:/src/config.js)* en donde podrá cambiar la path base del proyecto, así como link principal para las consultas a nuestra API.
+El proyecto cuenta con un archivo de configuración *[config.js](doc:config.js)* en donde podrá cambiar la path base del proyecto, así como link principal para las consultas a nuestra API.
 
 Dentro del archivo se tiene el siguiente objeto el cual le ayudará a personalizar un poco la página a su gusto: 
 
@@ -56,7 +56,7 @@ Dentro del archivo se tiene el siguiente objeto el cual le ayudará a personaliz
 
 Para por visulizar las ventanas con mapa, es necesario que coloque su llave personal de Google Maps en la variable *GOOGLE_MAP_KEY*
 
-## Despliegue📦
+## Despliegue 📦
 
 Para desplegar como una página estática, ejecute:
 
@@ -76,7 +76,7 @@ Para desplegar como una página estática, ejecute:
 * [Redux](https://redux.js.org/) - Manejador de estados
 * [React Router](https://reactrouter.com/en/main) - Enrutamiento del lado del cliente
 
-## Autores✒️
+## Autores ✒️
 
 * **Belén Gudiño** - *Back-End*
 
