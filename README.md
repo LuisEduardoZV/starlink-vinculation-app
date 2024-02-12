@@ -13,14 +13,14 @@ Esta aplicación está pensada para empresas que renten equipos o antenas y nece
 - [Dependencias](#dependencias)
 - [Autores](#autores)
 
-## Pre-requisitos 📋
+## Pre-requisitos📋
 
 Para el funcionamiento del proyecto es necesario tener instalado Node.js, por favor siga la guía de instalación de su página oficial en caso de no tenerlo instalado:
 
 [Como instalar Node.js][1]
 [Link directo de descarga][2]
 
-## Instalación 🔧
+## Instalación🔧
 
 1. Descargue el código fuente
    ```bash
@@ -39,9 +39,9 @@ Para el funcionamiento del proyecto es necesario tener instalado Node.js, por fa
     $ npm run dev
     ```
 
-## Configuración 📦
+## Configuración⚙️
 
-El proyecto cuenta con un archivo de configuración [config.js](doc:/src/config.js) en donde podrá cambiar la path base del proyecto, así como link principal para las consultas a nuestra API.
+El proyecto cuenta con un archivo de configuración *[config.js](doc:/src/config.js)* en donde podrá cambiar la path base del proyecto, así como link principal para las consultas a nuestra API.
 
 Dentro del archivo se tiene el siguiente objeto el cual le ayudará a personalizar un poco la página a su gusto: 
 
@@ -56,28 +56,27 @@ Dentro del archivo se tiene el siguiente objeto el cual le ayudará a personaliz
 
 Para por visulizar las ventanas con mapa, es necesario que coloque su llave personal de Google Maps en la variable *GOOGLE_MAP_KEY*
 
-## Despliegue 📦
+## Despliegue📦
 
 Para desplegar como una página estática, ejecute:
 
 1. 
    ```bash
-   $ npm tun build
+   $ npm run build
    ```
 1. Terminado el proceso, podrá encontrar los archivos resultantes en la carpeta */dist*
    ```bash
     $ cd dist/
    ```
 
-## Dependencias 🛠️
+## Dependencias🛠️
 
 * [React.js](https://react.dev/reference/react) - Framework web usado
 * [Mui - Material UI](https://mui.com/material-ui/getting-started/) - Componentes de React utlizando Material Design de Google
 * [Redux](https://redux.js.org/) - Manejador de estados
 * [React Router](https://reactrouter.com/en/main) - Enrutamiento del lado del cliente
 
-## Autores
-✒️
+## Autores✒️
 
 * **Belén Gudiño** - *Back-End*
 
