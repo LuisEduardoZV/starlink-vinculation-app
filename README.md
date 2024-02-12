@@ -47,7 +47,7 @@ Dentro del archivo se tiene el siguiente objeto el cual le ayudará a personaliz
 
 ```json
     {
-        fontFamily: '\'Roboto\', sans-serif',
+        fontFamily: "'Roboto', sans-serif",
         borderRadius: 8,
         outlinedFilled: true,
         navType: 'light' // o dark
