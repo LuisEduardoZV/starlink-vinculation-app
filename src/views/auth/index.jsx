@@ -16,7 +16,10 @@ import MainMirrorCard from '../../ui-components/MainMirrorCard'
 import AuthLogin from './AuthLogin'
 
 // assets
-import bg from '../../assets/image/starlink.png'
+// import bg from '../../assets/image/starlink.png'
+import bgLight from '../../assets/image/fondo-light.webp'
+import tangerine from '../../assets/image/icon.png'
+import bg from '../../assets/image/opcion.jpg'
 
 import { requiredText } from '../../utils/labelsErrorsFormik'
 
@@ -39,66 +42,17 @@ const Auth = () => {
       maxHeight: '100vh',
       position: 'relative',
       display: 'flex',
-      alignItems: 'start',
-      justifyContent: 'start',
+      alignItems: 'center',
+      justifyContent: 'center',
       flex: 1,
-      bgcolor: (theme) => theme.palette.common.black,
-      overflow: 'hidden'
+      backgroundImage: (theme) => theme.palette.mode === 'light' ? `url(${bgLight})` : `url(${bg})`,
+      overflow: 'hidden',
+      backgroundRepeat: 'no-repeat',
+      backgroundSize: 'cover',
+      backgroundOrigin: 'border-box',
+      backgroundPosition: 'bottom'
     }}
     >
-      <Box
-        sx={{
-          position: 'absolute',
-          width: '68%',
-          height: '2px',
-          bgcolor: 'white',
-          boxShadow: '0 0 20px white, 0 0 20px white inset',
-          top: '74%',
-          transform: 'translate(0,-74%) rotate(-10deg)',
-          border: (theme) => `1px solid ${theme.palette.grey[200]}`,
-          animation: 'blinkNeon 1.5s linear infinite'
-        }}
-      />
-      <Box
-        sx={{
-          position: 'absolute',
-          width: '25%',
-          height: '8px',
-          bgcolor: 'white',
-          boxShadow: '0 0 20px white, 0 0 20px white inset',
-          top: '10%',
-          right: '15%',
-          transform: 'translate(0,-10%) rotate(-70deg)',
-          border: (theme) => `1px solid ${theme.palette.grey[200]}`,
-          animation: 'blinkNeon 3s linear infinite'
-        }}
-      />
-      <Box
-        sx={{
-          position: 'absolute',
-          width: 350,
-          height: 350,
-          top: '35%',
-          bgcolor: (theme) => alpha(theme.palette.grey[500], 0.07),
-          borderRadius: '50%',
-          right: '21%',
-          boxShadow: (theme) => `0px 0px 350px 350px ${alpha(theme.palette.grey[700], 0.05)}`,
-          animation: 'floating 3s ease-in-out infinite'
-        }}
-      />
-      <Box
-        component='img'
-        sx={{
-          position: 'absolute',
-          height: 500,
-          width: 500,
-          top: '15%',
-          right: '15%',
-          animation: 'floating 3s ease-in-out infinite'
-        }}
-        alt='Starlink product'
-        src={bg}
-      />
       <Box
         sx={{ position: 'absolute', top: 0, right: 0, bgcolor: 'transparent' }}
       >
@@ -110,19 +64,18 @@ const Auth = () => {
           v{SYS_VERSION}
         </Typography>
       </Box>
-      <Box sx={{ position: 'relative', minWidth: 450, width: 'max-content', borderRadius: 2, zIndex: 5, mx: 5, my: 20 }}>
-        <MainMirrorCard sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: 1,
-          py: 4,
-          border: 'none',
-          borderRadius: 0,
-          boxShadow: 'none',
-          bgcolor: 'transparent'
-        }}
-        >
+      <Box sx={{ position: 'relative', minWidth: 450, width: 'max-content', borderRadius: 2, zIndex: 5, animation: 'floating 3s ease-in-out infinite' }}>
+        <MainMirrorCard sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1, py: 4, boxShadow: (theme) => theme.palette.mode === 'light' && '7px 7px 20px 1px #c8c8c8, -7px -7px 20px 1px #ffffff' }}>
+          <img src={tangerine} alt='App icon' style={{ width: 90, height: 80 }} />
+          <Typography variant='h2' textAlign='center' mt={1} sx={{ textShadow: (theme) => theme.palette.mode === 'light' ? `2px 2px 1px ${theme.palette.grey[400]}` : `1px 2px 1px ${theme.palette.primary[800]}`, color: (theme) => theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white }}>Starlink Vinculation App</Typography>
+          <Box sx={{
+            width: '100%',
+            borderImage: (theme) => (`linear-gradient(to right, ${alpha(theme.palette.background.paper, 0.7)}, ${theme.palette.primary.dark}, ${alpha(theme.palette.background.paper, 0.7)}) 30`),
+            borderWidth: '0.06em',
+            borderStyle: 'solid',
+            mb: 3
+          }}
+          />
           <Formik
             initialValues={{
               user: 'demo@demo.com',
@@ -132,7 +85,7 @@ const Auth = () => {
               user: Yup.string().required(requiredText),
               password: Yup.string().required(requiredText)
             })}
-            onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
+            onSubmit={async (values, { setSubmitting }) => {
               const notify = toast.loading('Cargando...')
               try {
                 setSubmitting(true)

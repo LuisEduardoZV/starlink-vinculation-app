@@ -3,8 +3,7 @@ import PropTypes from 'prop-types'
 // mui imports
 import VisibilityOffTwoToneIcon from '@mui/icons-material/VisibilityOffTwoTone'
 import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone'
-import { Box, Button, IconButton, InputAdornment, Tooltip, Typography } from '@mui/material'
-import { alpha, createTheme, useTheme } from '@mui/material/styles'
+import { Box, Button, IconButton, InputAdornment, Tooltip } from '@mui/material'
 
 // third imports
 import { toast } from 'sonner'
@@ -15,26 +14,8 @@ import InputBase from '../../ui-components/InputBase'
 const AuthLogin = ({
   errors, touched, values, showPass, isSubmitting, handleBlur, handleChange, setShowPass, handleMouseDownPassword
 }) => {
-  const theme = useTheme()
-  const newTheme = createTheme({
-    ...theme,
-    palette: {
-      mode: 'dark',
-      background: {
-        default: alpha(theme.palette.common.white, 0.15)
-      },
-      primary: {
-        main: theme.palette.common.white
-      },
-      common: {
-        white: theme.palette.grey[200]
-      }
-    }
-  })
-
   return (
-    <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column', gap: 4, color: 'white' }}>
-      <Typography variant='h2' textAlign='right' color='white'>BackEnd Tangerine Metrics</Typography>
+    <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column', gap: 4 }}>
       <Tooltip arrow followCursor disableInteractive {...errors.user && { title: errors.user }}>
         <InputBase
           label='Usuario'
@@ -48,8 +29,6 @@ const AuthLogin = ({
           color='primary'
           required
           InputProps={{ autoComplete: 'off' }}
-          theme={newTheme}
-          extraSx={{ borderRadius: 2 }}
         />
       </Tooltip>
       <Tooltip arrow followCursor disableInteractive {...errors.password && { title: errors.password }}>
@@ -64,13 +43,11 @@ const AuthLogin = ({
           required
           variant='filled'
           color='primary'
-          theme={newTheme}
-          extraSx={{ borderRadius: 2 }}
           InputProps={{
             autoComplete: 'off',
             endAdornment: (
               <InputAdornment position='end' sx={{ position: 'absolute', right: '2%' }}>
-                <IconButton size='small' sx={{ color: (theme) => theme.palette.common.white }} onClick={() => setShowPass(current => !current)} onMouseDown={handleMouseDownPassword}>
+                <IconButton size='small' sx={{ color: (theme) => theme.palette.primary[800] }} onClick={() => setShowPass(current => !current)} onMouseDown={handleMouseDownPassword}>
                   {showPass ? <VisibilityOffTwoToneIcon /> : <VisibilityTwoToneIcon />}
                 </IconButton>
               </InputAdornment>)
@@ -78,17 +55,17 @@ const AuthLogin = ({
         />
       </Tooltip>
       <Button
-        variant='outlined'
+        variant='contained'
         color='inherit'
         type='submit'
         sx={{
           width: '100%',
-          bgcolor: alpha(theme.palette.common.white, 0.08),
+          bgcolor: 'black',
           color: 'white',
-          boxShadow: '0px 0px 4px white, 0px 0px 4px white inset',
+          boxShadow: (theme) => theme.shadows[5],
           transition: 'background-color 0.3s ease-in-out, color 0.3s ease-in-out',
           '&:hover': {
-            bgcolor: (theme) => theme.palette.common.white,
+            bgcolor: (theme) => theme.palette.primary.main,
             color: 'black'
           }
         }}
