@@ -9,9 +9,9 @@ Esta aplicación está pensada para empresas que renten equipos o antenas y nece
 - [Pre-requisitos](#pre-requisitos)
 - [Instalación](#instalación)
 - [Configuración](#configuración)
-- [Línea de comandos](#command-line)
-- [Autores](#authors)
-- [Licencia](#license)
+- [Despliegue](#despliegue)
+- [Dependencias](#dependencias)
+- [Autores](#autores)
 
 ## Pre-requisitos 📋
 
@@ -58,7 +58,8 @@ Para por visulizar las ventanas con mapa, es necesario que coloque su llave pers
 
 ## Despliegue 📦
 
-Para desplegar como una página estática, ejecute: 
+Para desplegar como una página estática, ejecute:
+
 1. 
    ```bash
    $ npm tun build
@@ -68,17 +69,18 @@ Para desplegar como una página estática, ejecute:
     $ cd dist/
    ```
 
-## Construido con 🛠️
+## Dependencias 🛠️
 
 * [React.js](https://react.dev/reference/react) - Framework web usado
 * [Mui - Material UI](https://mui.com/material-ui/getting-started/) - Componentes de React utlizando Material Design de Google
 * [Redux](https://redux.js.org/) - Manejador de estados
 * [React Router](https://reactrouter.com/en/main) - Enrutamiento del lado del cliente
 
-## Autores ✒️
+## Autores
+✒️
 
 * **Belén Gudiño** - *Back-End*
 
-## Links externos
+
 [1]: https://nodejs.org/en/learn/getting-started/how-to-install-nodejs  "Como instalar Node.js"
 [2]: https://nodejs.org/en/download  "Link directo de descarga"
