@@ -39,7 +39,7 @@ Para el funcionamiento del proyecto es necesario tener instalado Node.js, por fa
     $ npm run dev
     ```
 
-## Configuración ⚙️
+## Configuración ⚙
 
 El proyecto cuenta con un archivo de configuración *[config.js](doc:config.js)* en donde podrá cambiar la path base del proyecto, así como link principal para las consultas a nuestra API.
 
@@ -69,14 +69,14 @@ Para desplegar como una página estática, ejecute:
     $ cd dist/
    ```
 
-## Dependencias 🛠️
+## Dependencias 🛠
 
 * [React.js](https://react.dev/reference/react) - Framework web usado
 * [Mui - Material UI](https://mui.com/material-ui/getting-started/) - Componentes de React utlizando Material Design de Google
 * [Redux](https://redux.js.org/) - Manejador de estados
 * [React Router](https://reactrouter.com/en/main) - Enrutamiento del lado del cliente
 
-## Autores ✒️
+## Autores ✒
 
 * **Belén Gudiño** - *Back-End*
 
